@@ -8,7 +8,7 @@
 
 ## Qué es y cuál es su fin?
 
-Aeroalertasdiasdjasopdasd
+Aeroalert 
 
 ## Quiénes lo desarrollan?
 AeroAlert es un proyecto en proceso realizado por alumnos de la Escuela Secundaria IMPA de 7mo 1ra Avionica.
@@ -21,11 +21,11 @@ AeroAlert es un proyecto en proceso realizado por alumnos de la Escuela Secundar
 </div>
 
 ### 
+    📷 Instagram: 
+    📧 Email: 
+### Juan Cuccaro
     📷 Instagram: @cuccaro_juan
     📧 Email: manucucca10@gmail.com
-### 
-    📷 Instagram: @nicoo__ruiz
-    📧 Email: ruizagustinnicolas20@gmail.com 
 ### 
     📷 Instagram:
     📧 Email:
@@ -39,8 +39,8 @@ AeroAlert es un proyecto en proceso realizado por alumnos de la Escuela Secundar
     📷 Instagram:
     📧 Email:
 ### 
-    📷 Instagram:
-    📧 Email:
+    📷 Instagram: @nicoo__ruiz
+    📧 Email: ruizagustinnicolas20@gmail.com
 
 ## Cómo contactarnos
 Si tenes opiniones o dudas sobre el proyecto que nos puedan ayudar, no dudes en ponerte en contacto con nosotros:
