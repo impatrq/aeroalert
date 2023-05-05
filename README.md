@@ -32,9 +32,9 @@ AeroAlert es un proyecto en proceso realizado por alumnos de la Escuela Secundar
 ### 
     📷 Instagram:
     📧 Email: 
-### 
-    📷 Instagram: 
-    📧 Email:
+### Jonás Pagano
+    📷 Instagram: @jonaspagano
+    📧 Email: paganojonas@gmail.com
 ### 
     📷 Instagram:
     📧 Email:
