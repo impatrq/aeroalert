@@ -24,8 +24,8 @@ AeroAlert es un proyecto en proceso realizado por alumnos de la Escuela Secundar
     📷 Instagram: @cuccaro_juan
     📧 Email: manucucca10@gmail.com
 ### 
-    📷 Instagram: 
-    📧 Email:
+    📷 Instagram: nicoo__ruiz
+    📧 Email: ruizagustinnicolas20@gmail.com 
 ### 
     📷 Instagram:
     📧 Email:
