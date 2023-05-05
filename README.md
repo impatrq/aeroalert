@@ -50,4 +50,3 @@ Ante cualquier duda acerca de nuestro proyecto, podés ponerte en contacto con n
     🌐 Página Web: en proceso...
     📷 Instagram: @aeroalert.impa
     🗞️ LinkedIn: https://www.linkedin.com/company/aeroalert/
-___
