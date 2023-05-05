@@ -6,12 +6,12 @@
 
 </div>
 
-## Qué es y cuál es su fin?
+## Qué es AeroAlert?
 
 Aeroalert 
 
 ## Quiénes lo desarrollan?
-AeroAlert es un proyecto en proceso realizado por alumnos de la Escuela Secundaria IMPA de 7mo 1ra Avionica.
+AeroAlert es un proyecto en proceso realizado por alumnos del 7mo Año de la Escuela de Educación Secundaria Técnica N°7 "Taller Regional Quilmes", especialidad Aviónica..
 
 ## Integrantes
 <div align="center">
