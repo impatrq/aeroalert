@@ -30,8 +30,8 @@ AeroAlert es un proyecto en proceso realizado por alumnos del 7mo Año de la Esc
     📷 Instagram:
     📧 Email:
 ### Teo Lopez
-    📷 Instagram:
-    📧 Email: 
+    📷 Instagram: @nico67676
+    📧 Email: teonicolaslopez7@gmail.com
 ### Jonás Pagano
     📷 Instagram: @jonaspagano
     📧 Email: paganojonas@gmail.com
