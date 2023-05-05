@@ -22,8 +22,8 @@ AeroAlert es un proyecto en proceso realizado por alumnos del 7mo Año de la Esc
 </div>
 
 ### Mauro Altinier
-    📷 Instagram: 
-    📧 Email: 
+    📷 Instagram: @agustin_altinier
+    📧 Email: mauro.altinier@gmail.com
 ### Juan Cuccaro
     📷 Instagram: @cuccaro_juan
     📧 Email: manucucca10@gmail.com
