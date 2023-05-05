@@ -6,12 +6,12 @@
 
 </div>
 
-## Qué es AeroAlert?
+## ¿Qué es AeroAlert?
 
 Aeroalert 
 
-## Quiénes lo desarrollan?
-AeroAlert es un proyecto en proceso realizado por alumnos del 7mo Año de la Escuela de Educación Secundaria Técnica N°7 "Taller Regional Quilmes", especialidad Aviónica..
+## ¿Quiénes lo desarrollan?
+AeroAlert es un proyecto en proceso realizado por alumnos del 7mo Año de la Escuela de Educación Secundaria Técnica N°7 "Taller Regional Quilmes", especialidad Aviónica.
 
 ## Integrantes
 <div align="center">
@@ -20,7 +20,7 @@ AeroAlert es un proyecto en proceso realizado por alumnos del 7mo Año de la Esc
 
 </div>
 
-### 
+### Mauro Altinier
     📷 Instagram: 
     📧 Email: 
 ### Juan Cuccaro
@@ -29,7 +29,7 @@ AeroAlert es un proyecto en proceso realizado por alumnos del 7mo Año de la Esc
 ### 
     📷 Instagram:
     📧 Email:
-### 
+### Teo Lopez
     📷 Instagram:
     📧 Email: 
 ### Jonás Pagano
@@ -42,8 +42,8 @@ AeroAlert es un proyecto en proceso realizado por alumnos del 7mo Año de la Esc
     📷 Instagram: @nicoo__ruiz
     📧 Email: ruizagustinnicolas20@gmail.com
 
-## Cómo contactarnos
-Si tenes opiniones o dudas sobre el proyecto que nos puedan ayudar, no dudes en ponerte en contacto con nosotros:
+## Contactos
+Ante cualquier duda u opinión acerca de nuestro proyecto, no dudes en contactarte con nosotros a través de:
 
     📧 Email: proyectoaeroalert@gmail.com
     🌐 Página Web: en proceso...
