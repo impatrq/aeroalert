@@ -2,6 +2,7 @@ import socket
 import time
 import urequests as requests
 import random
+import json
 addr = socket.getaddrinfo('192.168.4.1', 8000) [0][-1]
 
 def numerito():
@@ -19,14 +20,17 @@ def do_connect():
         print()
     print('network config:' , sta_if.ifconfig())
     
-def send_message(bpm):
+def send_message(bpm, spo2, temp):
     server_ip = '192.168.4.1'
     server_port = 8000
     
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((server_ip, server_port))
-    message = str(bpm)
-    client_socket.send(message) #.encode('utf-8') para un string se encodea
+    
+    data = {'value1': bpm, 'value2': spo2, 'value3': temp}
+    message = json.dumps(data).encode('utf-8') #.encode('utf-8') para un string se encodea
+    
+    client_socket.send(message) 
     
     print('Mensaje enviado:', message)
     

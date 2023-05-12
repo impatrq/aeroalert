@@ -9,6 +9,7 @@ import gc
 gc.collect()
 import random
 import time
+import json
 
 def web_page():
     html = """hola roca %.2f""" % (random.randint(1,100))
@@ -48,7 +49,15 @@ while True:
 while True:
     conn, addr = s.accept()
     print('Got a connection from %s' % str(addr))
-    request = conn.recv(512)
-    print('Content = %s' % str(request))    #.decode('utf-8')
-    time.sleep(1)
+    message = conn.recv(1024)
+                                                    #.decode('utf-8')
+    data = json.loads(message.decode('utf-8'))
+    bpm = data['value1']
+    spo2 = data['value2']
+    temp = data['value3']
+
+    
+    print("w  bpm={:02} SpO2= {:02}% Temp {:02}°C".format(bpm, spo2, temp) )
+    
+    
     conn.close()

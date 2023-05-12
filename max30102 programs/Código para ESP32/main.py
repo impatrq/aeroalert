@@ -20,7 +20,7 @@ def desborde (Timer):
     
     #imprime las variables
     print("bpm={:02} SpO2= {:02}% Temp {:02}°C".format(beats, spo2, temp))
-    #stationv4.send_message(beats)
+    stationv4.send_message(beats, spo2, temp)
     
 
 def mostrar():
