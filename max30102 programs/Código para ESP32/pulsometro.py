@@ -43,12 +43,10 @@ class Pulso():
         sleep(1)
         dato3 =(sensor.read_temperature()) # ("Leyendo temperatura en °C.", '\n')
         self.datos3 = dato3
-        compute_frequency = False #se puede poner en true y te devuelve la frecuencia
         print("Iniciando la adquisición de datos de los registros RED e IR...", '\n')
         sleep(1)
         t_start = ticks_us()
         samples_n = 0
-        print("hola")
         t_start = ticks_us()  # Starting time of the acquisition
         
         MAX_HISTORY = 32
@@ -105,5 +103,5 @@ class Pulso():
                         beat = False
                 else:
                     print('Not finger')
-                    utime.sleep(0.35)
+                    utime.sleep(0.5)
                       
