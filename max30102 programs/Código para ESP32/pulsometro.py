@@ -96,7 +96,6 @@ class Pulso():
                             t_start = ticks_us()
                             beats_history.append(bpm)                    
                             beats_history = beats_history[-MAX_HISTORY:]
-                            #self.datos3 = beats_history
                             beats = round(sum(beats_history)/len(beats_history) )
                             self.datos = beats
                     if beat and valuered< threshold_off:
@@ -104,4 +103,5 @@ class Pulso():
                 else:
                     print('Not finger')
                     utime.sleep(0.5)
+                    #dato3 =(sensor.read_temperature()) # ("Leyendo temperatura en °C.", '\n')
                       
