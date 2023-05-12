@@ -48,7 +48,7 @@ while True:
 while True:
     conn, addr = s.accept()
     print('Got a connection from %s' % str(addr))
-    request = conn.recv(1024)
-    print('Content = %s' % str(request.decode('utf-8')))
-    time.sleep(0.1)
-conn.close
+    request = conn.recv(512)
+    print('Content = %s' % str(request))    #.decode('utf-8')
+    time.sleep(1)
+    conn.close()
