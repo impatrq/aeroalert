@@ -17,7 +17,7 @@ def web_page():
 
 addr = socket.getaddrinfo('192.168.4.1', 8000)[0][-1]
 ssid = 'ESP32'
-password = '123456789'
+password = 'aeroalert'
 
 ap = network.WLAN(network.AP_IF)
 ap.active(True)
@@ -57,7 +57,7 @@ while True:
     temp = data['value3']
 
     
-    print("w  bpm={:02} SpO2= {:02}% Temp {:02}°C".format(bpm, spo2, temp) )
+    print("bpm={:02} SpO2= {:02}% Temp {:02}°C".format(bpm, spo2, temp) )
     
     
     conn.close()

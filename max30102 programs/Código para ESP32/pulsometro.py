@@ -7,7 +7,7 @@ from machine import Timer
 
 led = Pin(2,Pin.OUT)
 class Pulso():
-
+    
     def __init__ (self):
         self.datos=0
         self.datos2=0
@@ -43,6 +43,7 @@ class Pulso():
         sleep(1)
         dato3 =(sensor.read_temperature()) # ("Leyendo temperatura en °C.", '\n')
         self.datos3 = dato3
+        contadortemp = 0
         print("Iniciando la adquisición de datos de los registros RED e IR...", '\n')
         sleep(1)
         t_start = ticks_us()
@@ -54,12 +55,18 @@ class Pulso():
         beats_history = []
         beat = False
         beats = 0
+        
+
+        
         while True:
             # The check() method has to be continuously polled, to check if
             # there are new readings into the sensor's FIFO queue. When new
             # readings are available, this function will put them into the storage.
-            sensor.check()
+                                    
 
+                
+            sensor.check()
+            
             # Check if the storage contains available samples
             if sensor.available():
                 # Access the storage FIFO and gather the readings (integers)
@@ -68,7 +75,6 @@ class Pulso():
                 
                 valueir = ir_reading
                 valuered = red_reading
-                #self.datos2 = valuered
                 
                 Spo2 = valueir * 105/11500 # valueir * 105/16500 para mediciones en el dedo, Spo2 = valueir * 105/11500 para la muñeca por arriba
                 self.datos2 = Spo2
@@ -100,8 +106,16 @@ class Pulso():
                             self.datos = beats
                     if beat and valuered< threshold_off:
                         beat = False
+                       
+                    #contador para medir temperatura(no es necesario)
+                    if contadortemp < 750:
+                        contadortemp = contadortemp+1
+                    if contadortemp >= 750:
+                        temperatura = (sensor.read_temperature())
+                        self.datos3 = temperatura
+                        contadortemp = 0
+
                 else:
                     print('Not finger')
                     utime.sleep(0.5)
-                    #dato3 =(sensor.read_temperature()) # ("Leyendo temperatura en °C.", '\n')
-                      
+              

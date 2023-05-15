@@ -13,7 +13,7 @@ def do_connect():
     sta_if = network.WLAN(network.STA_IF)
     if not sta_if.isconnected():
         sta_if.active(True)
-        sta_if.connect('ESP32','123456789')
+        sta_if.connect('ESP32','aeroalert')
         while not sta_if.isconnected():
             print(".", end="")
             time.sleep(.1)
