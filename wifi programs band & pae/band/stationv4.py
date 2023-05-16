@@ -30,6 +30,10 @@ def send_message(bpm, spo2, temp):
     client_socket.send(message) 
     print('Mensaje enviado:', message)
     
+    respuesta = client_socket.recv(1024)
+    print('respuesta: ', respuesta)
+    
+    
     client_socket.close()
 """
 do_connect()
