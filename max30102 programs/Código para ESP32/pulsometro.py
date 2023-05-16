@@ -106,7 +106,7 @@ class Pulso():
                             self.datos = beats
                     if beat and valuered< threshold_off:
                         beat = False
-                      """ 
+                    """ 
                     #contador para medir temperatura(no es necesario)
                     if contadortemp < 750:
                         contadortemp = contadortemp+1

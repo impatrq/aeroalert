@@ -13,6 +13,7 @@ def mediciones():
     sensorsito.muestra()     #hace las mediciones
 
 def enviar (Timer):
+    print()
     #asigna valores de las mediciones a las variables
     beats = sensorsito.datos
     spo2 = sensorsito.datos2
