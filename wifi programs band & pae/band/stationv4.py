@@ -3,11 +3,11 @@ import time
 import urequests as requests
 import random
 import json
-addr = socket.getaddrinfo('192.168.4.1', 8000) [0][-1]
 
-def numerito():
-    num = random.randint(1,100)
-    return num
+addr = socket.getaddrinfo('192.168.4.1', 8000) [0][-1]
+server_ip = '192.168.4.1'
+server_port = 8000
+
 def do_connect():
     import network
     sta_if = network.WLAN(network.STA_IF)
@@ -21,9 +21,6 @@ def do_connect():
     print('network config:' , sta_if.ifconfig())
     
 def send_message(bpm, spo2, temp):
-    server_ip = '192.168.4.1'
-    server_port = 8000
-    
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((server_ip, server_port))
     
@@ -31,7 +28,6 @@ def send_message(bpm, spo2, temp):
     message = json.dumps(data).encode('utf-8') #.encode('utf-8') para un string se encodea
     
     client_socket.send(message) 
-    
     print('Mensaje enviado:', message)
     
     client_socket.close()
@@ -42,17 +38,6 @@ while True:
     send_message()
     time.sleep(2)
     """
-    
-"""
-#para recibir datos
-while True:
-    data = s.recv(1024)
-    if data:
-        print(data)
-    else:
-        break
-s.close()
-"""
 
 #alternativa para enviar info en vez de recibir
 #envia la info que quiero como una urequest a esa direccion
