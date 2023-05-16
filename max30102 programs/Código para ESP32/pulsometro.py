@@ -106,7 +106,7 @@ class Pulso():
                             self.datos = beats
                     if beat and valuered< threshold_off:
                         beat = False
-                       
+                      """ 
                     #contador para medir temperatura(no es necesario)
                     if contadortemp < 750:
                         contadortemp = contadortemp+1
@@ -114,7 +114,8 @@ class Pulso():
                         temperatura = (sensor.read_temperature())
                         self.datos3 = temperatura
                         contadortemp = 0
-
+                    #hasta aca
+                        """
                 else:
                     print('Not finger')
                     utime.sleep(0.5)
