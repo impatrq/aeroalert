@@ -30,10 +30,25 @@ print('Connection succesful')
 print(ap.ifconfig())
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
-s.bind(('', 8000)) #o addr
+s.bind(('', 8000)) #'' o 'addr'
 s.listen(5)
 print("listening on",addr)
 
+
+while True:
+    conn, addr = s.accept()
+    print('Got a connection from %s' % str(addr))
+    message = conn.recv(1024)
+    data = json.loads(message.decode('utf-8')) #.decode('utf-8')
+    bpm = data['value1']
+    spo2 = data['value2']
+    temp = data['value3']
+
+    print("bpm={:02} SpO2= {:02}% Temp {:02}°C".format(bpm, spo2, temp) )
+    
+    conn.close()
+    
+    
 """
 #para enviar datos
 while True:
@@ -46,18 +61,3 @@ while True:
 """
 #alternativa para recibir datos en vez de enviar
 #aca recibiria lo de "some dummy content"
-while True:
-    conn, addr = s.accept()
-    print('Got a connection from %s' % str(addr))
-    message = conn.recv(1024)
-                                                    #.decode('utf-8')
-    data = json.loads(message.decode('utf-8'))
-    bpm = data['value1']
-    spo2 = data['value2']
-    temp = data['value3']
-
-    
-    print("bpm={:02} SpO2= {:02}% Temp {:02}°C".format(bpm, spo2, temp) )
-    
-    
-    conn.close()
