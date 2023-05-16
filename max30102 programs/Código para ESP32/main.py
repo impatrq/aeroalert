@@ -4,7 +4,7 @@ from machine import Timer
 import _thread
 import time
 
-import stationv4 #se va a ir cambiando el nombre, cuidado
+import stationv5 as stationv5 #se va a ir cambiando el nombre, cuidado
 
 #creo objecto clase pulso
 sensorsito = Pulso()
@@ -21,13 +21,13 @@ def enviar (Timer):
     
     #imprime las variables
     print("bpm={:02} SpO2= {:02}% Temp {:02}°C".format(beats, spo2, temp))
-    stationv4.send_message(beats, spo2, temp)
+    stationv5.send_message(beats, spo2, temp)
     
     
 def mostrar():
     #crea un timer
     temporiza = Timer(0)
-    stationv4.do_connect()
+    stationv5.do_connect()
     #genera un desborde cada vez que el timer alcanza 350 llamando a la funcion "desborde"
     temporiza.init(period=2000,mode=Timer.PERIODIC,callback=enviar)
     
