@@ -29,7 +29,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(('', 8000)) #o addr
 s.listen(2)
 print("listening on",addr)
-
+"""
 while True:
     conn, addr = s.accept()
     print('Got a connection from %s' % str(addr))
@@ -48,7 +48,7 @@ while True:
     conn.send(respuesta)
     
     conn.close()
-
+"""
 #para enviar datos
 """
 while True:
@@ -62,7 +62,7 @@ while True:
 
 
 #para 2 stations y enviar data
-"""
+
 #acepta las 2 conexiones y agarra los puertos
 station1, addr1 = s.accept()
 print('Conexión establecida con el ESP32 como estación 1(BAND):', addr1)
@@ -72,25 +72,29 @@ print('Conexión establecida con el ESP32 como estación 2(RTDC):', addr2)
 def exchange_data(estacion1, estacion2):
     while True:
         message1 = estacion1.recv(1024)
-        if not data1:
-            break
+        print("recibidos los del 1", message1)
+        estacion1.send("uwu1")
+        
         message2 = estacion2.recv(1024)
-        if not data2:
-            break
-            
+        print("recibidos los del 2", message2)
+        estacion2.send("uwu2")
+    """
         data1 = json.loads(message1.decode('utf-8'))
         bpm = data1['value1']
         spo2 = data1['value2']
         temp = data1['value3']
         print("bpm={:02} SpO2= {:02}% Temp {:02}°C".format(bpm, spo2, temp) )
+    """
         
-        print('Datos recibidos:', message2.decode('utf-8'))
-            
-        # Enviar los mismos datos al otro ESP32 como estación
-        estacion2.sendall(INFOPARARTDC)
 
-exchange_data(station1, station2)
-"""
+    """
+        print('Datos recibidos:', message2.decode('utf-8'))
+    """        
+        # Enviar los mismos datos al otro ESP32 como estación
+        #estacion2.sendall("uwu")
+while True:
+    exchange_data(station1, station2)
+
 #alternativa para recibir datos en vez de enviar
 #aca recibiria lo de "some dummy content"
 

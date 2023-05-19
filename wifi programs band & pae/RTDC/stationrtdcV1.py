@@ -19,17 +19,10 @@ def do_connect():
             time.sleep(.1)
         print()
     print('network config:' , sta_if.ifconfig())
-    
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((server_ip, server_port))
-    return client_socket
 
-def send_message(bpm, spo2, temp, client_socket):
-    
-    #client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #client_socket.connect((server_ip, server_port))
-    
-    data = {'value1': bpm, 'value2': spo2, 'value3': temp}
+def send_message(client_socket):
+
+    data = {'value1': 123, 'value2': 456, 'value3': 789}
     message = json.dumps(data).encode('utf-8') #.encode('utf-8') para un string se encodea
     
     client_socket.send(message) 
@@ -38,14 +31,18 @@ def send_message(bpm, spo2, temp, client_socket):
     respuesta = client_socket.recv(1024)
     print('respuesta: ', respuesta)
     
-    #client_socket.close()
-"""
+    
+
 do_connect()
 
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket.connect((server_ip, server_port))
+
 while True:
-    send_message()
-    time.sleep(2)
-    """
+    send_message(client_socket)
+    time.sleep(3)
+
+client_socket.close()
 
 #alternativa para enviar info en vez de recibir
 #envia la info que quiero como una urequest a esa direccion

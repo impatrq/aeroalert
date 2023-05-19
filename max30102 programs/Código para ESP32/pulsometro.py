@@ -116,6 +116,7 @@ class Pulso():
                         contadortemp = 0
                     #hasta aca
                         """
+                    utime.sleep(0.001)
                 else:
                     print('Not finger')
                     utime.sleep(0.5)
