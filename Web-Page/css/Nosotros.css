@@ -1,0 +1,304 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'open sans';
+}
+
+.contenedor {
+    padding: 60px 0;
+    width: 90%;
+    max-width: 1000px;
+    margin: auto;
+    overflow: hidden;
+}
+
+.titulo {
+    color: #642a73;
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+/* Header */
+
+header {
+    width: 100%;
+    height: 600px;
+    background: #bc4e9c;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, hsla(275, 66%, 13%, 0.623), #c31431ab), url(../img/descarga.jpg);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, hsla(275, 66%, 13%, 0.623), #c31431b6), url(../img/descarga.jpg);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+}
+
+header nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  header nav ul li {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  header nav ul li:last-child {
+    margin-right: 0;
+  }
+
+  header nav ul li a {
+    color: white;
+    text-decoration: none;
+  }
+
+  header nav ul li a:hover {
+    text-decoration: underline;
+}
+
+
+nav{
+    text-align: right;
+    padding: 30px 50px 0 0;
+}
+
+nav > a{
+    color:#fff;
+    font-weight: 300;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+nav > a:hover{
+    text-decoration: underline;
+}
+
+header .textos-header{
+    display: flex;
+    height: 430px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.textos-header h1{
+    font-size: 50px;
+    color:#fff;
+}
+
+.textos-header h2{
+    font-size: 30px;
+    font-weight: 300;
+    color:#fff;
+}
+
+.wave{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.logo {
+    width: 200px; /* ajusta el tamaño de la imagen */
+    height: auto;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+/* Clients */
+
+.nosotros_main {
+    position: absolute;
+}
+.contenido_nosotros{
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 100;
+    margin: 0 auto;
+    width: 80%;
+}
+.nosotros {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    column-gap: 5rem;
+    row-gap: 2rem;
+    padding: 2rem;
+}
+.alumno {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.desplazado {
+    grid-column: -3/-1;
+    width: 50%;
+    margin: 0 auto;
+}
+.alumno_fotos{
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+}
+.alumno_foto{
+    width: 7rem;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+}
+.alumno_instagram{
+    width: 3rem;
+    border-radius: 0%;
+    transition: 1s ease;
+}
+.alumno_instagram:hover{
+    width: 5rem;
+}
+.enlace_instagram{
+    height: fit-content;
+}
+.alumno p {
+    text-align: center;
+    font-size: 1.25rem;
+}
+.alinear {
+    display: flex;
+    justify-content: center;
+}
+
+
+.nosotros__imagen {
+    border-radius: 50%;
+}
+
+.contenedor_descripcion {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: whitesmoke;
+    font-weight: lighter;
+    background-color: rgba(68, 80, 196, 0.712);
+    margin: 100px;
+    width: 100%;
+    border-radius: 5rem;
+ 
+
+      
+      
+}
+
+.nosotros_title {
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+    font-size: 3.5rem;
+}
+
+.nosotros_title_descripcion {
+    font-size: 3rem;
+    margin: 3rem 0;
+}
+
+p {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  @media screen and (max-width: 768px) {
+    .contenedor {
+        padding: 30px 0;
+    }
+
+    .titulo {
+        font-size: 24px;
+        margin-bottom: 30px;
+    }
+
+    header {
+        height: 400px;
+    }
+
+    header nav {
+        padding: 20px 30px 0 0;
+    }
+
+    header .textos-header {
+        height: 300px;
+    }
+
+    .textos-header h1 {
+        font-size: 30px;
+    }
+
+    .textos-header h2 {
+        font-size: 18px;
+    }
+
+    .logo {
+        width: 150px;
+    }
+
+    .contenido_nosotros {
+        font-size: 1rem;
+    }
+
+    .nosotros {
+        grid-template-columns: 1fr;
+        row-gap: 1rem;
+    }
+
+    .desplazado {
+        grid-column: unset;
+        width: 100%;
+    }
+
+    .alumno_fotos {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .alumno_foto {
+        width: 5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .alumno_instagram {
+        width: 2rem;
+    }
+
+    .enlace_instagram {
+        height: auto;
+    }
+
+    .alumno p {
+        font-size: 1rem;
+    }
+
+    .contenedor_descripcion {
+        margin: 50px;
+    }
+
+    .nosotros_title {
+        font-size: 2.5rem;
+    }
+
+    .nosotros_title_descripcion {
+        font-size: 2rem;
+        margin: 2rem 0;
+    }
+
+    p {
+        font-size: 14px;
+    }
+}

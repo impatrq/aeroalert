@@ -1,0 +1,299 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  #principal,
+  main {
+    background-image: url(/xi/img/descarga.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 1000px; /*tamaño del body*/
+    background-attachment: fixed;
+    background-size: cover;
+  }
+
+
+body {
+    font-family: 'open sans';
+}
+
+
+
+
+main{
+  width: 100%;
+    height: 600px;
+    background: #bc4e9c;
+    background: linear-gradient(to right, hsla(275, 66%, 13%, 0.623), #c31431b6), url(../img/descarga.jpg);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+}
+.contenedor {
+    padding: 60px 0;
+    width: 90%;
+    max-width: 1000px;
+    margin: initial;
+    overflow: initial;
+}
+
+.titulo {
+    color: #642a73;
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+/* Header*/
+
+header {
+    width: 100%;
+    height: 600px;
+    background: #bc4e9c;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, hsla(275, 66%, 13%, 0.623), #c31431ab), url(../img/descarga.jpg);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, hsla(275, 66%, 13%, 0.623), #c31431b6), url(../img/descarga.jpg);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+}
+
+header nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+header nav ul li {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+header nav ul li:last-child {
+  margin-right: 0;
+}
+
+header nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+header nav ul li a:hover {
+  text-decoration: underline;
+}
+
+
+nav{
+    text-align: right;
+    padding: 30px 50px 0 0;
+}
+
+nav > a{
+    color:#fff;
+    font-weight: 300;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+nav > a:hover{
+    text-decoration: underline;
+}
+
+header .textos-header{
+    display: flex;
+    height: 430px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.textos-header h1{
+    font-size: 50px;
+    color:#fff;
+}
+
+.textos-header h2{
+    font-size: 30px;
+    font-weight: 300;
+    color:#fff;
+}
+
+.wave{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.logo {
+    width: 200px; /* ajusta el tamaño de la imagen */
+    height: auto;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+
+
+/* Galeria de Imagenes*/
+
+.container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #f2f2f2;
+    overflow: hidden;
+    text-decoration: none; /* para quitar el subrayado predeterminado del enlace */
+    color: inherit; /* para heredar el color del texto predeterminado */
+  }
+
+  .link {
+    font-size: 14px; /* Ajusta el tamaño de fuente según tus necesidades */
+    display: inline-block;
+  }
+  
+  .image {
+    width: 10px;
+    height: 10px;
+    margin-right: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
+    width: 24%;
+    margin-bottom: 10px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .image-link {
+    display: inline-block;
+    width: 24%x;
+    height: auto;
+    margin-right: 20px; /* Ajusta el margen según tus necesidades */
+    margin-bottom: 20px; /* Ajusta el margen según tus necesidades */
+    text-decoration: none; /* para quitar el subrayado predeterminado del enlace */
+    color: inherit; /* para heredar el color del texto predeterminado */
+  }
+  
+  .image-link img {
+    width: 300px; /* Ajusta el ancho según tus necesidades */
+    height: auto; /* La altura se ajustará automáticamente para mantener la proporción */
+    text-decoration: none; /* para quitar el subrayado predeterminado del enlace */
+    color: inherit; /* para heredar el color del texto predeterminado */
+  }
+  
+
+.pdfs-acerca-de{
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.imagen-pdfs-acerca-de{
+    width: 100%;
+    margin-bottom: -100px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, .5);
+    float: left;
+   margin-left: 250px;
+}
+
+.imagen-pdfs-acerca-de > img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hover-acercade{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    transform: scale(0);
+    background: hsla(273,91%,27%, 0.7);
+    transition: transform .5s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.hover-acercade img{
+    width: 50px;
+}
+
+.hover-acercade p{
+    color: #fff;
+    text-align: right;
+  }
+
+.imagen-pdfs-acerca-de:hover .hover-acercade{
+    transform: scale(1);
+}
+
+  
+.info {
+  font-size: 20px;
+  margin-left: 20px; /* Ajusta el margen según tus necesidades */
+  display: inline-block;
+  vertical-align: top;
+  text-decoration: none; /* para quitar el subrayado predeterminado del enlace */
+  color: inherit; /* para heredar el color del texto predeterminado */
+  
+}
+
+
+
+/* footer */
+
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+.social-icons {
+    display: flex;
+    justify-content: space-evenly;
+    list-style: none;
+    margin: auto;
+    padding-bottom: 50px;
+    border-bottom: 1px solid #ccc;
+    font-size: 75px;
+  }
+  
+.social-icons li {
+    margin: 0 10px;
+  }
+
+.content-foo p{
+    color: #ccc;
+}
+
+
+.titulo-final{
+    text-align: center;
+    font-size: 24px;
+    margin: 20px 0 0 0;
+    color: #9e9797;
+}
+
+
+  
