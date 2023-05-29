@@ -12,7 +12,7 @@
 #   A port of the library to MicroPython by kandizzy
 #
 # This driver aims at giving almost full access to Maxim MAX30102 functionalities.
-#                                                                          n-elia
+#                                                                          
 
 import uerrno
 from machine import SoftI2C
