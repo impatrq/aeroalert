@@ -23,11 +23,11 @@ temp_baja2 = 0# pin
 temp_alta2 = 0# pin
 tomar_control = 0
 
-station1 = 1 #, addr1 = s.accept()
-print('Conexión establecida con el ESP32 como estación 1(rtdc):')#, addr1)
+station1, addr1 = s.accept()
+print('Conexión establecida con el ESP32 como estación 1(rtdc):', addr1)
 
-station2 = 2 #, addr2 = s.accept()
-print('Conexión establecida con el ESP32 como estación 2(band):')#, addr2)
+station2, addr2 = s.accept()
+print('Conexión establecida con el ESP32 como estación 2(band):', addr2)
 
 station3 = 3 # la pulsera del copiloto
 
