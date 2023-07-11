@@ -8,6 +8,7 @@ esp.osdebug(None)
 gc.collect()
 import random, json, time
 from machine import Timer
+import machine
 from wifi_connection import connect_wifi
 
 s = connect_wifi()
@@ -26,8 +27,8 @@ tomar_control = 0
 station1, addr1 = s.accept()
 print('Conexión establecida con el ESP32 como estación 1(rtdc):', addr1)
 
-station2, addr2 = s.accept()
-print('Conexión establecida con el ESP32 como estación 2(band):', addr2)
+#station2, addr2 = s.accept()
+#print('Conexión establecida con el ESP32 como estación 2(band):', addr2)
 
 station3 = 3 # la pulsera del copiloto
 
@@ -52,14 +53,15 @@ def enviar_rtdc(rtdc):
         codigo = [bpm_altos1,bpm_altos2, bpm_bajos1,bpm_bajos2, dormido1,dormido2,
                    spo2_bajos1,spo2_bajos2, tomar_control]
         codigo_enviar = json.dumps(codigo).encode('utf-8')
-        rtdc.send(codigo_enviar)
+        print(codigo)
+        #rtdc.send(codigo_enviar)
         time.sleep(10)
 
 # Configurar los pines de la luz y el botón
 pin_luz_amarilla = machine.Pin(5, machine.Pin.OUT)
 pin_boton_reaccion = machine.Pin(4, machine.Pin.IN)
 pin_luz_alarma = machine.Pin(6, machine.Pin.OUT)
-pin_luz_dormido =
+pin_luz_dormido = machine.Pin(7, machine.Pin.OUT)
 
 pasaron_30segs_spo2 = pasaron_30segs_bpm_b = pasaron_30segs_bpm = 0
 contador_iniciado_60_bpm = contador_iniciado_60_spo2 = contador_iniciado_60_bpm_b = 0
@@ -211,7 +213,7 @@ def activar_SAE():
     else:
         pin_luz_dormido.value(0)
         print("el piloto esta despierto")
-
+    
 def evaluar_info(message):
     global bpm_bajos1, bpm_altos1, spo2_bajos1, dormido1, temp_baja1, temp_alta1
 
@@ -273,8 +275,8 @@ def evaluar_info(message):
         temp_baja1 = 0
         temp_alta1 = 0  
 
-_thread.start_new_thread(recibir_rtdc, (station1,))
-_thread.start_new_thread(enviar_rtdc, (station1,))
+#_thread.start_new_thread(recibir_rtdc, (station1,))
+#_thread.start_new_thread(enviar_rtdc, (station1,))
 _thread.start_new_thread(recibir_band1, (station2,))
 #_thread.start_new_thread(recibir_band2, (station3,))
 #exchange_data2(station2)
