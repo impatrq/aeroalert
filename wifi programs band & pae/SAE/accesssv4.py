@@ -37,12 +37,12 @@ while True:
     
     data = json.loads(message.decode('utf-8'))  #.decode('utf-8')
     bpm = data['value1']
-    spo2 = data['value2']
+    spo = data['value2']
     temp = data['value3']
     
     print(data)
     
-    print("bpm={:02} SpO2= {:02}% Temp {:02}°C".format(bpm, spo2, temp))
+    print("bpm={:02} spo= {:02}% Temp {:02}°C".format(bpm, spo, temp))
     
     respuesta = "hola"
     conn.send(respuesta)
@@ -80,9 +80,9 @@ def exchange_data(estacion1, estacion2):
             
         data1 = json.loads(message1.decode('utf-8'))
         bpm = data1['value1']
-        spo2 = data1['value2']
+        spo = data1['value2']
         temp = data1['value3']
-        print("bpm={:02} SpO2= {:02}% Temp {:02}°C".format(bpm, spo2, temp) )
+        print("bpm={:02} spo= {:02}% Temp {:02}°C".format(bpm, spo, temp) )
         
         print('Datos recibidos:', message2.decode('utf-8'))
             

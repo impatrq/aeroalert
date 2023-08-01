@@ -41,10 +41,10 @@ while True:
     message = conn.recv(1024)
     data = json.loads(message.decode('utf-8')) #.decode('utf-8')
     bpm = data['value1']
-    spo2 = data['value2']
+    spo = data['value2']
     temp = data['value3']
 
-    print("bpm={:02} SpO2= {:02}% Temp {:02}°C".format(bpm, spo2, temp) )
+    print("bpm={:02} spo= {:02}% Temp {:02}°C".format(bpm, spo, temp) )
     
     conn.close()
     

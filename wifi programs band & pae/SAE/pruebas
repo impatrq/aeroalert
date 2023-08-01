@@ -1,0 +1,5 @@
+bpm_dif = 40
+
+
+if bpm_dif >= 15 and bpm_dif <= 35:
+    print("hola")
