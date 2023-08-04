@@ -59,9 +59,11 @@ def enviar_rtdc(rtdc):
 
 # Configurar los pines de la luz y el botón
 pin_luz_amarilla = machine.Pin(5, machine.Pin.OUT)
-pin_boton_reaccion = machine.Pin(4, machine.Pin.IN)
+pin_reaccion = machine.Pin(4, machine.Pin.IN)
+pin_boton_reaccion = pin_reaccion
 pin_luz_alarma = machine.Pin(6, machine.Pin.OUT)
 pin_luz_dormido = machine.Pin(7, machine.Pin.OUT)
+pin_luz_roja = machine.Pin(8, machine.Pin.OUT)
 
 pasaron_30segs_spo = pasaron_30segs_bpm_b = pasaron_30segs_bpm = 0
 contador_iniciado_60_bpm = contador_iniciado_60_spo = contador_iniciado_60_bpm_b = 0
@@ -76,32 +78,40 @@ t30bpm_b = Timer(0)
 t60bpm_b = Timer(0)
 
 def contador(cual):
+    global alarmas_off_bpm, alarmas_off_bpm_b
+    global alarmas_off_spo
+
+
     if cual == "30spo":
-        global pasaron_30segs_spo, alarmas_off_spo
+        global pasaron_30segs_spo
         pasaron_30segs_spo = 1
         alarmas_off_spo = 0
     elif cual == "60spo":
-        global contador_iniciado_60_spo, alarmas_off_spo
+        global contador_iniciado_60_spo
         contador_iniciado_60_spo = 0
         alarmas_off_spo = 0
 
+
     elif cual == "30bpm":
-        global pasaron_30segs_bpm, alarmas_off_bpm
+        global pasaron_30segs_bpm
         pasaron_30segs_bpm = 1
         alarmas_off_bpm = 0
     elif cual == "60bpm":
-        global contador_iniciado_60_bpm, alarmas_off_bpm
+        global contador_iniciado_60_bpm
         contador_iniciado_60_bpm = 1
         alarmas_off_bpm = 0
 
+
     elif cual == "30bpm_b":
-        global pasaron_30segs_bpm_b, alarmas_off_bpm_b
+        global pasaron_30segs_bpm_b
         pasaron_30segs_bpm_b = 1
         alarmas_off_bpm_b = 0
     elif cual == "60bpm_b":
-        global contador_iniciado_60_bpm_b, alarmas_off_bpm_b
-        contador_iniciado_60_bpm_b = 1
+        global contador_iniciado_60_bpm_b
+        contador_iniciado_60_bpm_b = 0
         alarmas_off_bpm_b = 0
+
+
 
 def activar_SAE():
     global codigo
@@ -111,100 +121,127 @@ def activar_SAE():
     global tomar_control, alarmas_off_spo, alarmas_off_bpm, alarmas_off_bpm_b
     
     #------------------------------------------
-    #protocolo hipoxia
-    if codigo[6]==1 or codigo[7]==1:
-        print("1 piloto tiene hipoxia")
-        pin_luz_amarilla.value(1)
-    elif codigo[6]==0 and codigo[7]==0:
-        print("ningun piloto tiene hipoxia")
-        pin_luz_amarilla.value(0)
+    
+    if pin_reaccion is not pin_boton_reaccion:
+        pin_boton_reaccion = 1
+        
 
+
+    #protocolo hipoxia
     if codigo[6]==1 and codigo[7]==1:        
         if alarmas_off_spo == 0:
             pin_luz_alarma.value(1)
             #alarma sonora tmb
+
+
             if pin_boton_reaccion == 1:
                 alarmas_off_spo = 1
                 tomar_control = 0
-                if contador_iniciado_60_spo == 0:
-                    t60spo.init(mode=Timer.ONE_SHOT, period=6000, callback=contador, args="60spo")
+                if contador_iniciado_60_spo != 1:
+                    t60spo.init(mode=Timer.ONE_SHOT, period=60000, callback=contador, args="60spo")
                     contador_iniciado_60_spo = 1
 
-            elif contador_iniciado_30_spo == 0:
+
+            elif contador_iniciado_30_spo != 1:
                 contador_iniciado_30_spo = 1
-                t30spo.init(mode=Timer.ONE_SHOT, period=3000, callback=contador, args="30spo")
-            
+                t30spo.init(mode=Timer.ONE_SHOT, period=30000, callback=contador, args="30spo")
+
             elif pasaron_30segs_spo == 1:
                 contador_iniciado_30_spo = 0
-                if pin_boton_reaccion == 0:
+                if pin_boton_reaccion != 1:
                     tomar_control = 1
+
+
         elif alarmas_off_spo == 1:
             pin_luz_alarma.value(0)
             pass
+
+    if codigo[6]==1 or codigo[7]==1:
+        print("1 piloto tiene hipoxia")
+        pin_luz_roja.value(1)
+    elif codigo[6]==0 and codigo[7]==0:
+        print("ningun piloto tiene hipoxia")
+        pin_luz_amarilla.value(0)
+
     #------------------------------------------
+    
+    
     #protocolo pulsaciones altas
-    if codigo[0]==1 or codigo[1]==1:
+    if codigo[0]==1 and codigo[1]==1:        
+        if alarmas_off_bpm == 0:
+            pin_luz_alarma.value(1)
+            #alarma sonora tmb
+
+
+            if pin_boton_reaccion == 1:
+                alarmas_off_bpm = 1
+                tomar_control = 0
+                if contador_iniciado_60_bpm != 1:
+                    t60bpm.init(mode=Timer.ONE_SHOT, period=6000, callback=contador, args="60bpm")
+                    contador_iniciado_60_bpm = 1
+
+
+            elif contador_iniciado_30_bpm != 1:
+                contador_iniciado_30_bpm = 1
+                t30bpm.init(mode=Timer.ONE_SHOT, period=3000, callback=contador, args="30bpm")
+            
+            elif pasaron_30segs_bpm == 1:
+                contador_iniciado_30_bpm = 0
+                if pin_boton_reaccion != 0:
+                    tomar_control = 1
+
+
+        elif alarmas_off_bpm == 1:
+            pin_luz_alarma.value(0)
+            pass
+
+
+    elif codigo[0]==1 or codigo[1]==1:
         print("pulsaciones altas 1 piloto")
         pin_luz_amarilla.value(1)
     elif codigo[0]==0 and codigo[1]==0: #pulsaciones altas
         print("ninguno de los 2 pilotos tine pulsaciones altas")
         pin_luz_amarilla.value(0)
 
-    if codigo[0]==1 and codigo[1]==1:        
-        if alarmas_off_bpm == 0:
-            pin_luz_alarma.value(1)
-            #alarma sonora tmb
-            if pin_boton_reaccion == 1:
-                alarmas_off_bpm = 1
-                tomar_control = 0
-                if contador_iniciado_60_bpm == 0:
-                    t60bpm.init(mode=Timer.ONE_SHOT, period=6000, callback=contador, args="60bpm")
-                    contador_iniciado_60_bpm = 1
-
-            elif contador_iniciado_30_bpm == 0:
-                contador_iniciado_30_bpm = 1
-                t30bpm.init(mode=Timer.ONE_SHOT, period=3000, callback=contador, args="30bpm")
-            
-            elif pasaron_30segs_bpm == 1:
-                contador_iniciado_30_bpm = 0
-                if pin_boton_reaccion == 0:
-                    tomar_control = 1
-        elif alarmas_off_bpm == 1:
-            pin_luz_alarma.value(0)
-            pass
-    
-
     #------------------------------------------
+    
+    
     #protocolo pulsaciones bajas
-    if codigo[2]==1 or codigo[3]==1:
-        print("pulsaciones bajas 1 piloto")
-        pin_luz_amarilla.value(1)
-    elif codigo[2]==0 and codigo[3]==0: #pulsaciones altas
-        print("ninguno de los 2 pilotos tine pulsaciones bajas")
-        pin_luz_amarilla.value(0)
-
-    if codigo[2]==1 and codigo[3]==1:        
-        if alarmas_off_bpm_b == 0:
-            pin_luz_alarma.value(1)
+    if codigo[2]==1 and codigo[3]==1:                   #si ambos tienen    
+        if alarmas_off_bpm_b != 1:                      #si las alarmas no estan desactivadas
+            pin_luz_alarma.value(1)                     #PRENDE luz de alarma
             #alarma sonora tmb
-            if pin_boton_reaccion == 1:
-                alarmas_off_bpm_b = 1
-                tomar_control = 0
-                if contador_iniciado_60_bpm_b == 0:
-                    t60bpm_b.init(mode=Timer.ONE_SHOT, period=6000, callback=contador, args="60bpm_b")
-                    contador_iniciado_60_bpm_b = 1
 
-            elif contador_iniciado_30_bpm_b == 0:
-                contador_iniciado_30_bpm_b = 1
+            if pin_boton_reaccion == 1:                 #si el boton esta presionado
+                alarmas_off_bpm_b = 1                   #DESACTIVA las alarmas
+                tomar_control = 0                       #no permite que tomen el control
+                if contador_iniciado_60_bpm_b != 1:     #si no esta iniciado el contador 60s
+                    t60bpm_b.init(mode=Timer.ONE_SHOT, period=6000, callback=contador, args="60bpm_b")
+                                                        #INICIA temporizador, luego apagara la variable del contador 60s
+                    contador_iniciado_60_bpm_b = 1      #PRENDE variable del contador 60s
+
+            elif contador_iniciado_30_bpm_b != 1:       #sino, si no esta iniciado contador de 30s          
                 t30bpm_b.init(mode=Timer.ONE_SHOT, period=3000, callback=contador, args="30bpm_b")
-            
-            elif pasaron_30segs_bpm_b == 1:
-                contador_iniciado_30_bpm_b = 0
-                if pin_boton_reaccion == 0:
-                    tomar_control = 1
-        elif alarmas_off_bpm_b == 1:
-            pin_luz_alarma.value(0)
+                                                        #INICIAtemporizador, luego apagara la variable del contador 30s
+                contador_iniciado_30_bpm_b = 1          #PRENDE variable del contador 30s
+
+            elif pasaron_30segs_bpm_b == 1:             #sino, si pasaron 30s
+                contador_iniciado_30_bpm_b = 0          #APAGA variable del contador iniciado 30s, porque ya paso
+                if pin_boton_reaccion != 1:             #si el boton de reaccion no esta presionado
+                    tomar_control = 1                   #deja que tomen el control
+
+        elif alarmas_off_bpm_b == 1:                    #sino, si estan apagadas las alarmas
+            pin_luz_alarma.value(0)                     #apaga luz alarma
             pass
+
+    elif codigo[2]==1 or codigo[3]==1:                  #sino son ambos, si alguno tiene
+        print("pulsaciones bajas 1 piloto")
+        pin_luz_amarilla.value(1)                       #prende luz
+    elif codigo[2]==0 and codigo[3]==0:                 #si ninguno tiene
+        print("ninguno de los 2 pilotos tine pulsaciones bajas")
+        pin_luz_amarilla.value(0)                       #prende luz
+    
+    
     #------------------------------------------
 
     if dormido1 == 1:

@@ -1,5 +1,3 @@
-bpm_dif = 40
-
-
-if bpm_dif >= 15 and bpm_dif <= 35:
-    print("hola")
+owo = 0
+if owo != 1:
+    print("Hola")
