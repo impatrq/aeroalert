@@ -1,7 +1,5 @@
 import socket
 import time
-import urequests as requests
-import random
 import json
 import network
 
