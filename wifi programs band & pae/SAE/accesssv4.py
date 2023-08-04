@@ -11,6 +11,7 @@ import random
 import time
 import json
 
+
 addr = socket.getaddrinfo('192.168.4.1', 8000)[0][-1]
 ssid = 'ESP32'
 password = 'aeroalert'
@@ -30,24 +31,50 @@ s.bind(('', 8000)) #o addr
 s.listen(2)
 print("listening on",addr)
 
-while True:
+
+
+
+def escuchar_tipos():
     conn, addr = s.accept()
-    print('Got a connection from %s' % str(addr))
+    print('Got a type connection from %s' % str(addr))
     message = conn.recv(1024)
     
-    data = json.loads(message.decode('utf-8'))  #.decode('utf-8')
-    bpm = data['value1']
-    spo = data['value2']
-    temp = data['value3']
+    tipo = json.loads(message.decode('utf-8'))
     
+    if tipo == "soy_band":
+        #iniciar thread para band
+        escuchar_pulsera(conn, addr)
+    elif tipo == "soy_rtdc":
+        #iniciar thread para rtdc
+        escuchar_rtdc(conn, addr)
+        
+        
+        
+def escuchar_rtdc(conn_rtdc,addr):
+    message = conn_rtdc.recv(1024)
+    print('Got a connection from rtdc %s' % str(addr))
+    data = json.loads(message.decode('utf-8'))
+    
+    
+def escuchar_band(conn_band, addr):
+    
+    message = conn_band.recv(1024)
+    print('Got a connection from band %s' % str(addr))
+    
+    data = json.loads(message.decode('utf-8'))  #.decode('utf-8')
+    bpm = data['1']
+    spo = data['2']
+    temp = data['3']
+
     print(data)
     
     print("bpm={:02} spo= {:02}% Temp {:02}°C".format(bpm, spo, temp))
     
-    respuesta = "hola"
-    conn.send(respuesta)
+while True:
+    escuchar_tipos(conn, addr)
     
-    conn.close()
+    
+    escuchar_pulsera(conn, addr)
 
 #para enviar datos
 """
@@ -61,36 +88,7 @@ while True:
 """
 
 
-#para 2 stations y enviar data
-"""
-#acepta las 2 conexiones y agarra los puertos
-station1, addr1 = s.accept()
-print('Conexión establecida con el ESP32 como estación 1(BAND):', addr1)
-station2, addr2 = s.accept()
-print('Conexión establecida con el ESP32 como estación 2(RTDC):', addr2)
 
-def exchange_data(estacion1, estacion2):
-    while True:
-        message1 = estacion1.recv(1024)
-        if not data1:
-            break
-        message2 = estacion2.recv(1024)
-        if not data2:
-            break
-            
-        data1 = json.loads(message1.decode('utf-8'))
-        bpm = data1['value1']
-        spo = data1['value2']
-        temp = data1['value3']
-        print("bpm={:02} spo= {:02}% Temp {:02}°C".format(bpm, spo, temp) )
-        
-        print('Datos recibidos:', message2.decode('utf-8'))
-            
-        # Enviar los mismos datos al otro ESP32 como estación
-        estacion2.sendall(INFOPARARTDC)
-
-exchange_data(station1, station2)
-"""
 #alternativa para recibir datos en vez de enviar
 #aca recibiria lo de "some dummy content"
 
