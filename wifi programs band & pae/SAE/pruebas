@@ -1,0 +1,3 @@
+owo = 0
+if owo != 1:
+    print("Hola")

@@ -1,7 +1,5 @@
 import socket
 import time
-import urequests as requests
-import random
 import json
 import network
 
@@ -45,7 +43,7 @@ def send_type(tipo, client_socket, sta_if):
 
 
 
-
+#codigos para correr 
 client_socket, sta_if = do_connect()    
 send_type("soy_band", client_socket, sta_if)
 while True:

@@ -13,7 +13,7 @@ from wifi_connection import connect_wifi
 s = connect_wifi()
 
 listabpm = []
-listaspo2 = []
+listaspo = []
 
 station1, addr1 = s.accept()
 print('Conexión establecida con el ESP32 como estación 1(BAND):', addr1)
@@ -43,7 +43,7 @@ def exchange_data(estacion1, estacion2):
 # Configurar los pines de la luz y el botón
 pin_luz_bpm = machine.Pin(5, machine.Pin.OUT)
 pin_boton = machine.Pin(4, machine.Pin.IN)
-pin_luz_spo2 = machine.Pin(6, machine.Pin.OUT)
+pin_luz_spo = machine.Pin(6, machine.Pin.OUT)
 
 # Función para la desactivación del PAE
 def desactivar_PAE(luz):
@@ -51,10 +51,10 @@ def desactivar_PAE(luz):
     
     if luz == "bpm":
         pin_luz_bpm.value(0) #resto de alertas luz amarilla
-    elif luz == "spo2":
-        pin_luz_spo2.value(0) #unica alerta con luz roja
+    elif luz == "spo":
+        pin_luz_spo.value(0) #unica alerta con luz roja
     elif luz == "tocoboton":
-        pin_luz_spo2.value(0) #apaga las 2 alertas
+        pin_luz_spo.value(0) #apaga las 2 alertas
         pin_luz_bpm.value(0)
         
 # Función para la activación del PAE
@@ -80,7 +80,7 @@ def activar_PAE(tipo):
         return("este mensaje significa que el piloto tiene hipercardia")
    
     elif tipo == "hipoxia":
-        pin_luz_spo2.value(1)
+        pin_luz_spo.value(1)
         return(" hipoxia")
     
     elif tipo == "dormido":
@@ -90,14 +90,14 @@ def activar_PAE(tipo):
 def evaluar_info(message):
     data1 = json.loads(message.decode('utf-8'))
     bpm = data1['value1']
-    spo2 = data1['value2']
+    spo = data1['value2']
     temp = data1['value3']
-    print("bpm={:02} SpO2= {:02}% Temp {:02}°C".format(bpm, spo2, temp))  #borrar
+    print("bpm={:02} spo= {:02}% Temp {:02}°C".format(bpm, spo, temp))  #borrar
     
     listabpm.append(bpm)
     listabpm = listabpm[-12:]
-    listaspo2.append(spo2)
-    listaspo2 = listaspo2[-12:] #12 valores cada uno 5 segs despues son 60 segs en total
+    listaspo.append(spo)
+    listaspo = listaspo[-12:] #12 valores cada uno 5 segs despues son 60 segs en total
     
     print(listabpm)  #borrar
     # Evaluar el valor de pulsaciones y activar/desactivar el PAE según corresponda
@@ -117,10 +117,10 @@ def evaluar_info(message):
     
     
     # Evaluar el valor de oxígeno en sangre y activar/desactivar el PAE según corresponda
-    if spo2 <= 90:
-        activar_PAE(spo2)
-    elif spo2 > 90:
-        desactivar_PAE(spo2)
+    if spo <= 90:
+        activar_PAE(spo)
+    elif spo > 90:
+        desactivar_PAE(spo)
     
         
     #segun temperaturas:
