@@ -60,7 +60,7 @@ class Pulso():
             # there are new readings into the sensor's FIFO queue. When new
             # readings are available, this function will put them into the storage.
                                     
-            time.sleep(0.25)
+            #time.sleep(0.25)
                 
             sensor.check()
             
@@ -95,7 +95,7 @@ class Pulso():
                         t_s = t_us/1000000
                         f = 1/t_s
                         bpm = f * 60
-                        if bpm < 400:
+                        if bpm < 300:
                             t_start = ticks_us()
                             beats_history.append(bpm)                    
                             beats_history = beats_history[-MAX_HISTORY:]
@@ -113,12 +113,12 @@ class Pulso():
                         contadortemp = 0
                     #hasta aca
                         """
-                    utime.sleep(0.25)
+                    
                 else:
                     print('Not finger')
                     beats_history.append(0)
                     beats_history = beats_history[-MAX_HISTORY:]
                     beats = round(sum(beats_history)/len(beats_history) )
                     self.datos = beats
-                    utime.sleep(0.5)
+                    utime.sleep(1)
               

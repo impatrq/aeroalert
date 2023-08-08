@@ -27,12 +27,11 @@ def do_connect():
     return client_socket, sta_if
     
 
-def send_message(bpm, spo2, temp, client_socket, sta_if):
+def send_message(bpm, spo2, temp, conectado, client_socket, sta_if):
     
-    data = {'1': bpm, '2': spo2, '3': temp}
+    data = {'1': bpm, '2': spo2, '3': temp, '4': conectado}
     message = json.dumps(data).encode('utf-8') #.encode('utf-8') para un string se encodea
     
-    print("owo")
     client_socket.send(message)
     print('Mensaje enviado:', message)
 
