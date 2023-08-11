@@ -7,7 +7,7 @@ import utime
 import gc
 gc.collect()
 
-import stationv8 as station #se va a ir cambiando el nombre, cuidado
+import stationv9 as station #se va a ir cambiando el nombre, cuidado
 
 #creo objecto clase pulso
 sensorsito = Pulso()

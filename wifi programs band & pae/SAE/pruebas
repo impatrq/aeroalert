@@ -1,3 +1,15 @@
-owo = 0
-if owo != 1:
-    print("Hola")
+import time
+import _thread
+
+def hola():
+    while True:
+        
+        print("thread")
+        time.sleep(1)
+
+def hola_despues():
+    print("hola despues del thread")
+
+
+_thread.start_new_thread(hola())
+_thread.start_new_thread(hola_despues())
