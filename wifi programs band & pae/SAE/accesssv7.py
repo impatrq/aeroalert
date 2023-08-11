@@ -147,20 +147,20 @@ def enviar_rtdc(conn, addr):
         conn.send(codigo_enviar)
         time.sleep(10)
         
-print("hola7")
+
 
 # Configurar los pines de la luz y el botón
 pin_luz_amarilla = machine.Pin(5, machine.Pin.OUT)
 pin_reaccion = machine.Pin(4, machine.Pin.IN)
-print("pin4 y 5")
+
 pin_boton_reaccion = pin_reaccion.value()
-print("hola")
+
 pin_luz_alarma = machine.Pin(12, machine.Pin.OUT) #6
-print("pin6")
+
 pin_luz_dormido = machine.Pin(14, machine.Pin.OUT) # 7
-print("pin7")
+
 pin_luz_roja = machine.Pin(27, machine.Pin.OUT) #8
-print("hola8")
+
 
 #para contador
 pasaron_30segs_spo = pasaron_30segs_bpm_b = pasaron_30segs_bpm = 0
@@ -223,7 +223,9 @@ def activar_SAE():
     while True:
         time.sleep(3)
         codigo = actualizar_codigo()
+        print(codigo)
         print()
+        
         if pin_reaccion.value() is not tocado:
             tocado = pin_reaccion.value()
             pin_boton_reaccion = 1
