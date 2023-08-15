@@ -11,7 +11,6 @@ import time, json, _thread
 from machine import Timer
 import machine
 
-print("hola1")
 def conectar_wifi():
     global s
     print("holawifi")
@@ -37,7 +36,7 @@ def conectar_wifi():
     
     return s
 
-print("hola2")
+
 def escuchar_tipos():
     time.sleep(1)
     global s, ap, addr
@@ -55,20 +54,20 @@ def escuchar_tipos():
             _thread.start_new_thread(escuchar_band, (conn, addr))
            
             
+        
         elif tipo == "soy_rtdc":
             escuchar_rtdc(conn, addr)
             _thread.start_new_thread(escuchar_rtdc, (conn, addr))
             _thread.start_new_thread(enviar_rtdc, (conn, addr))
-print("hola3")
 
 def escuchar_rtdc(conn_rtdc,addr):
     while True:
         message = conn_rtdc.recv(1024)
         print('Got a connection from rtdc %s' % str(addr))
         data = json.loads(message.decode('utf-8'))
-    
+        #recibe los comandos de vuelo enviados por la rtdc    
 
-print("hola4")
+
 def escuchar_band(conn_band, addr):
     time.sleep(1)
     while True:
@@ -82,28 +81,25 @@ def escuchar_band(conn_band, addr):
         temp = data['3']
         conectado = data['4']
         print(data)
+        print("bpm={:02} spo= {:02}% Temp {:02}°C ...conectado= {:1}".format(bpm, spo, temp, conectado))
         evaluar_info(bpm, spo, temp, conectado)
         
-        print("bpm={:02} spo= {:02}% Temp {:02}°C ...conectado= {:1}".format(bpm, spo, temp, conectado))
+        
 
             
-
-print("hola5")
-
 listabpm = []
 listaspo = []
 bpm_bajos1 = bpm_altos1 = spo_bajos1 = dormido1 = temp_baja1 = temp_alta1 = 0 
 
 def pines_prueba():
     bpm_bajos2 = 0 #pin
-bpm_bajos2 = 0# pin
-bpm_altos2 = 0# pin
-spo_bajos2= 0# pin
-dormido2 =   0# pin
-temp_baja2 = 0# pin
-temp_alta2 = 0# pin
-tomar_control = 0
-print("hola6")
+    bpm_bajos2 = 0# pin
+    bpm_altos2 = 0# pin
+    spo_bajos2= 0# pin
+    dormido2 =   0# pin
+    temp_baja2 = 0# pin
+    temp_alta2 = 0# pin
+
 
 bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1 = 0,0,0,0,0,0
 bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2 = 0,0,0,0,0,0
@@ -141,6 +137,7 @@ def enviar_rtdc(conn, addr):
         print("enviando a RTDC: ", addr)
         
         codigo = actualizar_codigo()
+
         
         codigo_enviar = json.dumps(codigo).encode('utf-8')
         print(codigo)
@@ -174,19 +171,21 @@ t30bpm = Timer(0)
 t60bpm = Timer(0)
 t30bpm_b = Timer(0)
 t60bpm_b = Timer(0)
-print("hola9")
+
 def contador(cual):
     global alarmas_off_bpm, alarmas_off_bpm_b
     global alarmas_off_spo
 
-    if cual == "30spo":
-        global pasaron_30segs_spo
-        pasaron_30segs_spo = 1
-        alarmas_off_spo = 0
-    elif cual == "60spo":
+
+    if cual == "60spo":
         global contador_iniciado_60_spo
         contador_iniciado_60_spo = 0
         alarmas_off_spo = 0
+    elif cual == "30spo":
+        global pasaron_30segs_spo
+        pasaron_30segs_spo = 1
+        alarmas_off_spo = 0
+
 
 
     elif cual == "30bpm":
@@ -208,7 +207,7 @@ def contador(cual):
         contador_iniciado_60_bpm_b = 0
         alarmas_off_bpm_b = 0
 
-print("hola10")
+
 
 def activar_SAE():
     time.sleep(1)
@@ -226,44 +225,47 @@ def activar_SAE():
         print(codigo)
         print()
         
-        if pin_reaccion.value() is not tocado:
-            tocado = pin_reaccion.value()
-            pin_boton_reaccion = 1
 
+                    #si el boton de reaccion cambio de valor no va a valer lo que valia antes
+        if pin_reaccion.value() != tocado:
+            tocado = pin_reaccion.value()   #guarda el valor actual del pin
+            pin_boton_reaccion = 1          #pone en 1 la variable que se va a usar para saber si se presiono
+            
 
         #protocolo hipoxia
-        if codigo[6]==1 and codigo[7]==1:        
-            if alarmas_off_spo == 0:
-                pin_luz_alarma.value(1)
-                #alarma sonora tmb
+        if codigo[6]==1 and codigo[7]==1:               #si ambos tienen 6 y 7 activos (hipoxia)
+               
+            if alarmas_off_spo == 0:                    #si las alarmas no estan desactivadas
+                pin_luz_alarma.value(1)                 #activa luz alarma (hipoxia?
+                #alarma sonora tmb deberia
 
 
-                if pin_boton_reaccion == 1:
-                    alarmas_off_spo = 1
-                    tomar_control = 0
-                    if contador_iniciado_60_spo != 1:
-                        t60spo.init(mode=Timer.ONE_SHOT, period=60000, callback=contador, args="60spo")
-                        contador_iniciado_60_spo = 1
+                if pin_boton_reaccion == 1:             #si el boton de reaccion fue presionado
+                    alarmas_off_spo = 1                 #las alarmas de spo2 se desactivan
+                    tomar_control = 0                   #se pone en 0 el pin de tomar el control
+                    if contador_iniciado_60_spo != 1:   #si el contador de 60s spo2 no esta iniciado
+                        t60spo.init(mode=Timer.ONE_SHOT, period=60000, callback=contador, args="60spo") #lo inicia
+                        contador_iniciado_60_spo = 1    #cambia la variable para que la prox sepa que esta activado
 
 
-                elif contador_iniciado_30_spo != 1:
-                    contador_iniciado_30_spo = 1
+                elif contador_iniciado_30_spo != 1:     #sino si el contador de 30s spo2 no esta iniciado
                     t30spo.init(mode=Timer.ONE_SHOT, period=30000, callback=contador, args="30spo")
+                    contador_iniciado_30_spo = 1        #pone la variable en 1  cont_init_30spo
 
-                elif pasaron_30segs_spo == 1:
-                    contador_iniciado_30_spo = 0
-                    if pin_boton_reaccion != 1:
-                        tomar_control = 1
+                elif pasaron_30segs_spo == 1:           #sino si pasaron30segsspo2 esta en 1
+                    contador_iniciado_30_spo = 0        #pone en 0 la variable de cont_init_30spo
+                    if pin_boton_reaccion != 1:         #si el pin de reaccion no es 1
+                        tomar_control = 1               #pone pin tomar control en 1
 
 
-            elif alarmas_off_spo == 1:
-                pin_luz_alarma.value(0)
+            elif alarmas_off_spo == 1:                  #sino si estan desactivadas las alarmas spo
+                pin_luz_alarma.value(0)                 #apaga luz alarma
                 pass
 
-        if codigo[6]==1 or codigo[7]==1:
+        elif codigo[6]==1 or codigo[7]==1:              #sino si 1 tiene spo2 en 1
             print("1 piloto tiene hipoxia")
             pin_luz_roja.value(1)
-        elif codigo[6]==0 and codigo[7]==0:
+        elif codigo[6]==0 and codigo[7]==0:             #sino si ninguno tiene spo2 en 1
             print("ningun piloto tiene hipoxia")
             pin_luz_amarilla.value(0)
 
@@ -359,7 +361,7 @@ def activar_SAE():
             pin_boton_reaccion = 0
 
 
-print("hola11")
+
 def evaluar_info(bpm, spo, temp, conectado):
     global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1
     global listabpm, listaspo
@@ -385,23 +387,23 @@ def evaluar_info(bpm, spo, temp, conectado):
     spo_prom_inicial = sum(listabpm[0:7])
     spo_prom_actual = sum(listabpm[:-8:-1])
     spo_dif = spo_prom_actual - spo_prom_inicial
-    bpm_dormido = bpm
-    spo_dormido = spo
-    
-    
+
+
     if spo_dif >= 3 and spo_dif <= 8:
         if bpm_dif >= 15 and bpm_dif <= 35:
             print("tiene menos pulsaciones y oxigeno que hace un ratito, suponemos que esta dormido")
             dormido1 = 1
             bpm_dormido = bpm
             spo_dormido = spo
-    bpm_dormido_dif = bpm - bpm_dormido
-    spo_dormido_dif = spo - spo_dormido
 
-    if bpm_dormido_dif >= 20:
-        if spo_dormido_dif >= 3:
-            print("esta despierto ahora")
-            dormido1 = 0
+
+    if dormido1 == 1:
+        bpm_dormido_dif = bpm - bpm_dormido
+        spo_dormido_dif = spo - spo_dormido
+        if bpm_dormido_dif >= 20:
+            if spo_dormido_dif >= 3:
+                print("esta despierto ahora")
+                dormido1 = 0
     #despierto
 
     #bpms
@@ -431,7 +433,7 @@ def evaluar_info(bpm, spo, temp, conectado):
     else:
         temp_baja1 = 0
         temp_alta1 = 0  
-print("hola12")
+
 
 s = conectar_wifi()
 print("hola13")

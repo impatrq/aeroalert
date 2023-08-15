@@ -1,15 +1,9 @@
-import time
-import _thread
-
-def hola():
-    while True:
-        
-        print("thread")
-        time.sleep(1)
-
-def hola_despues():
-    print("hola despues del thread")
 
 
-_thread.start_new_thread(hola())
-_thread.start_new_thread(hola_despues())
+hola = 1
+
+def uwu():
+    print(hola)
+    owo = hola
+    print("owo: ", owo)
+uwu()
