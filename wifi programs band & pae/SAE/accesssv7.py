@@ -176,7 +176,7 @@ def contador(cual):
     global alarmas_off_bpm, alarmas_off_bpm_b
     global alarmas_off_spo
 
-
+    #despues de que pase el tiempo del timer se va a hacer la accion segun el arg ("cual")
     if cual == "60spo":
         global contador_iniciado_60_spo
         contador_iniciado_60_spo = 0
@@ -239,7 +239,8 @@ def activar_SAE():
                 pin_luz_alarma.value(1)                 #activa luz alarma (hipoxia?
                 #alarma sonora tmb deberia
 
-
+                #si el piloto toca el boton de reaccion desactiva las alarmas, no deja que tomen el control
+                # e inicia un contador de 60segs que estara sin las alarmas
                 if pin_boton_reaccion == 1:             #si el boton de reaccion fue presionado
                     alarmas_off_spo = 1                 #las alarmas de spo2 se desactivan
                     tomar_control = 0                   #se pone en 0 el pin de tomar el control
@@ -248,10 +249,13 @@ def activar_SAE():
                         contador_iniciado_60_spo = 1    #cambia la variable para que la prox sepa que esta activado
 
 
+                #inicia contador 30 segs para definir hipoxia peligrosa
                 elif contador_iniciado_30_spo != 1:     #sino si el contador de 30s spo2 no esta iniciado
                     t30spo.init(mode=Timer.ONE_SHOT, period=30000, callback=contador, args="30spo")
                     contador_iniciado_30_spo = 1        #pone la variable en 1  cont_init_30spo
 
+
+                #30 segs despues de tener hipoxia y no tener reaccion deja que tomen el control
                 elif pasaron_30segs_spo == 1:           #sino si pasaron30segsspo2 esta en 1
                     contador_iniciado_30_spo = 0        #pone en 0 la variable de cont_init_30spo
                     if pin_boton_reaccion != 1:         #si el pin de reaccion no es 1
