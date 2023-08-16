@@ -83,6 +83,8 @@ def escuchar_band(conn_band, addr):
         print(data)
         print("bpm={:02} spo= {:02}% Temp {:02}°C ...conectado= {:1}".format(bpm, spo, temp, conectado))
         evaluar_info(bpm, spo, temp, conectado)
+        evaluar_info_piloto2()
+
         
         
 
@@ -119,6 +121,7 @@ def actualizar_codigo():
     global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2
     global tomar_control
     global codigo
+    evaluar_info_piloto2()
     codigo = [
               bpm_altos1, bpm_altos2, 
               bpm_bajos1, bpm_bajos2, 
@@ -365,6 +368,23 @@ def activar_SAE():
             pin_boton_reaccion = 0
 
 
+
+pin_piloto2_bpm_bajos = machine.Pin(100, machine.Pin.IN)
+pin_piloto2_bpm_altos = machine.Pin(100, machine.Pin.IN)
+pin_piloto2_spo_bajos = machine.Pin(100, machine.Pin.IN)
+pin_piloto2_temp_baja = machine.Pin(100, machine.Pin.IN)
+pin_piloto2_temp_alta = machine.Pin(100, machine.Pin.IN)
+pin_piloto2_dormido = machine.Pin(100, machine.Pin.IN)
+
+def evaluar_info_piloto2():
+    global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2
+    bpm_bajos2 = pin_piloto2_bpm_bajos.value()
+    bpm_altos2 = pin_piloto2_bpm_altos.value()
+    spo_bajos2 = pin_piloto2_spo_bajos.value()
+    temp_alta2 = pin_piloto2_temp_baja.value()
+    temp_baja2 = pin_piloto2_temp_alta.value()
+    dormido2 = pin_piloto2_dormido.value()
+    return
 
 def evaluar_info(bpm, spo, temp, conectado):
     global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1
