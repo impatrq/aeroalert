@@ -1,9 +1,4 @@
-
-
-hola = 1
-
-def uwu():
-    print(hola)
-    owo = hola
-    print("owo: ", owo)
-uwu()
+a = 0
+while True:
+    a += 1
+    print(a)

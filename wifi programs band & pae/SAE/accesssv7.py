@@ -40,20 +40,18 @@ def conectar_wifi():
 def escuchar_tipos():
     time.sleep(1)
     global s, ap, addr
-    print("escuchar tipos xd")
+    
     while True:
         
-        print("1")
+        print("Escuchando tipos")
         conn, addr = s.accept()
         print('Got a type connection from %s' % str(addr))
         message = conn.recv(1024)
-        
         tipo = json.loads(message.decode('utf-8'))
         
         if tipo == "soy_band":
             _thread.start_new_thread(escuchar_band, (conn, addr))
            
-            
         
         elif tipo == "soy_rtdc":
             escuchar_rtdc(conn, addr)
@@ -65,7 +63,9 @@ def escuchar_rtdc(conn_rtdc,addr):
         message = conn_rtdc.recv(1024)
         print('Got a connection from rtdc %s' % str(addr))
         data = json.loads(message.decode('utf-8'))
-        #recibe los comandos de vuelo enviados por la rtdc    
+        # Recibe los comandos de vuelo enviados por la rtdc 
+        # 
+        # HAY QUE EVALUAR ESTA INFORMACION Y MANDAR LO CORRESPONDIENTE AL XPLANE   
 
 
 def escuchar_band(conn_band, addr):
@@ -89,23 +89,40 @@ def escuchar_band(conn_band, addr):
         
 
             
-listabpm = []
-listaspo = []
+
 bpm_bajos1 = bpm_altos1 = spo_bajos1 = dormido1 = temp_baja1 = temp_alta1 = 0 
 
 def pines_prueba():
-    bpm_bajos2 = 0 #pin
-    bpm_bajos2 = 0# pin
-    bpm_altos2 = 0# pin
-    spo_bajos2= 0# pin
-    dormido2 =   0# pin
-    temp_baja2 = 0# pin
-    temp_alta2 = 0# pin
+    global pin_piloto2_bpm_altos, pin_piloto2_bpm_bajos, pin_piloto2_temp_alta, pin_piloto2_temp_baja 
+    global pin_piloto2_spo_bajos, pin_piloto2_dormido
+    
 
+   
+
+    # Configurar los pines luces
+    global pin_luz_ambar, pin_luz_roja
+    pin_luz_ambar = machine.Pin(5, machine.Pin.OUT)
+
+    pin_luz_roja = machine.Pin(27, machine.Pin.OUT) #8
+
+
+    # Configurar pines botones
+    global pin_reaccion, pin_boton_reaccion, pin_on_off, pin_activacion_manual, pin_test
+    pin_reaccion = machine.Pin(4, machine.Pin.IN)
+    pin_boton_reaccion = pin_reaccion.value()
+    
+    pin_on_off = machine.Pin(12, machine.Pin.IN)
+
+    pin_activacion_manual = machine.Pin(7, machine.Pin.IN)
+
+    pin_test = machine.Pin(14, machine.Pin.IN)
+
+
+pines_prueba()
 
 bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1 = 0,0,0,0,0,0
 bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2 = 0,0,0,0,0,0
-tomar_control = 0
+tomar_control, manual = 0,0
 
 codigo = [
                   bpm_altos1, bpm_altos2, 
@@ -114,14 +131,15 @@ codigo = [
                   spo_bajos1, spo_bajos2, 
                   temp_alta1, temp_alta2, 
                   temp_baja1, temp_baja2,
-                  tomar_control
+                  tomar_control, manual
                   ]
 def actualizar_codigo():
     global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1
     global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2
-    global tomar_control
+    global tomar_control, manual
     global codigo
     evaluar_info_piloto2()
+    manual = pin_activacion_manual.value()
     codigo = [
               bpm_altos1, bpm_altos2, 
               bpm_bajos1, bpm_bajos2, 
@@ -129,7 +147,7 @@ def actualizar_codigo():
               spo_bajos1, spo_bajos2, 
               temp_alta1, temp_alta2, 
               temp_baja1, temp_baja2,
-              tomar_control
+              tomar_control, manual
               ]
     return codigo
 
@@ -148,18 +166,6 @@ def enviar_rtdc(conn, addr):
         time.sleep(10)
         
 
-
-# Configurar los pines de la luz y el botón
-pin_luz_amarilla = machine.Pin(5, machine.Pin.OUT)
-pin_reaccion = machine.Pin(4, machine.Pin.IN)
-
-pin_boton_reaccion = pin_reaccion.value()
-
-pin_luz_alarma = machine.Pin(12, machine.Pin.OUT) #6
-
-pin_luz_dormido = machine.Pin(14, machine.Pin.OUT) # 7
-
-pin_luz_roja = machine.Pin(27, machine.Pin.OUT) #8
 
 
 #para contador
@@ -228,8 +234,20 @@ def activar_SAE():
         print(codigo)
         print()
         
+        
+        # Luz roja titilar cuando activacion manual
+        if pin_activacion_manual == 1:
+            if prendido == 0:
+                pin_luz_roja.value(1)
+                prendido = 1
+            elif prendido == 1:
+                pin_luz_roja.value(0)
+                prendido = 0
 
-                    #si el boton de reaccion cambio de valor no va a valer lo que valia antes
+
+
+
+        #si el boton de reaccion cambio de valor no va a valer lo que valia antes
         if pin_reaccion.value() != tocado:
             tocado = pin_reaccion.value()   #guarda el valor actual del pin
             pin_boton_reaccion = 1          #pone en 1 la variable que se va a usar para saber si se presiono
@@ -239,8 +257,8 @@ def activar_SAE():
         if codigo[6]==1 and codigo[7]==1:               #si ambos tienen 6 y 7 activos (hipoxia)
                
             if alarmas_off_spo == 0:                    #si las alarmas no estan desactivadas
-                pin_luz_alarma.value(1)                 #activa luz alarma (hipoxia?
-                #alarma sonora tmb deberia
+                pin_luz_roja.value(1)                 #activa luz alarma (hipoxia?
+                # Alarma sonora tmb deberia
 
                 #si el piloto toca el boton de reaccion desactiva las alarmas, no deja que tomen el control
                 # e inicia un contador de 60segs que estara sin las alarmas
@@ -266,15 +284,16 @@ def activar_SAE():
 
 
             elif alarmas_off_spo == 1:                  #sino si estan desactivadas las alarmas spo
-                pin_luz_alarma.value(0)                 #apaga luz alarma
+                pin_luz_roja.value(0)                 #apaga luz alarma
                 pass
 
         elif codigo[6]==1 or codigo[7]==1:              #sino si 1 tiene spo2 en 1
             print("1 piloto tiene hipoxia")
-            pin_luz_roja.value(1)
+            pin_luz_roja.value(1)                     # No se si sea la luz roja de todos modos
         elif codigo[6]==0 and codigo[7]==0:             #sino si ninguno tiene spo2 en 1
             print("ningun piloto tiene hipoxia")
-            pin_luz_amarilla.value(0)
+            pin_luz_roja.value(0)
+
 
         #------------------------------------------
         
@@ -282,8 +301,10 @@ def activar_SAE():
         #protocolo pulsaciones altas
         if codigo[0]==1 and codigo[1]==1:        
             if alarmas_off_bpm == 0:
-                pin_luz_alarma.value(1)
-                #alarma sonora tmb
+                pin_luz_ambar.value(1)              # DEBERIA TITILAR
+
+                ambar_titilando = 1
+                # Alarma sonora tmb
 
 
                 if pin_boton_reaccion == 1:
@@ -305,16 +326,20 @@ def activar_SAE():
 
 
             elif alarmas_off_bpm == 1:
-                pin_luz_alarma.value(0)
+                pin_luz_ambar.value(0)
                 pass
 
 
         elif codigo[0]==1 or codigo[1]==1:
             print("pulsaciones altas 1 piloto")
-            pin_luz_amarilla.value(1)
+            pin_luz_ambar.value(1)          #DEBERIA TITILAR
+            ambar_titilando = 1
+
+
         elif codigo[0]==0 and codigo[1]==0: #pulsaciones altas
             print("ninguno de los 2 pilotos tine pulsaciones altas")
-            pin_luz_amarilla.value(0)
+            pin_luz_ambar.value(0)
+            ambar_titilando = 0
 
         #------------------------------------------
         
@@ -322,7 +347,9 @@ def activar_SAE():
         #protocolo pulsaciones bajas
         if codigo[2]==1 and codigo[3]==1:                   #si ambos tienen    
             if alarmas_off_bpm_b != 1:                      #si las alarmas no estan desactivadas
-                pin_luz_alarma.value(1)                     #PRENDE luz de alarma
+                pin_luz_ambar.value(1)                     #DEBERIA TITILAR
+                ambar_titilando = 1
+
                 #alarma sonora tmb
 
                 if pin_boton_reaccion == 1:                 #si el boton esta presionado
@@ -344,48 +371,48 @@ def activar_SAE():
                         tomar_control = 1                   #deja que tomen el control
 
             elif alarmas_off_bpm_b == 1:                    #sino, si estan apagadas las alarmas
-                pin_luz_alarma.value(0)                     #apaga luz alarma
+                pin_luz_ambar.value(0)                     #DEBE DEJAR DE TITILAR
+                ambar_titilando = 0
                 pass
 
         elif codigo[2]==1 or codigo[3]==1:                  #sino son ambos, si alguno tiene
             print("pulsaciones bajas 1 piloto")
-            pin_luz_amarilla.value(1)                       #prende luz
+            pin_luz_ambar.value(1)                          #DEBERIA TITILAR
+            ambar_titilando = 1
         elif codigo[2]==0 and codigo[3]==0:                 #si ninguno tiene
             print("ninguno de los 2 pilotos tine pulsaciones bajas")
-            pin_luz_amarilla.value(0)                       #prende luz
+            pin_luz_ambar.value(0)                          #DEBE DEJAR DE TITILAR
+            ambar_titilando = 0
         
         
         #------------------------------------------
-
-        if dormido1 == 1:
-            pin_luz_dormido.value(1)
-            print("el piloto esta dormido")
-        else:
-            pin_luz_dormido.value(0)
-            print("el piloto esta despierto")
+        if ambar_titilando != 1:                        #si no esta titilando
+            if dormido1 == 1:
+                pin_luz_ambar.value(1)                  #SIN TITILAR
+                print("el piloto esta dormido")
+            else:
+                pin_luz_ambar.value(0)                  #SE APAGA
+                print("el piloto esta despierto")
 
         if pin_boton_reaccion == 1:
             pin_boton_reaccion = 0
 
 
 
-pin_piloto2_bpm_bajos = machine.Pin(100, machine.Pin.IN)
-pin_piloto2_bpm_altos = machine.Pin(100, machine.Pin.IN)
-pin_piloto2_spo_bajos = machine.Pin(100, machine.Pin.IN)
-pin_piloto2_temp_baja = machine.Pin(100, machine.Pin.IN)
-pin_piloto2_temp_alta = machine.Pin(100, machine.Pin.IN)
-pin_piloto2_dormido = machine.Pin(100, machine.Pin.IN)
-
 def evaluar_info_piloto2():
     global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2
-    bpm_bajos2 = pin_piloto2_bpm_bajos.value()
-    bpm_altos2 = pin_piloto2_bpm_altos.value()
-    spo_bajos2 = pin_piloto2_spo_bajos.value()
-    temp_alta2 = pin_piloto2_temp_baja.value()
-    temp_baja2 = pin_piloto2_temp_alta.value()
-    dormido2 = pin_piloto2_dormido.value()
+    bpm_bajos2 = 0
+    bpm_altos2 = 0
+    spo_bajos2 = 0
+    temp_alta2 = 0
+    temp_baja2 = 0
+    dormido2 = 0
     return
 
+
+
+listabpm = []
+listaspo = []
 def evaluar_info(bpm, spo, temp, conectado):
     global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1
     global listabpm, listaspo
