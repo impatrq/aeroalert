@@ -1,10 +1,7 @@
-from rule34Py import rule34Py
 
-r34Py = rule34Py()
+def uwu():
 
-print(r34Py.version)
-
-result_comments = r34Py.get_comments(4153825)
-result_random = r34Py.random_post(["neko"]) # or r34Py.random_post()
-print(result_comments)
-print(result_random.image)
+    global owo
+    owo = "a"
+    print(owo)
+uwu()
