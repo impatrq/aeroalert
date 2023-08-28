@@ -1,4 +1,10 @@
-a = 0
-while True:
-    a += 1
-    print(a)
+from rule34Py import rule34Py
+
+r34Py = rule34Py()
+
+print(r34Py.version)
+
+result_comments = r34Py.get_comments(4153825)
+result_random = r34Py.random_post(["neko"]) # or r34Py.random_post()
+print(result_comments)
+print(result_random.image)
