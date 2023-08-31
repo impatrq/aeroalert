@@ -2,15 +2,14 @@ try:
     import usocket as socket
 except:
     import socket
-import network
 import esp
 esp.osdebug(None)
 import gc
 gc.collect()
 import time, json, _thread
-from machine import Timer
-import machine
-from machine import UART
+import machine, network
+from machine import Timer, UART
+
 
 
 
@@ -273,7 +272,7 @@ def activar_SAE():
             
 
         # Protocolo hipoxia
-        if codigo[6]==1 and codigo[7]==1:                       # Si ambos tienen 6 y 7 activos (hipoxia)
+        if codigo[6] and codigo[7]:                       # Si ambos tienen 6 y 7 activos (hipoxia)
 
             if alarmas_off_spo == 0:                            # Si las alarmas no estan desactivadas
                 pin_luz_roja.value(1)                           # Activa luz alarma (hipoxia?
@@ -306,11 +305,11 @@ def activar_SAE():
                 pin_luz_roja.value(0)                           # Apaga luz alarma
                 pass        
 
-        elif codigo[6]==1 or codigo[7]==1:                      # Sino si 1 tiene spo2 en 1
+        elif codigo[6] or codigo[7]:                      # Sino si 1 tiene spo2 en 1
             print("1 piloto tiene hipoxia")     
             pin_luz_roja.value(1)                               # No se si sea la luz roja de todos modos
             # Apagar alarma sonora      
-        elif codigo[6]==0 and codigo[7]==0:                     # Sino si ninguno tiene spo2 en 1
+        elif not codigo[6] and not codigo[7]:                     # Sino si ninguno tiene spo2 en 1
             print("ningun piloto tiene hipoxia")
             pin_luz_roja.value(0)
             
