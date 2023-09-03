@@ -1,7 +1,4 @@
+owo = [0,0,0,1,0]
 
-def uwu():
-
-    global owo
-    owo = "a"
-    print(owo)
-uwu()
+if not owo[1] and not owo[2]:
+    print("funciona")
