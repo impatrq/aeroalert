@@ -12,7 +12,7 @@ print("connected to: " + ser.portstr)
 
 while True:
 
-    leer = ser.read(1)
+    leer = ser.read(10)
     read = leer.decode('utf-8')
     if read:
         print(read)

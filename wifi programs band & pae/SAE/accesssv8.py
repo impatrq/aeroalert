@@ -85,6 +85,8 @@ def escuchar_tipos():
             _thread.start_new_thread(enviar_rtdc, (conn, addr))
 
 
+        # Agregar lo de UART / NOTEBOOK
+
 def escuchar_band(conn_band, addr):
     time.sleep(1)
     while True:
@@ -112,7 +114,7 @@ def recibir_uart():
     global dormido1
     while True:
         time.sleep(1)
-        info_uart = uart.read()
+        info_uart = uart.read().decode('utf-8')
         info_uart = {"Piloto":1, 
                      "Somnolencia": 'normal som', 
                      "Pulso":94, 
@@ -128,7 +130,7 @@ def recibir_uart():
             
                 if info_uart["somnolencia"] == 1:
                     dormido1 = 1
-                else:
+                elif info_uart["somnolencia"] == 0:
                     dormido1 = 0
                 evaluar_info(info_uart["bpms"], info_uart["spo"], 15, 1, "uart")
                 
