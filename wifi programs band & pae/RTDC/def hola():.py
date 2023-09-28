@@ -1,0 +1,2 @@
+import tiempo
+tiempo.caca()

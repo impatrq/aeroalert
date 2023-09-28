@@ -40,7 +40,7 @@ definir_pines()
 
 
 def conectar_wifi():
-    global s
+    global s, ap
     print("holawifi")
     #configuracion
     addr = socket.getaddrinfo('192.168.4.1', 8000)[0][-1]
@@ -83,6 +83,9 @@ def escuchar_tipos():
         elif tipo == "soy_rtdc":
             _thread.start_new_thread(escuchar_rtdc, (conn, addr))
             _thread.start_new_thread(enviar_rtdc, (conn, addr))
+        
+        elif tipo == "soy_xplane":
+            _thread.start_new_thread(enviar_xplane, (conn, addr))
 
 
         # Agregar lo de UART / NOTEBOOK
@@ -102,6 +105,33 @@ def escuchar_band(conn_band, addr):
         print("bpm={:02} spo={:02}% Temp={:02}°C puesta={:1}".format(bpm, spo, temp, conectado))
         evaluar_info(bpm, spo, temp, conectado, "band")    
 
+def escuchar_rtdc(conn_rtdc,addr):
+    while True:
+        data = conn_rtdc.recv(1024)
+        print('Got a connection from rtdc %s' % str(addr))
+
+        message = json.loads(data.decode('utf-8'))
+        print(message)
+
+        # {'mensage': "aterriza"}
+        if message['mensage'] == "aterriza":
+            print("tiene que aterrizar")                        #ATERRIZAR ATERRIZAR ATERRIZAR ATERRIZAR ATERRIZAR ATERRIZAR
+                                                            
+            #enviar por wifi a xplane y bloquear
+
+        else:
+            pass
+        # Recibe los comandos de vuelo enviados por la rtdc 
+        # HAY QUE EVALUAR ESTA INFORMACION Y MANDAR LO CORRESPONDIENTE AL XPLANE   
+
+def enviar_rtdc(conn, addr):
+    global codigo
+    while True:
+        print("enviando a RTDC: ", addr)
+        codigo = actualizar_codigo()
+        codigo_enviar = json.dumps(codigo).encode('utf-8')
+        conn.send(codigo_enviar)
+        time.sleep(10)
 
 def evaluar_info_piloto2():
     global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2
@@ -171,23 +201,7 @@ def actualizar_codigo():
               ]
     return codigo
 
-def escuchar_rtdc(conn_rtdc,addr):
-    while True:
-        message = conn_rtdc.recv(1024)
-        print('Got a connection from rtdc %s' % str(addr))
-        data = json.loads(message.decode('utf-8'))
-        # Recibe los comandos de vuelo enviados por la rtdc 
-        # tipo "ATERRIZA" "BLOQUEAR"
-        # HAY QUE EVALUAR ESTA INFORMACION Y MANDAR LO CORRESPONDIENTE AL XPLANE   
 
-def enviar_rtdc(conn, addr):
-    global codigo
-    while True:
-        print("enviando a RTDC: ", addr)
-        codigo = actualizar_codigo()
-        codigo_enviar = json.dumps(codigo).encode('utf-8')
-        conn.send(codigo_enviar)
-        time.sleep(10)
         
 
 
