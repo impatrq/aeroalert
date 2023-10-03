@@ -15,17 +15,18 @@ from machine import Timer, UART
 
 def definir_pines():
 
-    global pin_luz_ambar, pin_luz_roja, pin_luz_test
+    global pin_luz_ambar, pin_luz_roja, pin_luz_test, pin_flag
     global pin_activacion_manual, pin_test, pin_reaccion, pin_on_off
-    global pin_boton_activacion_manual, pin_boton_test, pin_boton_reaccion, pin_boton_on_off
+    global pin_boton_test, pin_boton_reaccion, pin_boton_on_off
 
-
-    pin_luz_ambar = machine.Pin(23, machine.Pin.OUT)             
-    pin_luz_roja = machine.Pin(5, machine.Pin.OUT)              
-    pin_luz_test = machine.Pin(17, machine.Pin.OUT)                      
+    21
+    19
+    pin_luz_ambar = machine.Pin(23, machine.Pin.IN)             
+    pin_luz_roja = machine.Pin(5, machine.Pin.IN)              
+    pin_luz_test = machine.Pin(17, machine.Pin.IN)                      
     
     pin_activacion_manual = machine.Pin(4, machine.Pin.IN)
-    pin_boton_activacion_manual = pin_activacion_manual.value()
+    pin_activacion_manual.value()
 
     pin_test = machine.Pin(25, machine.Pin.IN)                   
     pin_boton_test = pin_test.value()
@@ -33,8 +34,9 @@ def definir_pines():
     pin_reaccion = machine.Pin(33, machine.Pin.IN)
     pin_boton_reaccion = pin_reaccion.value()                
     
-    pin_on_off = machine.Pin(35, machine.Pin.IN)             
-    pin_boton_on_off = pin_on_off.value()
+    pin_on_off = machine.Pin(35, machine.Pin.IN)      
+
+    pin_flag = machine.Pin(25, machine.Pin.OUT)      #Correcto    
 
 definir_pines()
 
@@ -78,17 +80,16 @@ def escuchar_tipos():
         
         if tipo == "soy_band":
             _thread.start_new_thread(escuchar_band, (conn, addr))
-           
         
         elif tipo == "soy_rtdc":
             _thread.start_new_thread(escuchar_rtdc, (conn, addr))
             _thread.start_new_thread(enviar_rtdc, (conn, addr))
         
-        elif tipo == "soy_xplane":
-            _thread.start_new_thread(enviar_xplane, (conn, addr))
+        elif tipo == "soy_PC":
+            _thread.start_new_thread(escuchar_PC, (conn, addr))
+            _thread.start_new_thread(enviar_PC, (conn, addr))
 
 
-        # Agregar lo de UART / NOTEBOOK
 
 def escuchar_band(conn_band, addr):
     time.sleep(1)
@@ -106,74 +107,122 @@ def escuchar_band(conn_band, addr):
         evaluar_info(bpm, spo, temp, conectado, "band")    
 
 def escuchar_rtdc(conn_rtdc,addr):
-    while True:
-        data = conn_rtdc.recv(1024)
-        print('Got a connection from rtdc %s' % str(addr))
+    global aterrizar
+    pin_flag.value(0)
+    try:
+        while True:
+            data = conn_rtdc.recv(1024)
+            print('Got a connection from rtdc %s' % str(addr))
 
-        message = json.loads(data.decode('utf-8'))
-        print(message)
+            message = json.loads(data.decode('utf-8'))
+            print(message)
 
-        # {'mensage': "aterriza"}
-        if message['mensage'] == "aterriza":
-            print("tiene que aterrizar")                        #ATERRIZAR ATERRIZAR ATERRIZAR ATERRIZAR ATERRIZAR ATERRIZAR
-                                                            
-            #enviar por wifi a xplane y bloquear
-
-        else:
-            pass
+            if message['mensage'] == "aterriza":
+                print("tiene que aterrizar")                        #ATERRIZAR ATERRIZAR ATERRIZAR ATERRIZAR ATERRIZAR ATERRIZAR
+                aterrizar = 1                                                
+            if message['mensage'] == "no aterrizar":
+                aterrizar = 0
+    except:
+        pin_flag.value(1)
         # Recibe los comandos de vuelo enviados por la rtdc 
         # HAY QUE EVALUAR ESTA INFORMACION Y MANDAR LO CORRESPONDIENTE AL XPLANE   
 
 def enviar_rtdc(conn, addr):
     global codigo
-    while True:
-        print("enviando a RTDC: ", addr)
-        codigo = actualizar_codigo()
-        codigo_enviar = json.dumps(codigo).encode('utf-8')
-        conn.send(codigo_enviar)
-        time.sleep(10)
+    alerta_enviada = 0
+    try:
+        while True:
+            print("enviando a RTDC: ", addr)
+            codigo = actualizar_codigo()
+            codigo_enviar = json.dumps(codigo).encode('utf-8')
+            conn.send(codigo_enviar)
+            if pin_on_off.value() == 1 and alerta_enviada == 0:
+                codigo_enviar = json.dumps("alerta desactivacion del sae").encode('utf-8')
+                conn.send(codigo_enviar)
+                alerta_enviada = 1
+            elif pin_on_off.value() == 0 and alerta_enviada == 1:
+                codigo_enviar = json.dumps("Sae activado").encode('utf-8')
+                conn.send(codigo_enviar)
+                alerta_enviada = 0
+            time.sleep(10)
+    except:
+        print("rtdc perdida")
 
-def evaluar_info_piloto2():
-    global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2
-    # Recibir por uart
-    return
 
-def recibir_uart():
-    global uart
-    global bloqueo_uart
+def escuchar_PC(conn_PC, addr):
+    global bloqueo_PC
     global dormido1
     while True:
-        time.sleep(1)
-        info_uart = uart.read().decode('utf-8')
-        info_uart = {"Piloto":1, 
-                     "Somnolencia": 'normal som', 
-                     "Pulso":94, 
-                     "Spo2":92, 
-                     "bloqueo":1, 
-                     "Muerte": 1,}
-        
-        print("uart recibido")
-        
-        if info_uart["piloto"] == 1:
-            if info_uart["bloqueo"] == 1:
-                bloqueo_uart = 1
-            
-                if info_uart["somnolencia"] == 1:
-                    dormido1 = 1
-                elif info_uart["somnolencia"] == 0:
-                    dormido1 = 0
-                evaluar_info(info_uart["bpms"], info_uart["spo"], 15, 1, "uart")
+        if pin_on_off.value() == 1:
+            pass
+        else:
+            message = conn_PC.recv(1024)
+            print()
+            print('Got a connection from PC %s' % str(addr))            # info_PC = {"Piloto":1, 
+            info_PC = json.loads(message.decode('utf-8'))               # "Somnolencia": 1, 
+            time.sleep(1)                                               # "Pulso":94, 
+            print("PC recibido")                                        # "Spo2":92,         
+            if info_PC["piloto"] == 1:                                  # "bloqueo":1,
+                if info_PC["bloqueo"] == 1:                             # "Muerte": 1}
+                    bloqueo_PC = 1
                 
-        
-    # Read
-    # uart.write()) # Read as much as possible using
+                    if info_PC["somnolencia"] == 1:
+                        dormido1 = 1            
+                    elif info_PC["somnolencia"] == 0:
+                        dormido1 = 0
+                    evaluar_info(info_PC["bpms"], info_PC["spo"], 15, 1, "uart")
+                
+                elif info_PC["bloqueo"] == 0:
+                    bloqueo_PC = 0
 
+            
+            elif info_PC["piloto"] == 2:
+                evaluar_info_piloto2(info_PC)
+
+
+def enviar_PC(conn, addr):
+    global aterrizar, aterrizar_manual
+    while True:
+        if aterrizar == 1 and enviado == 0:
+            print("a PC: ", addr)
+            instruccion = json.dumps("ATERRIZAR").encode('utf-8')
+            conn.send(instruccion)
+            enviado = 1
+            
+        elif aterrizar_manual == 1 and enviado == 0:
+            print("a PC: ", addr)
+            instruccion = json.dumps("ATERRIZAR").encode('utf-8')
+            conn.send(instruccion)
+            enviado = 1
+
+        elif aterrizar_manual == 0 and aterrizar == 0 and enviado == 1:
+            instruccion = json.dumps("NO ATERRIZAR").encode('utf-8')
+            conn.send(instruccion)
+            enviado = 0
+
+        time.sleep(5)
+
+def evaluar_info_piloto2(info):
+    global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2
+    if info["Pulso"] >= 140:
+        bpm_altos2 = 1
+        bpm_bajos2 = 0
+    elif info["Pulso"] <= 60:
+        bpm_bajos2 = 1
+        bpm_altos2 = 0
+    
+    if info["Spo2"] >= 90:
+        spo_bajos2 = 0
+    elif info["Spo2"] <= 90:
+        spo_bajos2 = 1
+
+    return
 
 
 
 bpm_bajos1 = bpm_altos1 = spo_bajos1 = dormido1 = temp_baja1 = temp_alta1 = 0 
 bpm_bajos2 = bpm_altos2 = spo_bajos2 = dormido2 = temp_baja2 = temp_alta2 = 0
-tomar_control = pin_boton_activacion_manual = 0
+manual = 0
 codigo = [
         bpm_altos1, bpm_altos2, 
         bpm_bajos1, bpm_bajos2, 
@@ -181,13 +230,13 @@ codigo = [
         spo_bajos1, spo_bajos2, 
         temp_alta1, temp_alta2, 
         temp_baja1, temp_baja2,
-        tomar_control, manual]
+        manual]
 
 
 def actualizar_codigo():
     global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1
     global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2 # se modifican directamente
-    global tomar_control, manual
+    global manual
     global codigo
     manual = pin_activacion_manual.value()
     codigo = [
@@ -197,13 +246,9 @@ def actualizar_codigo():
               spo_bajos1, spo_bajos2, 
               temp_alta1, temp_alta2, 
               temp_baja1, temp_baja2,
-              tomar_control, manual
+              manual
               ]
     return codigo
-
-
-        
-
 
 
 #para contador
@@ -242,7 +287,6 @@ def contador(cual):
         alarmas_off_bpm = 0
 
 
-
 def activar_SAE():
     time.sleep(1)
     global codigo
@@ -250,147 +294,152 @@ def activar_SAE():
     global contador_iniciado_60_bpm, contador_iniciado_60_spo
     global contador_iniciado_30_bpm, contador_iniciado_30_spo
     global tomar_control, alarmas_off_spo, alarmas_off_bpm
+    global aterrizar, aterrizar_manual
     tocado = pin_reaccion.value()
     pin_boton_reaccion = 0
     ambar_titilando = 0
-    #------------------------------------------
     
     while True:
         time.sleep(1)
-        codigo = actualizar_codigo()
-        print(codigo)
-        print()
-        
-
-        if ambar_titilando == 1:
-            if pin_luz_ambar.value() == 0:
-                pin_luz_ambar.value(1)
-            else:
-                pin_luz_ambar.value(0)
-        elif ambar_titilando == 0:
+        if pin_on_off.value() == 1:
             pin_luz_ambar.value(0)
-
-
-        # Luz roja titilar cuando activacion manual
-        if pin_activacion_manual == 1:
-            if prendido == 0:
-                pin_luz_roja.value(1)
-                prendido = 1
-            elif prendido == 1:
-                pin_luz_roja.value(0)
-                prendido = 0
-
-        # Boton tipo switch
-        # Si el boton de reaccion cambio de valor no va a valer lo que valia antes
-        if pin_reaccion.value() != tocado:
-            tocado = pin_reaccion.value()                       # Guarda el valor actual del pin
-            pin_boton_reaccion = 1                              # Pone en 1 la variable que se va a usar para saber si se presiono
-            
-
-        # Protocolo hipoxia
-        if codigo[6] and codigo[7]:                       # Si ambos tienen 6 y 7 activos (hipoxia)
-
-            if alarmas_off_spo == 0:                            # Si las alarmas no estan desactivadas
-                pin_luz_roja.value(1)                           # Activa luz alarma (hipoxia?
-                # Alarma sonora tmb deberia
-
-                # Si el piloto toca el boton de reaccion desactiva las alarmas, no deja que tomen el control
-                # Tmb inicia un contador de 60segs que estara sin las alarmas
-                if pin_boton_reaccion == 1:                     # Si el boton de reaccion fue presionado
-                    alarmas_off_spo = 1                         # Las alarmas de spo2 se desactivan
-                    tomar_control = 0                           # Se pone en 0 el pin de tomar el control
-                    if contador_iniciado_60_spo != 1:           # Si el contador de 60s spo2 no esta iniciado
-                        t60spo.init(mode=Timer.ONE_SHOT, period=60000, callback=contador, args="60spo") #Lo inicia
-                        contador_iniciado_60_spo = 1            # Cambia la variable para que la prox sepa que esta activado
-
-
-                # Inicia contador 30 segs para definir hipoxia peligrosa
-                elif contador_iniciado_30_spo != 1:             # Sino si el contador de 30s spo2 no esta iniciado
-                    t30spo.init(mode=Timer.ONE_SHOT, period=30000, callback=contador, args="30spo")
-                    contador_iniciado_30_spo = 1                # Pone la variable en 1  cont_init_30spo
-
-
-                # 30 segs despues de tener hipoxia y no tener reaccion deja que tomen el control
-                elif pasaron_30segs_spo == 1:                   # Sino si pasaron30segsspo2 esta en 1
-                    contador_iniciado_30_spo = 0                # Pone en 0 la variable de cont_init_30spo
-                    if pin_boton_reaccion != 1:                 # Si el pin de reaccion no es 1
-                        tomar_control = 1                       # Pone pin tomar control en 1
-
-
-            elif alarmas_off_spo == 1:                          # Sino si estan desactivadas las alarmas spo
-                pin_luz_roja.value(0)                           # Apaga luz alarma
-                pass        
-
-        elif codigo[6] or codigo[7]:                      # Sino si 1 tiene spo2 en 1
-            print("1 piloto tiene hipoxia")     
-            pin_luz_roja.value(1)                               # No se si sea la luz roja de todos modos
-            # Apagar alarma sonora      
-        elif not codigo[6] and not codigo[7]:                     # Sino si ninguno tiene spo2 en 1
-            print("ningun piloto tiene hipoxia")
             pin_luz_roja.value(0)
+            pass
+        else:   
+            # Luz roja titilar cuando activacion manual
+            if pin_activacion_manual == 1:
+                if prendido == 0:
+                    aterrizar_manual = 1
+                    pin_luz_roja.value(1)
+                    prendido = 1
+                elif prendido == 1:
+                    pin_luz_roja.value(0)
+                    prendido = 0
+            else:
+                aterrizar_manual = 0
+
+            codigo = actualizar_codigo()
+            print(codigo)
+            print()  
+
+            if ambar_titilando == 1:
+                if pin_luz_ambar.value() == 0:
+                    pin_luz_ambar.value(1)
+                else:
+                    pin_luz_ambar.value(0)
+            elif ambar_titilando == 0:
+                pin_luz_ambar.value(0)
+
+            # Boton tipo switch
+            # Si el boton de reaccion cambio de valor no va a valer lo que valia antes
+            if pin_reaccion.value() != tocado:
+                tocado = pin_reaccion.value()                       # Guarda el valor actual del pin
+                pin_boton_reaccion = 1                              # Pone en 1 la variable que se va a usar para saber si se presiono
+                
+            # Protocolo hipoxia
+            if codigo[6] and codigo[7]:                       # Si ambos tienen 6 y 7 activos (hipoxia)
+
+                if alarmas_off_spo == 0:                            # Si las alarmas no estan desactivadas
+                    pin_luz_roja.value(1)                           # Activa luz alarma (hipoxia?
+                    # Alarma sonora tmb deberia
+                    
+                    # Si el piloto toca el boton de reaccion desactiva las alarmas, no deja que tomen el control
+                    # Tmb inicia un contador de 60segs que estara sin las alarmas
+                    if pin_boton_reaccion == 1:                     # Si el boton de reaccion fue presionado
+                        alarmas_off_spo = 1                         # Las alarmas de spo2 se desactivan
+                        tomar_control = 0                           # Se pone en 0 el pin de tomar el control
+                        if contador_iniciado_60_spo != 1:           # Si el contador de 60s spo2 no esta iniciado
+                            t60spo.init(mode=Timer.ONE_SHOT, period=60000, callback=contador, args="60spo") #Lo inicia
+                            contador_iniciado_60_spo = 1            # Cambia la variable para que la prox sepa que esta activado
+
+
+                    # Inicia contador 30 segs para definir hipoxia peligrosa
+                    elif contador_iniciado_30_spo != 1:             # Sino si el contador de 30s spo2 no esta iniciado
+                        t30spo.init(mode=Timer.ONE_SHOT, period=30000, callback=contador, args="30spo")
+                        contador_iniciado_30_spo = 1                # Pone la variable en 1  cont_init_30spo
+
+
+                    # 30 segs despues de tener hipoxia y no tener reaccion deja que tomen el control
+                    elif pasaron_30segs_spo == 1:                   # Sino si pasaron30segsspo2 esta en 1
+                        contador_iniciado_30_spo = 0                # Pone en 0 la variable de cont_init_30spo
+                        if pin_boton_reaccion != 1:                 # Si el pin de reaccion no es 1
+                            tomar_control = 1                       # Pone pin tomar control en 1
+
+
+                elif alarmas_off_spo == 1:                          # Sino si estan desactivadas las alarmas spo
+                    pin_luz_roja.value(0)                           # Apaga luz alarma
+                    pass        
+
+            elif codigo[6] or codigo[7]:                      # Sino si 1 tiene spo2 en 1
+                print("1 hipoxia")     
+                pin_luz_roja.value(1)                               # No se si sea la luz roja de todos modos
+                # Apagar alarma sonora      
+            elif not codigo[6] and not codigo[7]:                     # Sino si ninguno tiene spo2 en 1
+                print("no hipoxia")
+                pin_luz_roja.value(0)
+                
+
+
+            #------------------------------------------
             
 
+            #codigo 0 pulsaciones altas piloto 1
+            #codigo 1 pulsaciones altas piloto 2
+            #codigo 2 pulsaciones bajas piloto 1
+            #codigo 3 pulsaciones bajas piloto 2
+            
+            #protocolo pulsaciones raras
+            if codigo[0] and codigo[1] or codigo[2] and codigo[3] or codigo[0] and codigo[3] or codigo[1] and codigo[2]:                       # Si ambos tienen    
+                if alarmas_off_bpm != 1:                          # Si las alarmas no estan desactivadas
+                    pin_luz_ambar.value(1)                          # DEBERIA TITILAR
+                    ambar_titilando = 1
 
-        #------------------------------------------
+                    # Alarma sonora tmb
+
+                    if pin_boton_reaccion == 1:                     # Si el boton esta presionado
+                        alarmas_off_bpm = 1                       # DESACTIVA las alarmas
+                        tomar_control = 0                           # No permite que tomen el control
+                        if contador_iniciado_60_bpm != 1:         # Si no esta iniciado el contador 60s
+                            t60bpm.init(mode=Timer.ONE_SHOT, period=6000, callback=contador, args="60bpm")
+                                                                    # INICIA temporizador, luego apagara la variable del contador 60s
+                            contador_iniciado_60_bpm = 1          # PRENDE variable del contador 60s
+
+                    elif contador_iniciado_30_bpm != 1:           # Sino, si no esta iniciado contador de 30s          
+                        t30bpm.init(mode=Timer.ONE_SHOT, period=3000, callback=contador, args="30bpm")
+                                                                    # INICIAtemporizador, luego apagara la variable del contador 30s
+                        contador_iniciado_30_bpm = 1              # PRENDE variable del contador 30s
         
-
-        #codigo 0 pulsaciones altas piloto 1
-        #codigo 1 pulsaciones altas piloto 2
-        #codigo 2 pulsaciones bajas piloto 1
-        #codigo 3 pulsaciones bajas piloto 2
+                    elif pasaron_30segs_bpm == 1:                 # Sino, si pasaron 30s
+                        contador_iniciado_30_bpm = 0              # APAGA variable del contador iniciado 30s, porque ya paso
+                        if pin_boton_reaccion != 1:                 # Si el boton de reaccion no esta presionado
+                            tomar_control = 1                       # Deja que tomen el control
         
-        #protocolo pulsaciones raras
-        if codigo[0] and codigo[1] or codigo[2] and codigo[3] or codigo[0] and codigo[3] or codigo[1] and codigo[2]:                       # Si ambos tienen    
-            if alarmas_off_bpm != 1:                          # Si las alarmas no estan desactivadas
-                pin_luz_ambar.value(1)                          # DEBERIA TITILAR
-                ambar_titilando = 1
+                elif alarmas_off_bpm == 1:                        # Sino, si estan apagadas las alarmas
+                    pin_luz_ambar.value(0)                          # DEBE DEJAR DE TITILAR
+                    ambar_titilando = 0 
+                    pass    
+                    
+            elif codigo[0] or codigo[1] or codigo[2] or codigo[3]:                      # Sino son ambos, si alguno tiene
+                print("bpm 1") 
+                pin_luz_ambar.value(1)                              # DEBERIA TITILAR
+                ambar_titilando = 1 
+            elif not codigo[0] and not codigo[1] and not codigo[2] and not codigo[3]:          # Si ninguno tiene pulsaciones raras
+                print("no bpm")
+                pin_luz_ambar.value(0)                              # DEBE DEJAR DE TITILAR
+                ambar_titilando = 0
+            
+            
+            #------------------------------------------
+            if ambar_titilando != 1:                                # Si no esta titilando
+                if dormido1 == 1:   
+                    pin_luz_ambar.value(1)                          # SIN TITILAR
+                    print("dormido") 
+                else:   
+                    pin_luz_ambar.value(0)                          #SE APAGA
+                    print("despierto")
 
-                # Alarma sonora tmb
-
-                if pin_boton_reaccion == 1:                     # Si el boton esta presionado
-                    alarmas_off_bpm = 1                       # DESACTIVA las alarmas
-                    tomar_control = 0                           # No permite que tomen el control
-                    if contador_iniciado_60_bpm != 1:         # Si no esta iniciado el contador 60s
-                        t60bpm.init(mode=Timer.ONE_SHOT, period=6000, callback=contador, args="60bpm")
-                                                                # INICIA temporizador, luego apagara la variable del contador 60s
-                        contador_iniciado_60_bpm = 1          # PRENDE variable del contador 60s
-
-                elif contador_iniciado_30_bpm != 1:           # Sino, si no esta iniciado contador de 30s          
-                    t30bpm.init(mode=Timer.ONE_SHOT, period=3000, callback=contador, args="30bpm")
-                                                                # INICIAtemporizador, luego apagara la variable del contador 30s
-                    contador_iniciado_30_bpm = 1              # PRENDE variable del contador 30s
-    
-                elif pasaron_30segs_bpm == 1:                 # Sino, si pasaron 30s
-                    contador_iniciado_30_bpm = 0              # APAGA variable del contador iniciado 30s, porque ya paso
-                    if pin_boton_reaccion != 1:                 # Si el boton de reaccion no esta presionado
-                        tomar_control = 1                       # Deja que tomen el control
-    
-            elif alarmas_off_bpm == 1:                        # Sino, si estan apagadas las alarmas
-                pin_luz_ambar.value(0)                          # DEBE DEJAR DE TITILAR
-                ambar_titilando = 0 
-                pass    
-                
-        elif codigo[0] or codigo[1] or codigo[2] or codigo[3]:                      # Sino son ambos, si alguno tiene
-            print("pulsaciones raras 1 piloto") 
-            pin_luz_ambar.value(1)                              # DEBERIA TITILAR
-            ambar_titilando = 1 
-        elif not codigo[0] and not codigo[1] and not codigo[2] and not codigo[3]:          # Si ninguno tiene pulsaciones raras
-            print("ninguno de los 2 pilotos tine pulsaciones raras")
-            pin_luz_ambar.value(0)                              # DEBE DEJAR DE TITILAR
-            ambar_titilando = 0
-        
-        
-        #------------------------------------------
-        if ambar_titilando != 1:                                # Si no esta titilando
-            if dormido1 == 1:   
-                pin_luz_ambar.value(1)                          # SIN TITILAR
-                print("el piloto esta dormido") 
-            else:   
-                pin_luz_ambar.value(0)                          #SE APAGA
-                print("el piloto esta despierto")
-
-        if pin_boton_reaccion == 1:
-            pin_boton_reaccion = 0
+            if pin_boton_reaccion == 1:
+                pin_boton_reaccion = 0
 
 
 
@@ -401,17 +450,15 @@ listaspo = []
 def evaluar_info(bpm, spo, temp, conectado, de):
     global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1
     global listabpm, listaspo
-    global bloqueo_uart
+    global bloqueo_PC
 
-    if bloqueo_uart == 0 or de == "uart":
+    if bloqueo_PC == 0 or de == "PC":          # se evalua la info si es de band sin bloqueo o la de uart 
         #Listas de pulsaciones y oxigeno
         listabpm.append(bpm)
         listabpm = listabpm[-48:]
         listaspo.append(spo)
         listaspo = listaspo[-48:] #12 valores cada uno cada 5 segs son 60 segs en total
-        
-        #dormido
-        
+
         
         #suma de primeros 7 digitos de la lista
         bpm_prom_inicial = sum(listabpm[0:7])
@@ -480,11 +527,6 @@ print("protocolos activados")
 time.sleep(1)
 
 
-
-uart = UART(1, 115200) # 1st argument: UART number: Hardware UART #1
-_thread.start_new_thread(recibir_uart, ())
-time.sleep(1)
-print("uart activado")
 
 
 

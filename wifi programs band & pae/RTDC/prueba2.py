@@ -1,10 +1,11 @@
-import json
+caca = 1
+def hola():
+    global caca
+    print(caca)
+    caca = 123
 
-msg = "aterriza"
-
-
-
-data = {'mensage': msg}
-message = json.dumps(data).encode('utf-8')
-mensage = json.loads(message.decode('utf-8'))
-print(mensage['mensage'])
+def uwu():
+    print(caca)
+    caca = 321
+hola()
+uwu()
