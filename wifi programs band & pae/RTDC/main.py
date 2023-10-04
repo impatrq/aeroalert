@@ -1,63 +1,11 @@
-import socket
-import time
-import urequests as requests
-import random
-import json
+import stationrtdcv2 as stationrtdc
 
-addr = socket.getaddrinfo('192.168.4.1', 8000) [0][-1]
-server_ip = '192.168.4.1'
-server_port = 8000
 
-def do_connect():
-    import network
-    sta_if = network.WLAN(network.STA_IF)
-    if not sta_if.isconnected():
-        sta_if.active(True)
-        sta_if.connect('ESP32','aeroalert')
-        while not sta_if.isconnected():
-            print(".", end="")
-            time.sleep(.1)
-        print()
-    print('network config:' , sta_if.ifconfig())
 
-def send_message(client_socket):
+client_socket = stationrtdc.do_connect()
 
-    data = {'value1': 123, 'value2': 456, 'value3': 789}
-    message = json.dumps(data).encode('utf-8') #.encode('utf-8') para un string se encodea
-    
-    client_socket.send(message) 
-    print('Mensaje enviado:', message)
-    
-    respuesta = client_socket.recv(1024)
-    print('respuesta: ', respuesta)
-    
-    
-
-do_connect()
-
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((server_ip, server_port))
-
-while True:
-    send_message(client_socket)
-    time.sleep(3)
-
-client_socket.close()
-
-#alternativa para enviar info en vez de recibir
-#envia la info que quiero como una urequest a esa direccion
-#response = requests.post("192.168.4.1", data = "some dummy content")
-#print(response.txt)
-#print(response.json())
-"""
-post_data = (a,b,c) = (1,3,5)
-while True:
-    resp = requests.post("192.168.4.1", data = post_data)
-    #puedo poner "numerito"
-    
-    
-    print(resp.txt)
-    print(resp.json())
-    time.sleep(0.1)
-s.close()
-"""    
+tipo = "soy_rtdc"
+stationrtdc.send_type(tipo, client_socket)
+msg = "aterriza"    # o "no_aterrizes"
+stationrtdc.send_message(client_socket,msg)
+data = stationrtdc.receive_data(client_socket)

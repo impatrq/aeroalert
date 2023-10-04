@@ -1,14 +1,11 @@
-import socket
-import time
-import json
+import socket, json
 import network
 
-
-
 def do_connect():
-    addr = socket.getaddrinfo('192.168.4.1', 8000)[0][-1]
     server_ip = '192.168.4.1'
     server_port = 8000
+    addr = socket.getaddrinfo(server_ip, server_port) [0][-1]
+
     sta_if = network.WLAN(network.STA_IF)
     
     if not sta_if.isconnected():
@@ -18,7 +15,7 @@ def do_connect():
             print(".", end="")
             time.sleep(.1)
         print()
-    print('network config:' , sta_if.ifconfig())
+    print('network config:', sta_if.ifconfig())
     
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((server_ip, server_port))
@@ -26,18 +23,19 @@ def do_connect():
     
     return client_socket, sta_if
     
-
-def send_message(bpm, spo2, temp, client_socket, sta_if):
-    
-    data = {'1': bpm, '2': spo2, '3': temp}
-    message = json.dumps(data).encode('utf-8') #.encode('utf-8') para un string se encodea
-    
-    print("owo")
-    client_socket.send(message)
-    print('Mensaje enviado:', message)
-
-def send_type(tipo, client_socket, sta_if):
-    
+def send_type(tipo, client_socket):
     message = json.dumps(tipo).encode('utf-8')
     client_socket.send(message)
+
+def send_message(client_socket,msg):
+    data = {'mensage': msg}
+    message = json.dumps(data).encode('utf-8') #.encode('utf-8') para un string se encodea
+    
+    client_socket.send(message) 
+    print('Mensaje enviado:', message)
+
+def receive_data(client_socket):
+    data = client_socket.recv(1024)
+    print('respuesta: ', data)
+    return data
 

@@ -2,7 +2,6 @@ from machine import UART
 from time import sleep
 uart = UART(1, 115200) # 1st argument: UART number: Hardware UART #1
 
-
 while True:
 # Write
     uart.write("1")
