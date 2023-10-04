@@ -2,7 +2,6 @@ import stationrtdcv2 as stationrtdc
 
 
 
-
 client_socket = stationrtdc.do_connect()
 
 tipo = "soy_rtdc"
