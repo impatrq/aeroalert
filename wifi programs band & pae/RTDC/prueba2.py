@@ -1,11 +1,10 @@
-caca = 1
-def hola():
-    global caca
-    print(caca)
-    caca = 123
 
-def uwu():
-    print(caca)
-    caca = 321
-hola()
-uwu()
+
+owo = 1
+i = 1
+while owo:
+    i = i +1
+    if i > 10:
+        owo = 0
+    print(i)
+
