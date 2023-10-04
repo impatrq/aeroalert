@@ -1,2 +1,0 @@
-import tiempo
-tiempo.caca()
