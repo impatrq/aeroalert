@@ -96,7 +96,7 @@ def escuchar_band(conn_band, addr):
     while True:
         message = conn_band.recv(1024)
         print()
-        print('Got a connection from band %s' % str(addr))
+        print('From Band %s' % str(addr))
     
         data = json.loads(message.decode('utf-8'))  #.decode('utf-8')
         bpm = data['1']
@@ -106,13 +106,14 @@ def escuchar_band(conn_band, addr):
         print("bpm={:02} spo={:02}% Temp={:02}°C puesta={:1}".format(bpm, spo, temp, conectado))
         evaluar_info(bpm, spo, temp, conectado, "band")    
 
+
 def escuchar_rtdc(conn_rtdc,addr):
     global aterrizar
     pin_flag.value(0)
     try:
         while True:
             data = conn_rtdc.recv(1024)
-            print('Got a connection from rtdc %s' % str(addr))
+            print('From RTDC %s' % str(addr))
 
             message = json.loads(data.decode('utf-8'))
             print(message)
@@ -179,7 +180,6 @@ def escuchar_PC(conn_PC, addr):
             elif info_PC["piloto"] == 2:
                 evaluar_info_piloto2(info_PC)
 
-
 def enviar_PC(conn, addr):
     global aterrizar, aterrizar_manual
     while True:
@@ -201,6 +201,7 @@ def enviar_PC(conn, addr):
             enviado = 0
 
         time.sleep(5)
+
 
 def evaluar_info_piloto2(info):
     global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2
@@ -531,7 +532,7 @@ time.sleep(1)
 
 
 _thread.start_new_thread(escuchar_tipos, ())
-print("captar rtdc y band activado")
+print("receptor activado")
 
 
 #_thread.start_new_thread(recibir_band2, (station3,))
