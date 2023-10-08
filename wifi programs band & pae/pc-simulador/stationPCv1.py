@@ -2,10 +2,10 @@ from wireless import Wireless
 import socket, json
 
 def do_connect():
-    ssid = 'ESP32'
-    password = 'aeroalert'
-    wire = Wireless()
-    wire.connect(ssid, password)
+    #ssid = 'ESP32'
+    #password = 'aeroalert'
+    #wire = Wireless()
+    #wire.connect(ssid, password)
     server_ip = '192.168.4.1'
     server_port = 8000
     addr = socket.getaddrinfo(server_ip, server_port) [0][-1]
@@ -21,7 +21,6 @@ def send_type(tipo, client_socket):
     client_socket.send(message)
 
 def send_message(client_socket, data):
-    
     # data = {"Piloto": 1,
     # "Somnolencia": 1,
     # "Pulso": 94,

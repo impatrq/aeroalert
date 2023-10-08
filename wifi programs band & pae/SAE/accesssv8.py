@@ -19,8 +19,8 @@ def definir_pines():
     global pin_activacion_manual, pin_test, pin_reaccion, pin_on_off
     global pin_boton_test, pin_boton_reaccion, pin_boton_on_off
 
-    21
-    19
+    #21
+    #19
     pin_luz_ambar = machine.Pin(23, machine.Pin.IN)             
     pin_luz_roja = machine.Pin(5, machine.Pin.IN)              
     pin_luz_test = machine.Pin(17, machine.Pin.IN)                      
@@ -70,9 +70,8 @@ def conectar_wifi():
 def escuchar_tipos():
     time.sleep(1)
     global s, ap, addr
-    
+    print("Escuchando tipos")
     while True:
-        print("Escuchando tipos")
         conn, addr = s.accept()
         print('Got a type connection from %s' % str(addr))
         message = conn.recv(1024)
@@ -106,7 +105,7 @@ def escuchar_band(conn_band, addr):
         print("bpm={:02} spo={:02}% Temp={:02}°C puesta={:1}".format(bpm, spo, temp, conectado))
         evaluar_info(bpm, spo, temp, conectado, "band")    
 
-
+aterrizar = aterrizar_manual = 0
 def escuchar_rtdc(conn_rtdc,addr):
     global aterrizar
     pin_flag.value(0)
@@ -153,35 +152,52 @@ def enviar_rtdc(conn, addr):
 def escuchar_PC(conn_PC, addr):
     global bloqueo_PC
     global dormido1
+    #pin_on_off.value(0)
     while True:
+        time.sleep(1)         
         if pin_on_off.value() == 1:
             pass
         else:
             message = conn_PC.recv(1024)
             print()
             print('Got a connection from PC %s' % str(addr))            # info_PC = {"Piloto":1, 
-            info_PC = json.loads(message.decode('utf-8'))               # "Somnolencia": 1, 
-            time.sleep(1)                                               # "Pulso":94, 
-            print("PC recibido")                                        # "Spo2":92,         
-            if info_PC["piloto"] == 1:                                  # "bloqueo":1,
-                if info_PC["bloqueo"] == 1:                             # "Muerte": 1}
-                    bloqueo_PC = 1
-                
-                    if info_PC["somnolencia"] == 1:
-                        dormido1 = 1            
-                    elif info_PC["somnolencia"] == 0:
-                        dormido1 = 0
-                    evaluar_info(info_PC["bpms"], info_PC["spo"], 15, 1, "uart")
-                
-                elif info_PC["bloqueo"] == 0:
-                    bloqueo_PC = 0
+            info_PC = json.loads(message.decode('utf-8'))               # "Somnolencia": 1, "Pulso":1, 
+            print("PC recibido")                                        # "Spo2":92, "Hipoxia":1,
 
-            
-            elif info_PC["piloto"] == 2:
-                evaluar_info_piloto2(info_PC)
+            usar = 1
+            if usar == 0:
+                usar = 1
+            elif usar == 1:
+                usar = 0
+                if info_PC["Piloto"] == 1:                                  
+                    if info_PC["Bpm"] != 0 and info_PC["Spo2"] != 0:        # "Bpm":76,
+                        bloqueo_PC = 1                                      # "Muerte": 1}
+                        evaluar_info(info_PC["Bpm"], info_PC["Spo2"], 15, 1, "PC")
+                    else:
+                        bloqueo_PC = 0
+
+                    if info_PC["Somnolencia"] == 1:
+                        dormido1 = 1            
+                    elif info_PC["Somnolencia"] == 0:
+                        dormido1 = 0
+
+                    if info_PC["Pulso"] == 1:
+                        bpm_altos1 = 1            
+                    elif info_PC["Pulso"] == 0:
+                        bpm_altos1 = 0
+
+                    if info_PC["Hipoxia"] == 1:
+                        spo_bajos1 = 1            
+                    elif info_PC["Hipoxia"] == 0:
+                        spo_bajos1 = 0
+
+                
+                elif info_PC["Piloto"] == 2:
+                    evaluar_info_piloto2(info_PC)
 
 def enviar_PC(conn, addr):
     global aterrizar, aterrizar_manual
+    enviado = 0
     while True:
         if aterrizar == 1 and enviado == 0:
             print("a PC: ", addr)
@@ -449,8 +465,8 @@ def activar_SAE():
 listabpm = []
 listaspo = []
 def evaluar_info(bpm, spo, temp, conectado, de):
-    global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1
-    global listabpm, listaspo
+    global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1, muerte1
+    global listabpm, listaspo           #se usa en distintos threads por eso global
     global bloqueo_PC
 
     if bloqueo_PC == 0 or de == "PC":          # se evalua la info si es de band sin bloqueo o la de uart 
@@ -501,6 +517,11 @@ def evaluar_info(bpm, spo, temp, conectado, de):
         else:
             bpm_bajos1 = 0
             bpm_altos1 = 0
+
+        if bpm == 0:
+            muerte1 = 1
+        elif bpm != 0:
+            muerte1 = 0
         
         #spo
         if spo <= 90:

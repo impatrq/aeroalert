@@ -9,12 +9,19 @@ import socket
 import stationPCv1 as station
 import threading, time
 
-client_socket = 1
+
+prueba = {'Piloto': '1', 'Muerte': '1', 'Hipoxia': '1', 'Somnolencia': '1', 'Pulso': '1', 'Bpm': 0, 'Spo2': 0}
+
+global client_socket
+
+
+# CONECTAR A UNA RED RANDOM ANTES DE CONECTARSE A LA ESP32
 def wifi():
     global client_socket
     print("intentando conectar")
     client_socket = station.do_connect()
-    print("conectado")
+    station.send_type("soy_PC", client_socket)
+    print("tipo enviado")
     while True:
         print("owo")
         instruccion = station.receive_data(client_socket)
@@ -27,8 +34,8 @@ def wifi():
         time.sleep(3)
 
 thread = threading.Thread(target=wifi, args=())
-print("uwu")
 thread.start()
+
 print("uwu")
 
 
@@ -104,20 +111,22 @@ class Barrita(UISlider):
 
 
 class Diccionario():
-    def __init__(self, Piloto:str, Hipoxia:str, Muerte:str, Somnolencia:str, Pulso:int, Saturacion:int ):
+    def __init__(self, Piloto:str, Hipoxia:str, Muerte:str, Somnolencia:str,Pulso2:str, Pulso:int, Saturacion:int ):
         super().__init__()
         self.Piloto_valor = Piloto
         self.Hipoxia_valor = Hipoxia 
         self.Muerte_valor = Muerte
         self.Somnolencia_valor = Somnolencia
         self.Pulso_valor = Pulso
+        self.Pulso_estado = Pulso2
         self.Saturacion_valor = Saturacion
         Dic = {
             'Piloto' : self.Piloto_valor,
             'Muerte' : self.Muerte_valor,
             'Hipoxia' : self.Hipoxia_valor,
             'Somnolencia' : self.Somnolencia_valor,
-            'Pulso' : self.Pulso_valor,
+            'Pulso' : self.Pulso_estado,
+            'Bpm' : self.Pulso_valor,
             'Spo2' : self.Saturacion_valor
         }
         self.dicc = Dic
@@ -131,8 +140,6 @@ class Diccionario():
 class MyView(arcade.View):
     def __init__(self):
         super().__init__()
-
-
 
         
         self.ui_manager = arcade.gui.UIManager(self.window)
@@ -180,31 +187,33 @@ class MyView(arcade.View):
         self.variable3 = True
         self.variable4 = True
 
-        self.boton4 = Boton("0 ","1 ")   #somnolencia
-        self.boton4.on_click = self.boton_clicked
-        box.add(self.boton4)
 
 
-        self.boton1 = Boton("0 ","1 ")          #pulsaciones
+        self.boton1 = Boton("0","1")          #pulsaciones
         self.boton1.on_click = self.boton_clicked1
         box.add(self.boton1)
 
-        self.boton2 = Boton("0 ","1 ")          #muerte
+        self.boton2 = Boton("0","1")          #muerte
         self.boton2.on_click = self.boton_clicked2
         box.add(self.boton2)
 
-        self.boton3 = Boton("0 ","1 ")          #hipoxia
+        self.boton3 = Boton("0","1")          #hipoxia
         self.boton3.on_click = self.boton_clicked3
         box.add(self.boton3)
 
-        
+        self.boton4 = Boton("0","1")          #somnolencia
+        self.boton4.on_click = self.boton_clicked
+        box.add(self.boton4)
 
-        
+        self.boton5 = Boton("a","b")
+        box2.add(self.boton5)
+        self.boton5.on_click = self.boton_clicked4
+
+                
 
         self.ui_manager.add(arcade.gui.UIAnchorWidget(child=box, anchor_y= "top", align_y=-150, align_x= -10))
         self.ui_manager3.add(arcade.gui.UIAnchorWidget(child=box2, anchor_y= "bottom", align_y= 20, align_x= 250))
 
-       
 
         self.valor1 = int
         self.valor2 = int
@@ -216,44 +225,53 @@ class MyView(arcade.View):
             pass
         elif self.variable3 == False:
             self.window.show_view(MenuView())
-            self.Dicc = Diccionario("2", self.boton3.On_button_on(), self.boton2.On_button_on(), self.boton4.On_button_on(),self.valor2, self.valor1)
-        
+            self.Dicc = Diccionario("2", self.boton3.On_button_on(), self.boton2.On_button_on(), self.boton4.On_button_on(), self.boton1.valor_boton(), self.valor2, self.valor1)
+
     def button4_on(self):
         if self.variable4 == True:
             self.variable4 = False
         elif self.variable4 == False:
             self.variable4 = True
             print("1")
-            
 
     def button3_clicked(self, *_):
         self.button3_on()
-
         if self.variable3 == True:
             self.variable3 = False
         elif self.variable3 == False:
             self.variable3 = True
-    
+        
     def button4_clicked(self, *_):
         self.button4_on()
 
     def boton_clicked(self, *_):
         self.boton4.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(),self.valor2, self.valor1)
-    
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
+
     def boton_clicked1(self, *_):
         self.boton1.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(),self.valor2, self.valor1)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
 
     def boton_clicked2(self, *_):
         self.boton2.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(),self.valor2, self.valor1)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
 
     def boton_clicked3(self, *_):
         self.boton3.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(),self.valor2, self.valor1)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
 
-
+    def boton_clicked4(self, *_):
+        self.boton5.On_button_on()
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
+        
+        
+        
+        station.send_message(client_socket, prueba)
+        
+        
+        
+        
+        #solo se envia en este
     def on_draw(self):
         self.clear()
         
@@ -264,7 +282,7 @@ class MyView(arcade.View):
 
         arcade.draw_text("Pulso", 230 , 240, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
 
-        arcade.draw_text("Somnolencia", 115 , 240, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Somnolencia", 112 , 240, arcade.color.WHITE, font_size=19, font_name= "calibri" ,anchor_x="center")
 
 
         arcade.draw_text("Piloto 2", 300 , 320, arcade.color.WHITE, font_size=26, font_name= "calibri" ,anchor_x="center")
@@ -336,20 +354,20 @@ class MenuView(arcade.View):
         self.variable3 = True
         self.variable4 = True
 
-        self.boton4 = Boton("0 ","1 ")          #dormido
+        self.boton4 = Boton("0","1")          #dormido
         self.boton4.on_click = self.boton_clicked
         box.add(self.boton4)
         
 
-        self.boton1 = Boton("0 ","1 ")          #muerto
+        self.boton1 = Boton("0","1")          #muerto
         box.add(self.boton1)
         self.boton1.on_click = self.boton_clicked1
 
-        self.boton2 = Boton("0 ","1 ")          #pulso creo
+        self.boton2 = Boton("0","1")          #pulso creo
         box.add(self.boton2)
         self.boton2.on_click = self.boton_clicked2
 
-        self.boton3 = Boton("0 ","1 ")          #hipoxia
+        self.boton3 = Boton("0","1")          #hipoxia
         box.add(self.boton3)
         self.boton3.on_click = self.boton_clicked3
 
@@ -382,7 +400,7 @@ class MenuView(arcade.View):
             pass
         elif self.variable3 == False:
             self.window.show_view(MyView())
-            self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(),self.valor2, self.valor1)
+            self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), 0, 0)
 
     def button4_on(self):
         if self.variable4 == True:
@@ -405,23 +423,31 @@ class MenuView(arcade.View):
     
     def boton_clicked(self, *_):
         self.boton4.On_button_on()
-        self.Dicc = Diccionario("1", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(),self.valor2, self.valor1)
+        self.Dicc = Diccionario("1", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
     
     def boton_clicked1(self, *_):
         self.boton1.On_button_on()
-        self.Dicc = Diccionario("1", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(),self.valor2, self.valor1)
+        self.Dicc = Diccionario("1", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
 
     def boton_clicked2(self, *_):
         self.boton2.On_button_on()
-        self.Dicc = Diccionario("1", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(),self.valor2, self.valor1)
+        self.Dicc = Diccionario("1", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
 
     def boton_clicked3(self, *_):
         self.boton3.On_button_on()
-        self.Dicc = Diccionario("1", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(),self.valor2, self.valor1)
+        self.Dicc = Diccionario("1", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
     
     def boton_clicked4(self, *_):
         self.boton5.On_button_on()
-        self.Dicc = Diccionario("1", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(),self.valor2, self.valor1)
+        self.Dicc = Diccionario("1", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
+        
+        
+        
+        
+        station.send_message(client_socket, prueba)
+        
+
+
 
 
 
@@ -438,7 +464,7 @@ class MenuView(arcade.View):
 
         arcade.draw_text("Pulso", 240 , 310, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
 
-        arcade.draw_text("Somnolencia", 130 , 310, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Somnolencia", 112 , 310, arcade.color.WHITE, font_size=19, font_name= "calibri" ,anchor_x="center")
 
         arcade.draw_text("Pulsaciones", 300 , 80, arcade.color.WHITE, font_size=15, font_name= "calibri" ,anchor_x="center")
 
