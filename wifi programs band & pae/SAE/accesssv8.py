@@ -131,11 +131,17 @@ def escuchar_rtdc(conn_rtdc,addr):
         #recibir rtdc intentional loss se prende luz roja parpadeando
 
 def enviar_rtdc(conn, addr):
-    global codigo
+    global codigo, solicitar, info_aeropuerto
     alerta_enviada = 0
     try:
         while True:
             print("enviando a RTDC: ", addr)
+            
+            if solicitar == 1:
+                conn.send(json.dumps("solicito aterrizaje").encode('utf-8'))
+                solicitar = 0
+                info_aeropuerto = conn.recv(1024)
+
             codigo = actualizar_codigo()
             codigo_enviar = json.dumps(codigo).encode('utf-8')
             conn.send(codigo_enviar)
@@ -217,23 +223,38 @@ def escuchar_PC(conn_PC, addr):
                 estados["Piloto2"] = info_PC
 
 def enviar_PC(conn, addr):
-    global aterrizar, aterrizar_manual
+    global aterrizar, aterrizar_manual, solicitar, info_aeropuerto
     enviado = 0
     while True:
         # pedir permiso para aterrizar antes a rtdc
 
 
         if aterrizar == 1 and enviado == 0:
+            solicitar = 1
             print("a PC: ", addr)
             instruccion = json.dumps("ATERRIZAR").encode('utf-8')
             conn.send(instruccion)
             enviado = 1
             
+            while True:
+                if info_aeropuerto != 0:
+                    conn.send(json.dumps(info_aeropuerto).encode('utf-8'))
+                    info_aeropuerto = 0
+                    break
+
         elif aterrizar_manual == 1 and enviado == 0:
             print("a PC: ", addr)
+            solicitar = 1
             instruccion = json.dumps("ATERRIZAR").encode('utf-8')
             conn.send(instruccion)
             enviado = 1
+
+            while True:
+                if info_aeropuerto != 0:        #hasta que reciba la info de la RTDC
+                    conn.send(json.dumps(info_aeropuerto).encode('utf-8'))
+                    info_aeropuerto = 0
+                    break
+
 
         elif aterrizar_manual == 0 and aterrizar == 0 and enviado == 1:
             instruccion = json.dumps("NO ATERRIZAR").encode('utf-8')
@@ -516,7 +537,7 @@ def activar_SAE():
                 pin_luz_roja.ambar(0)
 
                 
-                
+
 
 listabpm = []
 listaspo = []
@@ -527,7 +548,7 @@ def evaluar_info(bpm, spo, temp, conectado, de):
 
 
 
-    if bloqueo_PC == 0 or de == "PC":          # se evalua la info si es de band sin bloqueo o la de uart 
+    if bloqueo_PC == 0 or de == "PC":          # se evalua la info si es de band sin bloqueo o la de PC
         #Listas de pulsaciones y oxigeno
         
         #--------------------------------------------------------------------------
