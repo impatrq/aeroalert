@@ -127,6 +127,9 @@ def escuchar_rtdc(conn_rtdc,addr):
         # Recibe los comandos de vuelo enviados por la rtdc 
         # HAY QUE EVALUAR ESTA INFORMACION Y MANDAR LO CORRESPONDIENTE AL XPLANE   
 
+
+        #recibir rtdc intentional loss se prende luz roja parpadeando
+
 def enviar_rtdc(conn, addr):
     global codigo
     alerta_enviada = 0
@@ -151,10 +154,18 @@ def enviar_rtdc(conn, addr):
 
 def escuchar_PC(conn_PC, addr):
     global bloqueo_PC
-    global dormido1
+    global dormido1, spo_bajos1, bpm_altos1, muerte1
     #pin_on_off.value(0)
+    estados = {"Piloto1":{"Somnolencia":1, "Pulso":1, "Hipoxia": 1, "Muerte": 1, "Spo2": 96, "Bpm":80},
+               "Piloto2":{"Somnolencia":1, "Pulso":1, "Hipoxia": 1, "Muerte": 1, "Spo2": 96, "Bpm":80}
+               }
+
+
+    
+
+    usar = 1
     while True:
-        time.sleep(1)         
+        time.sleep(3)         
         if pin_on_off.value() == 1:
             pass
         else:
@@ -163,42 +174,55 @@ def escuchar_PC(conn_PC, addr):
             print('Got a connection from PC %s' % str(addr))            # info_PC = {"Piloto":1, 
             info_PC = json.loads(message.decode('utf-8'))               # "Somnolencia": 1, "Pulso":1, 
             print("PC recibido")                                        # "Spo2":92, "Hipoxia":1,
+ 
 
-            usar = 1
-            if usar == 0:
-                usar = 1
-            elif usar == 1:
-                usar = 0
-                if info_PC["Piloto"] == 1:                                  
-                    if info_PC["Bpm"] != 0 and info_PC["Spo2"] != 0:        # "Bpm":76,
-                        bloqueo_PC = 1                                      # "Muerte": 1}
-                        evaluar_info(info_PC["Bpm"], info_PC["Spo2"], 15, 1, "PC")
+            if info_PC == "1":
+                if usar == 0:
+                    usar = 1
+                elif usar == 1: 
+                    usar = 0
+                                                     
+                    if estados["Piloto1"]["Bpm"] != 0 and estados["Spo2"] != 0:
+                        bloqueo_PC = 1                                      
+                        evaluar_info(estados["Piloto1"]["Bpm"], estados["Piloto1"]["Spo2"], 15, 1, "PC")
                     else:
                         bloqueo_PC = 0
+                    
+                        if estados["Piloto1"]["Pulso"] == 1:
+                            bpm_altos1 = 1            
+                        else:
+                            bpm_altos1 = 0
 
-                    if info_PC["Somnolencia"] == 1:
+                        if estados["Piloto1"]["Hipoxia"] == 1:
+                            spo_bajos1 = 1            
+                        else:
+                            spo_bajos1 = 0
+
+                        if estados["Piloto1"]["Muerte"] == 1:
+                            muerte1 = 1
+                        else:
+                            muerte1 = 0
+                    if estados["Piloto1"]["Somnolencia"] == 1:
                         dormido1 = 1            
-                    elif info_PC["Somnolencia"] == 0:
+                    else:
                         dormido1 = 0
-
-                    if info_PC["Pulso"] == 1:
-                        bpm_altos1 = 1            
-                    elif info_PC["Pulso"] == 0:
-                        bpm_altos1 = 0
-
-                    if info_PC["Hipoxia"] == 1:
-                        spo_bajos1 = 1            
-                    elif info_PC["Hipoxia"] == 0:
-                        spo_bajos1 = 0
-
                 
-                elif info_PC["Piloto"] == 2:
-                    evaluar_info_piloto2(info_PC)
+                    evaluar_info_piloto2(estados["Piloto2"])
+
+            elif info_PC["Piloto"] == 1:
+                info_PC.pop("Piloto")
+                estados["Piloto1"] = info_PC
+            elif info_PC["Piloto"] == 2:
+                info_PC.pop("Piloto")
+                estados["Piloto2"] = info_PC
 
 def enviar_PC(conn, addr):
     global aterrizar, aterrizar_manual
     enviado = 0
     while True:
+        # pedir permiso para aterrizar antes a rtdc
+
+
         if aterrizar == 1 and enviado == 0:
             print("a PC: ", addr)
             instruccion = json.dumps("ATERRIZAR").encode('utf-8')
@@ -220,18 +244,25 @@ def enviar_PC(conn, addr):
 
 
 def evaluar_info_piloto2(info):
-    global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2
-    if info["Pulso"] >= 140:
+    global bpm_altos2, spo_bajos2, dormido2, muerte2
+    if info["Pulso"] == 1:
         bpm_altos2 = 1
-        bpm_bajos2 = 0
-    elif info["Pulso"] <= 60:
-        bpm_bajos2 = 1
+    else:
         bpm_altos2 = 0
     
-    if info["Spo2"] >= 90:
-        spo_bajos2 = 0
-    elif info["Spo2"] <= 90:
+    if info["Hipoxia"] == 1:
         spo_bajos2 = 1
+    else:
+        spo_bajos2 = 0
+
+    if info["Somnolencia"] == 1:
+        dormido2 = 1
+    else:
+        dormido2 = 0
+    if info["Muerte"] == 1:
+        muerte2 = 1
+    else:
+        muerte2 = 0
 
     return
 
@@ -239,6 +270,7 @@ def evaluar_info_piloto2(info):
 
 bpm_bajos1 = bpm_altos1 = spo_bajos1 = dormido1 = temp_baja1 = temp_alta1 = 0 
 bpm_bajos2 = bpm_altos2 = spo_bajos2 = dormido2 = temp_baja2 = temp_alta2 = 0
+muerte1 = muerte2 = 0
 manual = 0
 codigo = [
         bpm_altos1, bpm_altos2, 
@@ -247,13 +279,14 @@ codigo = [
         spo_bajos1, spo_bajos2, 
         temp_alta1, temp_alta2, 
         temp_baja1, temp_baja2,
+        muerte1, muerte2, 
         manual]
 
 
 def actualizar_codigo():
     global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1
     global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2 # se modifican directamente
-    global manual
+    global muerte1, muerte2, manual
     global codigo
     manual = pin_activacion_manual.value()
     codigo = [
@@ -263,6 +296,7 @@ def actualizar_codigo():
               spo_bajos1, spo_bajos2, 
               temp_alta1, temp_alta2, 
               temp_baja1, temp_baja2,
+              muerte1, muerte2, 
               manual
               ]
     return codigo
@@ -347,18 +381,28 @@ def activar_SAE():
             elif ambar_titilando == 0:
                 pin_luz_ambar.value(0)
 
+
+
             # Boton tipo switch
             # Si el boton de reaccion cambio de valor no va a valer lo que valia antes
             if pin_reaccion.value() != tocado:
                 tocado = pin_reaccion.value()                       # Guarda el valor actual del pin
                 pin_boton_reaccion = 1                              # Pone en 1 la variable que se va a usar para saber si se presiono
                 
+
+            #muerte 1 luz amarilla fija
+            #2 muertos luz roja fija y sonido si por 30 segs no boton de reaccion  
+            #avisa a rtdc emergencia 2 muertso
+
+
+
+
             # Protocolo hipoxia
             if codigo[6] and codigo[7]:                       # Si ambos tienen 6 y 7 activos (hipoxia)
 
                 if alarmas_off_spo == 0:                            # Si las alarmas no estan desactivadas
                     pin_luz_roja.value(1)                           # Activa luz alarma (hipoxia?
-                    # Alarma sonora tmb deberia
+# Alarma sonora tmb deberia     alarma = 1
                     
                     # Si el piloto toca el boton de reaccion desactiva las alarmas, no deja que tomen el control
                     # Tmb inicia un contador de 60segs que estara sin las alarmas
@@ -390,11 +434,11 @@ def activar_SAE():
             elif codigo[6] or codigo[7]:                      # Sino si 1 tiene spo2 en 1
                 print("1 hipoxia")     
                 pin_luz_roja.value(1)                               # No se si sea la luz roja de todos modos
-                # Apagar alarma sonora      
+# Apagar alarma sonora      alarma = 0
             elif not codigo[6] and not codigo[7]:                     # Sino si ninguno tiene spo2 en 1
                 print("no hipoxia")
                 pin_luz_roja.value(0)
-                
+  # Apagar alarma sonora      alarma = 0              
 
 
             #------------------------------------------
@@ -406,14 +450,14 @@ def activar_SAE():
             #codigo 3 pulsaciones bajas piloto 2
             
             #protocolo pulsaciones raras
-            if codigo[0] and codigo[1] or codigo[2] and codigo[3] or codigo[0] and codigo[3] or codigo[1] and codigo[2]:                       # Si ambos tienen    
+            if codigo[0] and codigo[1] or codigo[2] and codigo[3] or codigo[0] and codigo[3] or codigo[1] and codigo[2]:   # Si ambos tienen    
                 if alarmas_off_bpm != 1:                          # Si las alarmas no estan desactivadas
                     pin_luz_ambar.value(1)                          # DEBERIA TITILAR
                     ambar_titilando = 1
 
                     # Alarma sonora tmb
 
-                    if pin_boton_reaccion == 1:                     # Si el boton esta presionado
+                    if pin_boton_reaccion == 1:                   # Si el boton esta presionado
                         alarmas_off_bpm = 1                       # DESACTIVA las alarmas
                         tomar_control = 0                           # No permite que tomen el control
                         if contador_iniciado_60_bpm != 1:         # Si no esta iniciado el contador 60s
@@ -440,11 +484,12 @@ def activar_SAE():
                 print("bpm 1") 
                 pin_luz_ambar.value(1)                              # DEBERIA TITILAR
                 ambar_titilando = 1 
+            #alarma = 0
             elif not codigo[0] and not codigo[1] and not codigo[2] and not codigo[3]:          # Si ninguno tiene pulsaciones raras
                 print("no bpm")
                 pin_luz_ambar.value(0)                              # DEBE DEJAR DE TITILAR
                 ambar_titilando = 0
-            
+            #alarma = 0
             
             #------------------------------------------
             if ambar_titilando != 1:                                # Si no esta titilando
@@ -457,10 +502,21 @@ def activar_SAE():
 
             if pin_boton_reaccion == 1:
                 pin_boton_reaccion = 0
+            
+            if codigo[12] and codigo[13]:
+                print("ambos muertos")
+                pin_luz_roja.value(1)
+            elif codigo[12] or codigo[13]:
+                print("uno muerto")
+                pin_luz_roja.value(0)
+                pin_luz_ambar.value(1)
+            else:
+                print("todos vivos")
+                pin_luz_roja.value(0)
+                pin_luz_roja.ambar(0)
 
-
-
-
+                
+                
 
 listabpm = []
 listaspo = []
@@ -469,14 +525,17 @@ def evaluar_info(bpm, spo, temp, conectado, de):
     global listabpm, listaspo           #se usa en distintos threads por eso global
     global bloqueo_PC
 
+
+
     if bloqueo_PC == 0 or de == "PC":          # se evalua la info si es de band sin bloqueo o la de uart 
         #Listas de pulsaciones y oxigeno
+        
+        #--------------------------------------------------------------------------
         listabpm.append(bpm)
         listabpm = listabpm[-48:]
         listaspo.append(spo)
         listaspo = listaspo[-48:] #12 valores cada uno cada 5 segs son 60 segs en total
 
-        
         #suma de primeros 7 digitos de la lista
         bpm_prom_inicial = sum(listabpm[0:7])
         #suma de los ultimos 8 digitos de la lista
@@ -484,11 +543,9 @@ def evaluar_info(bpm, spo, temp, conectado, de):
         #diferencia entre ambos
         bpm_dif = bpm_prom_actual - bpm_prom_inicial
         
-
         spo_prom_inicial = sum(listabpm[0:7])
         spo_prom_actual = sum(listabpm[:-8:-1])
         spo_dif = spo_prom_actual - spo_prom_inicial
-
 
         if spo_dif >= 3 and spo_dif <= 8:
             if bpm_dif >= 15 and bpm_dif <= 35:
@@ -497,7 +554,6 @@ def evaluar_info(bpm, spo, temp, conectado, de):
                 bpm_dormido = bpm
                 spo_dormido = spo
 
-
         if dormido1 == 1:
             bpm_dormido_dif = bpm - bpm_dormido
             spo_dormido_dif = spo - spo_dormido
@@ -505,9 +561,9 @@ def evaluar_info(bpm, spo, temp, conectado, de):
                 if spo_dormido_dif >= 3:
                     print("esta despierto ahora")
                     dormido1 = 0
-        #despierto
-
+        #--------------------------------------------------------------------------
         #bpms
+            
         if bpm < 60:
             bpm_bajos1 = 1
             bpm_altos1 = 0

@@ -7,6 +7,7 @@ from arcade.gui.events import UIOnChangeEvent
 
 import socket
 import stationPCv1 as station
+import json
 import threading, time
 
 
@@ -24,12 +25,14 @@ def wifi():
     print("tipo enviado")
     while True:
         print("owo")
-        instruccion = station.receive_data(client_socket)
+        data = station.receive_data(client_socket)
+        instruccion = json.loads(data.decode('utf-8'))
+
         if instruccion == "ATERRIZAR":
-            #send al xplane
+                                            # mandar al xplane
             print("aterrizar")
         elif instruccion== "NO ATERRIZAR":
-            #send al xplane
+                                            # mandar al xplane
             print("no aterrizar")
         time.sleep(3)
 
@@ -43,8 +46,8 @@ global Dicc
 class Boton(arcade.gui.UITextureButton):
     def __init__(self, mensa_Al:str, mensa_BA:str):
         super().__init__(
-            texture = arcade.load_texture("pc-simulador/llave.png"),
-            texture_pressed = arcade.load_texture("pc-simulador/llave.png")
+            texture = arcade.load_texture("llave.png"),
+            texture_pressed = arcade.load_texture("llave.png")
         )
 
         self.variable = True
@@ -52,7 +55,7 @@ class Boton(arcade.gui.UITextureButton):
         self.mensajeA = mensa_Al
         self.mensajeB = mensa_BA
 
-        self.mensaje = str
+        self.mensaje = self.mensajeA
 
         self.on_click = self.button_clicked
         self.scale(0.17)
@@ -60,13 +63,13 @@ class Boton(arcade.gui.UITextureButton):
     def On_button_on(self):
         if self.variable == True:
             self.texture = \
-                arcade.load_texture("pc-simulador/llave2.png")
+                arcade.load_texture("llave2.png")
             self.variable = False
             self.mensaje = self.mensajeB
 
         elif self.variable == False:
             self.texture = \
-                arcade.load_texture("pc-simulador/llave.png")
+                arcade.load_texture("llave.png")
             self.variable = True
             self.mensaje = self.mensajeA
 
@@ -111,7 +114,7 @@ class Barrita(UISlider):
 
 
 class Diccionario():
-    def __init__(self, Piloto:str, Hipoxia:str, Muerte:str, Somnolencia:str,Pulso2:str, Pulso:int, Saturacion:int ):
+    def __init__(self, Piloto:"0", Hipoxia:"0", Muerte:"0", Somnolencia:"0",Pulso2:"0", Pulso:0, Saturacion:0 ):
         super().__init__()
         self.Piloto_valor = Piloto
         self.Hipoxia_valor = Hipoxia 
@@ -154,7 +157,7 @@ class MyView(arcade.View):
         box2 = arcade.gui.UIBoxLayout(vertical = True, space_between= 30)
 
 
-        normal_texture1 = arcade.load_texture("pc-simulador/boton2.png")
+        normal_texture1 = arcade.load_texture("boton2.png")
 
 
 
@@ -233,6 +236,8 @@ class MyView(arcade.View):
         elif self.variable4 == False:
             self.variable4 = True
             print("1")
+            info = json.loads(self.Dicc.encode('utf-8'))
+            station.send_message(client_socket, info)
 
     def button3_clicked(self, *_):
         self.button3_on()
@@ -265,8 +270,11 @@ class MyView(arcade.View):
         self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
         
         
+        print("enviar 1")
+        a = "1"
+        info = json.loads(a.encode('utf-8'))
+        station.send_message(client_socket, info)
         
-        station.send_message(client_socket, prueba)
         
         
         
@@ -323,7 +331,7 @@ class MenuView(arcade.View):
 
 
 
-        normal_texture1 = arcade.load_texture("pc-simulador/boton2.png")
+        normal_texture1 = arcade.load_texture("boton2.png")
 
 
 
@@ -407,7 +415,8 @@ class MenuView(arcade.View):
             self.variable4 = False
         elif self.variable4 == False:
             self.variable4 = True
-            print("1")  
+            print("1")
+            station.send_message(client_socket, prueba)
     
 
     def button3_clicked(self, *_):
@@ -443,8 +452,8 @@ class MenuView(arcade.View):
         
         
         
-        
-        station.send_message(client_socket, prueba)
+        print("enviar 1")
+        station.send_message(client_socket, "1")
         
 
 
