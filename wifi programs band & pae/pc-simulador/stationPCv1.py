@@ -27,10 +27,13 @@ def send_message(client_socket, data):
     # "Spo2": 92,
     # "bloqueo": 1,
     # "Muerte": 1}
-    message = json.dumps(data).encode('utf-8') #.encode('utf-8') para un string se encodea
-    
-    client_socket.send(message) 
-    print('enviado:', message)
+    try:
+        message = json.dumps(data).encode('utf-8') #.encode('utf-8') para un string se encodea
+        
+        client_socket.send(message) 
+        print('enviado:', message)
+    except:
+        print("error: ", data)
 
 def receive_data(client_socket):
     data = client_socket.recv(1024)

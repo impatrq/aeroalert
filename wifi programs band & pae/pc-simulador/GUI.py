@@ -11,7 +11,6 @@ import json
 import threading, time
 
 
-prueba = {'Piloto': '1', 'Muerte': '1', 'Hipoxia': '1', 'Somnolencia': '1', 'Pulso': '1', 'Bpm': 0, 'Spo2': 0}
 
 global client_socket
 
@@ -123,7 +122,7 @@ class Diccionario():
         self.Pulso_valor = Pulso
         self.Pulso_estado = Pulso2
         self.Saturacion_valor = Saturacion
-        Dic = {
+        self.Dic = {
             'Piloto' : self.Piloto_valor,
             'Muerte' : self.Muerte_valor,
             'Hipoxia' : self.Hipoxia_valor,
@@ -132,8 +131,8 @@ class Diccionario():
             'Bpm' : self.Pulso_valor,
             'Spo2' : self.Saturacion_valor
         }
-        self.dicc = Dic
-        print(Dic)
+        self.dicc = self.Dic
+        print(self.Dic)
 
     def valor (self):
         return self.dicc
@@ -228,16 +227,16 @@ class MyView(arcade.View):
             pass
         elif self.variable3 == False:
             self.window.show_view(MenuView())
-            self.Dicc = Diccionario("2", self.boton3.On_button_on(), self.boton2.On_button_on(), self.boton4.On_button_on(), self.boton1.valor_boton(), self.valor2, self.valor1)
+            self.Dicc = Diccionario("2", self.boton3.On_button_on(), self.boton2.On_button_on(), self.boton4.On_button_on(), self.boton1.valor_boton(),0,0)
 
     def button4_on(self):
         if self.variable4 == True:
             self.variable4 = False
         elif self.variable4 == False:
             self.variable4 = True
-            print("1")
-            info = json.loads(self.Dicc.encode('utf-8'))
-            station.send_message(client_socket, info)
+
+            dic = self.Dicc.Dic
+            station.send_message(client_socket, dic)
 
     def button3_clicked(self, *_):
         self.button3_on()
@@ -251,29 +250,26 @@ class MyView(arcade.View):
 
     def boton_clicked(self, *_):
         self.boton4.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), 0,0)
 
     def boton_clicked1(self, *_):
         self.boton1.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), 0,0)
 
     def boton_clicked2(self, *_):
         self.boton2.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), 0,0)
 
     def boton_clicked3(self, *_):
         self.boton3.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), 0,0)
 
     def boton_clicked4(self, *_):
         self.boton5.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), 0,0)
         
         
-        print("enviar 1")
-        a = "1"
-        info = json.loads(a.encode('utf-8'))
-        station.send_message(client_socket, info)
+        station.send_message(client_socket, "1")
         
         
         
@@ -415,8 +411,10 @@ class MenuView(arcade.View):
             self.variable4 = False
         elif self.variable4 == False:
             self.variable4 = True
-            print("1")
-            station.send_message(client_socket, prueba)
+
+            dic = self.Dicc.Dic
+            station.send_message(client_socket, dic)
+
     
 
     def button3_clicked(self, *_):
@@ -452,7 +450,6 @@ class MenuView(arcade.View):
         
         
         
-        print("enviar 1")
         station.send_message(client_socket, "1")
         
 
