@@ -2,7 +2,7 @@ import serial
 from time import sleep
 
 ser = serial.Serial(
-    port='COM3',
+    port='/dev/ttyACM0',
     baudrate=115200,
     timeout=0
     )
@@ -14,7 +14,7 @@ print("connected to: " + ser.portstr)
 
 while True:
 
-    leer = ser.read(1)
+    leer = ser.readline()
     read = leer.decode('utf-8')
     if read:
         print(read)
