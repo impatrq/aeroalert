@@ -3,19 +3,12 @@ import arcade.gui
 from arcade.experimental.uislider import UISlider
 from arcade.gui import UIManager, UIAnchorWidget, UILabel
 from arcade.gui.events import UIOnChangeEvent
+#pip install arcade     y   pip install wireless
 
-
-import socket
 import stationPCv1 as station
 import json
 import threading, time
 
-
-
-global client_socket
-
-
-# CONECTAR A UNA RED RANDOM ANTES DE CONECTARSE A LA ESP32
 def wifi():
     global client_socket
     print("intentando conectar")
@@ -23,22 +16,19 @@ def wifi():
     station.send_type("soy_PC", client_socket)
     print("tipo enviado")
     while True:
-        print("owo")
         data = station.receive_data(client_socket)
         instruccion = json.loads(data.decode('utf-8'))
 
-        if instruccion == "ATERRIZAR":
-                                            # mandar al xplane
-            print("aterrizar")
+        if instruccion == "ATERRIZAR":     
+            print("aterrizar")              # mandar al xplane
         elif instruccion== "NO ATERRIZAR":
-                                            # mandar al xplane
-            print("no aterrizar")
-        time.sleep(3)
+            print("no aterrizar")           # mandar al xplane
+        time.sleep(1)
 
-thread = threading.Thread(target=wifi, args=())
-thread.start()
+thread = threading.Thread(target=wifi, args=())  
+# Inicia un proceso en paralelo para recibir informacion del SAE
+thread.start()                                   
 
-print("uwu")
 
 
 global Dicc 
@@ -88,8 +78,6 @@ class Barrita(UISlider):
             max_value= ValorM,
             min_value= ValorMin,
             size_hint_min=X
-            
-
         )
         self.manager = UIManager()
         self.manager.enable()
@@ -101,7 +89,6 @@ class Barrita(UISlider):
         def on_change(event: UIOnChangeEvent):
             self.label.text = f"{self.value:02.0f}"
             self.a = self.value
-            # print(self.value, self.a)
             self.label.fit_content()
             self.valor()
             
@@ -113,15 +100,15 @@ class Barrita(UISlider):
 
 
 class Diccionario():
-    def __init__(self, Piloto:"0", Hipoxia:"0", Muerte:"0", Somnolencia:"0",Pulso2:"0", Pulso:0, Saturacion:0 ):
+    def __init__(self, Piloto:"0", Hipoxia:"0", Muerte:"0", Somnolencia:"0",Pulso2:"0", Pulso:int, Saturacion:int):
         super().__init__()
         self.Piloto_valor = Piloto
         self.Hipoxia_valor = Hipoxia 
         self.Muerte_valor = Muerte
         self.Somnolencia_valor = Somnolencia
-        self.Pulso_valor = Pulso
+        self.Pulso_valor = int(Pulso)
         self.Pulso_estado = Pulso2
-        self.Saturacion_valor = Saturacion
+        self.Saturacion_valor = int(Saturacion)
         self.Dic = {
             'Piloto' : self.Piloto_valor,
             'Muerte' : self.Muerte_valor,
@@ -143,11 +130,9 @@ class MyView(arcade.View):
     def __init__(self):
         super().__init__()
 
-        
         self.ui_manager = arcade.gui.UIManager(self.window)
         self.ui_manager2 = arcade.gui.UIManager(self.window)
         self.ui_manager3 = arcade.gui.UIManager(self.window)
-
 
         self.manager = UIManager()
         self.manager.enable()
@@ -157,8 +142,6 @@ class MyView(arcade.View):
 
 
         normal_texture1 = arcade.load_texture("boton2.png")
-
-
 
         self.button3 = arcade.gui.UITextureButton(
             texture=normal_texture1
@@ -268,27 +251,16 @@ class MyView(arcade.View):
         self.boton5.On_button_on()
         self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), 0,0)
         
-        
-        station.send_message(client_socket, "1")
-        
-        
-        
-        
-        
-        #solo se envia en este
+        station.send_message(client_socket, "1")        # Envia un 1 para que use la informacion anterior
+
     def on_draw(self):
         self.clear()
         
         #Arriba
-        arcade.draw_text("Hipoxia", 465 , 240, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
-        
-        arcade.draw_text("Muerte", 345 , 240, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
-
-        arcade.draw_text("Pulso", 230 , 240, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
-
-        arcade.draw_text("Somnolencia", 112 , 240, arcade.color.WHITE, font_size=19, font_name= "calibri" ,anchor_x="center")
-
-
+        arcade.draw_text("Somnolencia", 465 , 240, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Hipoxia", 345 , 240, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Muerte", 230 , 240, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Pulso", 112 , 240, arcade.color.WHITE, font_size=19, font_name= "calibri" ,anchor_x="center")
         arcade.draw_text("Piloto 2", 300 , 320, arcade.color.WHITE, font_size=26, font_name= "calibri" ,anchor_x="center")
 
 
@@ -325,12 +297,7 @@ class MenuView(arcade.View):
         box1 = arcade.gui.UIBoxLayout(vertical = False, space_between= 30)
         box2 = arcade.gui.UIBoxLayout(vertical = True, space_between= 30)
 
-
-
         normal_texture1 = arcade.load_texture("boton2.png")
-
-
-
 
         self.button3 = arcade.gui.UITextureButton(
             texture=normal_texture1
@@ -361,13 +328,12 @@ class MenuView(arcade.View):
         self.boton4 = Boton("0","1")          #dormido
         self.boton4.on_click = self.boton_clicked
         box.add(self.boton4)
-        
 
         self.boton1 = Boton("0","1")          #muerto
         box.add(self.boton1)
         self.boton1.on_click = self.boton_clicked1
 
-        self.boton2 = Boton("0","1")          #pulso creo
+        self.boton2 = Boton("0","1")          #pulso 
         box.add(self.boton2)
         self.boton2.on_click = self.boton_clicked2
 
@@ -375,7 +341,7 @@ class MenuView(arcade.View):
         box.add(self.boton3)
         self.boton3.on_click = self.boton_clicked3
 
-        self.boton5 = Boton("desbloqueado","bloqueado")
+        self.boton5 = Boton("usar","usar")
         box1.add(self.boton5)
         self.boton5.on_click = self.boton_clicked4
         
@@ -413,7 +379,7 @@ class MenuView(arcade.View):
             self.variable4 = True
 
             dic = self.Dicc.Dic
-            station.send_message(client_socket, dic)
+            station.send_message(client_socket, dic)        # Envia la informacion cuando se toca el boton de abajo a la derecha
 
     
 
@@ -450,12 +416,8 @@ class MenuView(arcade.View):
         
         
         
-        station.send_message(client_socket, "1")
+        station.send_message(client_socket, "1")            # Envia la informacion cuando se toca el boton de abajo a la derecha
         
-
-
-
-
 
     def on_draw(self):
         self.clear()
@@ -475,8 +437,6 @@ class MenuView(arcade.View):
         arcade.draw_text("Pulsaciones", 300 , 80, arcade.color.WHITE, font_size=15, font_name= "calibri" ,anchor_x="center")
 
         arcade.draw_text("Saturacion de oxigeno", 300 , 180, arcade.color.WHITE, font_size=15, font_name= "calibri" ,anchor_x="center")
-
-
 
 
         arcade.draw_text("Piloto 1", 300 , 340, arcade.color.WHITE, font_size=26, font_name= "calibri" ,anchor_x="center")

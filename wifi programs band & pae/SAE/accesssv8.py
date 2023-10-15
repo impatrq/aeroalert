@@ -14,45 +14,28 @@ from machine import Timer, UART
 
 
 def definir_pines():
-
     global pin_luz_ambar, pin_luz_roja, pin_luz_test, pin_flag
     global pin_activacion_manual, pin_test, pin_reaccion, pin_on_off
-    global pin_boton_test, pin_boton_reaccion, pin_boton_on_off
+    global pin_boton_test, pin_boton_reaccion
 
-    #21
-    #19   1.29 14
-    # 3.21 15
-    #3.28 0
-    #3.3 5
-    #
     pin_luz_ambar = machine.Pin(17, machine.Pin.OUT)             
     pin_luz_roja = machine.Pin(4, machine.Pin.OUT)              
-    pin_luz_test = machine.Pin(14, machine.Pin.OUT)                      
-    
+    pin_luz_test = machine.Pin(14, machine.Pin.OUT)        
+    pin_flag = machine.Pin(26, machine.Pin.OUT)               
     pin_activacion_manual = machine.Pin(21, machine.Pin.IN)
-    pin_activacion_manual.value(0)
+    pin_on_off = machine.Pin(35, machine.Pin.IN)
 
     pin_test = machine.Pin(18, machine.Pin.IN)                   
     pin_boton_test = pin_test.value()
     
     pin_reaccion = machine.Pin(19, machine.Pin.IN)
-    pin_boton_reaccion = pin_reaccion.value()                
-    
-    pin_on_off = machine.Pin(35, machine.Pin.IN)
-    pin_on_off.value(0)      
-    
-
-    pin_flag = machine.Pin(26, machine.Pin.OUT)      #Correcto
-    
-
+    pin_boton_reaccion = pin_reaccion.value()
 
 definir_pines()
 
-
 def conectar_wifi():
     global s, ap
-    print("holawifi")
-    #configuracion
+    # Configuracion
     addr = socket.getaddrinfo('192.168.4.1', 8000)[0][-1]
     ssid = 'ESP32'
     password = 'aeroalert'
@@ -63,7 +46,6 @@ def conectar_wifi():
     ap.config(authmode=3)
     while ap.active() == False:
         pass
-
     print('Connection succesful')
     print(ap.ifconfig())
 
@@ -71,9 +53,7 @@ def conectar_wifi():
     s.bind(('', 8000)) #o addr
     s.listen(2)
     print("listening on",addr)
-    
     return s
-
 
 def escuchar_tipos():
     time.sleep(1)
@@ -87,22 +67,23 @@ def escuchar_tipos():
         
         if tipo == "soy_band":
             _thread.start_new_thread(escuchar_band, (conn, addr))
+            print("VDB conectada")
         
         elif tipo == "soy_rtdc":
             _thread.start_new_thread(escuchar_rtdc, (conn, addr))
             _thread.start_new_thread(enviar_rtdc, (conn, addr))
-        
+            print("CTRT conectada")
+
         elif tipo == "soy_PC":
             _thread.start_new_thread(escuchar_PC, (conn, addr))
             _thread.start_new_thread(enviar_PC, (conn, addr))
-
+            print("PC/X-PLANE conectado")
 
 
 def escuchar_band(conn_band, addr):
     time.sleep(1)
     while True:
         message = conn_band.recv(1024)
-        print()
         print('From Band %s' % str(addr))
     
         data = json.loads(message.decode('utf-8'))  #.decode('utf-8')
@@ -129,12 +110,11 @@ def escuchar_rtdc(conn_rtdc,addr):
                 print("tiene que aterrizar")                        #ATERRIZAR ATERRIZAR ATERRIZAR ATERRIZAR 
                 aterrizar = 1                                                
             if message['mensage'] == "no aterrizar":
+                print("no tiene que aterrizar")
                 aterrizar = 0
     except:
         pin_flag.value(1)
         # Recibe los comandos de vuelo enviados por la rtdc 
-        # HAY QUE EVALUAR ESTA INFORMACION Y MANDAR LO CORRESPONDIENTE AL XPLANE   
-
 
         #recibir rtdc intentional loss se prende luz roja parpadeando
 
@@ -172,10 +152,8 @@ def enviar_rtdc(conn, addr):
 def escuchar_PC(conn_PC, addr):
     global bloqueo_PC
     global dormido1, spo_bajos1, bpm_altos1, muerte1
-    #pin_on_off.value(0)
     estados = {"Piloto1":{"Somnolencia":0, "Pulso":0, "Hipoxia": 0, "Muerte": 0, "Spo2": 0, "Bpm":0},
-               "Piloto2":{"Somnolencia":0, "Pulso":0, "Hipoxia": 0, "Muerte": 0, "Spo2": 0, "Bpm":0}
-               }
+               "Piloto2":{"Somnolencia":0, "Pulso":0, "Hipoxia": 0, "Muerte": 0, "Spo2": 0, "Bpm":0} }
     bloqueo_PC = 0
 
     while True:
@@ -185,38 +163,23 @@ def escuchar_PC(conn_PC, addr):
         else:
             message = conn_PC.recv(1024)
             print()
-            print('Got a connection from PC %s' % str(addr))            # info_PC = {"Piloto":1, 
-            info_PC = json.loads(message.decode('utf-8'))               # "Somnolencia": 1, "Pulso":1, 
-            print("PC recibido")                                        # "Spo2":92, "Hipoxia":1,
+            print('Got a connection from PC %s' % str(addr)) 
+            info_PC = json.loads(message.decode('utf-8'))               
             print(info_PC)
 
-            if info_PC == "1":
-                
+            if info_PC == "1":                
                 if bloqueo_PC == 0:
                     bloqueo_PC = 1 
                 elif bloqueo_PC == 1:
                     bloqueo_PC = 0
                                     
-                if int(estados["Piloto1"]["Bpm"]) != 0 and int(estados["Spo2"]) != 0:
+                if estados["Piloto1"]["Bpm"] != 0 and estados["Spo2"] != 0:
                     bloqueo_PC = 1                                      
                     evaluar_info(estados["Piloto1"]["Bpm"], estados["Piloto1"]["Spo2"], 15, 1, "PC")
                 else:
-                
-                    if estados["Piloto1"]["Pulso"] == '1':
-                        bpm_altos1 = 1            
-                    else:
-                        bpm_altos1 = 0
+                    evaluar_info_piloto1(estados["Piloto1"])
 
-                    if estados["Piloto1"]["Hipoxia"] == '1':
-                        spo_bajos1 = 1            
-                    else:
-                        spo_bajos1 = 0
-
-                    if estados["Piloto1"]["Muerte"] == '1':
-                        muerte1 = 1
-                    else:
-                        muerte1 = 0
-                if estados["Piloto1"]["Somnolencia"] == '1':
+                if estados["Piloto1"]["Somnolencia"] == '1':      # Aunque use las bpm y spo2 si esta dormido se determina por esto
                     dormido1 = 1            
                 else:
                     dormido1 = 0
@@ -229,39 +192,6 @@ def escuchar_PC(conn_PC, addr):
             elif info_PC["Piloto"] == '2':
                 info_PC.pop("Piloto")
                 estados["Piloto2"] = info_PC
-
-            print(estados)
-            
-            
-def enviar_PC(conn, addr):
-    global aterrizar, aterrizar_manual, solicitar, info_aeropuerto
-    enviado = 0
-    info_aeropuerto = 0
-    aterrizar = json.dumps("ATERRIZAR").encode('utf-8')
-    no_aterrizar = json.dumps("NO ATERRIZAR").encode('utf-8')
-    while True:
-        # pedir permiso para aterrizar antes a rtdc
-
-
-        if aterrizar == 1 and enviado == 0 or aterrizar_manual == 1 and enviado == 0:
-            solicitar = 1
-            print("aterrizar a PC: ", addr)
-            conn.send(aterrizar)
-            enviado = 1
-            
-            while True:
-                if info_aeropuerto != 0:
-                    conn.send(json.dumps(info_aeropuerto).encode('utf-8'))
-                    info_aeropuerto = 0
-                    break
-
-        elif aterrizar_manual == 0 and aterrizar == 0 and enviado == 1:
-            print("no aterrizar a PC: ", addr)
-            conn.send(no_aterrizar)
-            enviado = 0
-
-        time.sleep(5)
-
 
 def evaluar_info_piloto2(info):
     global bpm_altos2, spo_bajos2, dormido2, muerte2
@@ -284,7 +214,48 @@ def evaluar_info_piloto2(info):
     else:
         muerte2 = 0
 
-    return
+def evaluar_info_piloto1(info):
+    global bpm_altos1, spo_bajos1, dormido1, muerte1
+    if info["Pulso"] == '1':
+        bpm_altos1 = 1
+    else:
+        bpm_altos1 = 0
+    if info["Hipoxia"] == '1':
+        spo_bajos1 = 1
+    else:
+        spo_bajos1 = 0
+    if info["Muerte"] == '1':
+        muerte1 = 1
+    else:
+        muerte1 = 0
+
+def enviar_PC(conn, addr):
+    global aterrizar, aterrizar_manual, solicitar, info_aeropuerto
+    enviado = 0
+    info_aeropuerto = 0
+    aterrizar = json.dumps("ATERRIZAR").encode('utf-8')
+    no_aterrizar = json.dumps("NO ATERRIZAR").encode('utf-8')
+    while True:
+        # pedir permiso para aterrizar antes a rtdc
+
+        if aterrizar == 1 and enviado == 0 or aterrizar_manual == 1 and enviado == 0:
+            solicitar = 1
+            print("aterrizar a PC: ", addr)
+            conn.send(aterrizar)
+            enviado = 1
+            
+            while True:
+                if info_aeropuerto != 0:
+                    conn.send(json.dumps(info_aeropuerto).encode('utf-8'))
+                    info_aeropuerto = 0
+                    break
+
+        elif aterrizar_manual == 0 and aterrizar == 0 and enviado == 1:
+            print("no aterrizar a PC: ", addr)
+            conn.send(no_aterrizar)
+            enviado = 0
+
+        time.sleep(5)
 
 
 
