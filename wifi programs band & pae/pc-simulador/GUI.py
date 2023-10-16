@@ -69,7 +69,7 @@ class Boton(arcade.gui.UITextureButton):
         self.On_button_on()
 
 
-class Barrita(UISlider):
+class Barra(UISlider):
     def __init__(self, valor:int, ValorM:int, ValorMin:int, Width:int, Height:int, X:int):
         super().__init__(
             valor = valor, 
@@ -346,12 +346,10 @@ class MenuView(arcade.View):
         self.boton5.on_click = self.boton_clicked4
         
 
-        self.barra1 = Barrita(50, 100, 0, 300, 50,0)
+        self.barra1 = Barra(50, 100, 0, 300, 50,0)
         self.Label1 = self.barra1.Label()
         
-
-
-        self.barra2 = Barrita(75, 150, 0, 300, 50,0)
+        self.barra2 = Barra(75, 150, 0, 300, 50,0)
         self.Label2 = self.barra2.Label()
 
 
