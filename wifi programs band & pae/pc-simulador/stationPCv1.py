@@ -3,11 +3,12 @@ import socket, json
 
 # Conectarse a la red wifi llamada "ESP32" contraseña: "aeroalert"
 def do_connect():     
+    """
     ssid = 'ESP32'
     password = 'aeroalert'
     wire = Wireless()
     wire.connect(ssid, password)
-
+    """
     server_ip = '192.168.4.1'
     server_port = 8000
     addr = socket.getaddrinfo(server_ip, server_port) [0][-1]
