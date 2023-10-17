@@ -35,30 +35,30 @@ def notification(cual):
         pin_luz_ambar.value(0)
         emergency = 1
         alert = 0
-
     elif cual == "alert":
         print("alert")
         pin_luz_roja.value(0)
         pin_luz_ambar.value(1)
         alert = 1
         emergency = 0
-
     elif cual == "clean":
         pin_luz_ambar.value(0)
         pin_luz_roja.value(0)
         alert = 0
         emergency = 0
 
+info_aeropuerto = [{"aeropuerto":"ezeiza", "coordenadas": [23,43]},
+                   {"aeropuerto":"aeroparque", "coordenadas": [54,22]}]
 while True:
     data = stationrtdc.receive_data(client_socket)
     print(data)
     if data == "solicito aterrizaje":
-        print("a")
+        index_aeropuerto = int(input("ingrese numero de aeropuerto: "))
+        stationrtdc.send_message(info_aeropuerto[index_aeropuerto])
     elif data == "alerta desactivacion del sae":
-        print("b")
+        estado_sae = 0
     elif data == "Sae activado":
-        print("c")
-
+        estado_sae = 1
     elif type(data) == list:
         info={"bpm_altos1": data[0],         "bpm_altos2": data[1], 
               "bpm_bajos1": data[2],         "bpm_bajos2": data[3], 
@@ -81,5 +81,7 @@ while True:
                 notification("alert")            
             elif not data["pulsera_conectada"] or data["pin_on_off"]:
                 notification("alert") 
+    if estado_sae == 0:
+        notification("alert")
     if sum(data) == 1:
         notification("clean")

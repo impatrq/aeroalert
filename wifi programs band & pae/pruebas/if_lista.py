@@ -1,5 +1,5 @@
-hola = [1,0,1,0,0,0,0,0,0,0,0]
 
-if hola[2] ^ hola[0]:
-    print("0")
+hola = [{"aeropuerto":"ezeiza", "coordenadas": [23,43]},
+        {"aeropuerto":"aeroparque", "coordenadas": [54,22]}]
 
+print(hola[0])

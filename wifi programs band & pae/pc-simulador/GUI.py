@@ -1,13 +1,11 @@
-import arcade
-import arcade.gui
+import arcade, arcade.gui
 from arcade.experimental.uislider import UISlider
 from arcade.gui import UIManager, UIAnchorWidget, UILabel
 from arcade.gui.events import UIOnChangeEvent
 #pip install arcade     y   pip install wireless
 
 import stationPCv1 as station
-import json
-import threading, time
+import threading, json, time
 
 def wifi():
     global client_socket
@@ -99,7 +97,9 @@ class Barra(UISlider):
 
 
 class Diccionario():
-    def __init__(self, Piloto:"0", Hipoxia:"0", Muerte:"0", Somnolencia:"0",Pulso2:"0", Pulso:int, Saturacion:int):
+    def __init__(self, Piloto:"0", Hipoxia:"0", Muerte:"0", 
+        Somnolencia:"0",Pulso2:"0", Pulso:int, Saturacion:int
+        ):
         super().__init__()
         self.Piloto_valor = Piloto
         self.Hipoxia_valor = Hipoxia 
