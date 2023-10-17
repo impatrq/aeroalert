@@ -15,7 +15,13 @@ def wifi():
     client_socket = station.do_connect()
     station.send_type("soy_PC", client_socket)
     print("tipo enviado")
-    while True:
+
+thread = threading.Thread(target=wifi, args=())  
+# Inicia un proceso en paralelo para enviar informacion al SAE
+thread.start()                                   
+
+
+"""    while True:
         data = station.receive_data(client_socket)
         instruccion = json.loads(data.decode('utf-8'))
 
@@ -24,26 +30,19 @@ def wifi():
         elif instruccion== "NO ATERRIZAR":
             print("no aterrizar")           # mandar al xplane
         time.sleep(1)
-
-thread = threading.Thread(target=wifi, args=())  
-# Inicia un proceso en paralelo para recibir informacion del SAE
-thread.start()                                   
-
+"""
 
 
 global Dicc 
 class Boton(arcade.gui.UITextureButton):
     def __init__(self, mensa_Al:str, mensa_BA:str):
         super().__init__(
-            texture = arcade.load_texture("llave.png"),
-            texture_pressed = arcade.load_texture("llave.png")
-        )
-
+           texture = arcade.load_texture("imagenes_GUI/llave.png"),
+           texture_pressed=arcade.load_texture("imagenes_GUI/llave.png"))
         self.variable = True
 
         self.mensajeA = mensa_Al
         self.mensajeB = mensa_BA
-
         self.mensaje = self.mensajeA
 
         self.on_click = self.button_clicked
@@ -52,13 +51,12 @@ class Boton(arcade.gui.UITextureButton):
     def On_button_on(self):
         if self.variable == True:
             self.texture = \
-                arcade.load_texture("llave2.png")
+                arcade.load_texture("imagenes_GUI/llave2.png")
             self.variable = False
             self.mensaje = self.mensajeB
-
         elif self.variable == False:
             self.texture = \
-                arcade.load_texture("llave.png")
+                arcade.load_texture("imagenes_GUI/llave.png")
             self.variable = True
             self.mensaje = self.mensajeA
 
@@ -70,7 +68,8 @@ class Boton(arcade.gui.UITextureButton):
 
 
 class Barra(UISlider):
-    def __init__(self, valor:int, ValorM:int, ValorMin:int, Width:int, Height:int, X:int):
+    def __init__(self, valor:int, ValorM:int, 
+                 ValorMin:int, Width:int, Height:int, X:int):
         super().__init__(
             valor = valor, 
             width = Width, 
@@ -141,7 +140,7 @@ class MyView(arcade.View):
         box2 = arcade.gui.UIBoxLayout(vertical = True, space_between= 30)
 
 
-        normal_texture1 = arcade.load_texture("boton2.png")
+        normal_texture1 = arcade.load_texture("imagenes_GUI/boton2.png")
 
         self.button3 = arcade.gui.UITextureButton(
             texture=normal_texture1
@@ -297,7 +296,7 @@ class MenuView(arcade.View):
         box1 = arcade.gui.UIBoxLayout(vertical = False, space_between= 30)
         box2 = arcade.gui.UIBoxLayout(vertical = True, space_between= 30)
 
-        normal_texture1 = arcade.load_texture("boton2.png")
+        normal_texture1 = arcade.load_texture("imagenes_GUI/boton2.png")
 
         self.button3 = arcade.gui.UITextureButton(
             texture=normal_texture1

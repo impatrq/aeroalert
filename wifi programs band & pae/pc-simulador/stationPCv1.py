@@ -14,7 +14,7 @@ def do_connect():
 
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((server_ip, server_port))
-    print("conecto")
+    print("conectado al aes")
     return client_socket
     
 def send_type(tipo, client_socket):
@@ -28,9 +28,10 @@ def send_message(client_socket, data):
         print('enviado:', message)
     except Exception as error:
         print(f"error: {error} \n {data}")
-
+"""
 def receive_data(client_socket):
     data = client_socket.recv(1024)
     print('recibido: ', data)
     return data 
 
+"""
