@@ -1,38 +1,31 @@
-from machine import sleep, SoftI2C, Pin, I2C, ADC
-from utime import ticks_diff, ticks_us
-from max30102 import MAX30102, MAX30105_PULSE_AMP_MEDIUM
-import utime
-
-from machine import Timer
-
-led = Pin(2,Pin.OUT)
 class Pulso():
-    
     def __init__ (self):
         self.datos=0
         self.datos2=0
         self.datos3=0
 
     def muestra (self, pin_prendido):
+        from machine import SoftI2C, Pin, I2C
+        from utime import ticks_diff, ticks_us
+        from max30102 import MAX30102, MAX30105_PULSE_AMP_MEDIUM
+        import utime
+
         utime.sleep(1)
         i2c = SoftI2C(sda=Pin(21),  
                       scl=Pin(22),  
                       freq=400000)  
         sensor = MAX30102(i2c=i2c)
         
-        
         if sensor.i2c_address not in i2c.scan():
-            print("Sensor no encontrado.")
+            print("Sensor no encontrado")
             return
-        
         elif not (sensor.check_part_id()):
             print("ID de dispositivo I2C no correspondiente a MAX30102")
             return
-        
         else:
-            print("Sensor conectado y reconocido.")
+            print("Sensor conectado y reconocido")
         
-        print("Configurando el sensor con la configuración predeterminada.", '\n')
+        print("Configurando el sensor", '\n')
         sensor.setup_sensor()
         sensor.set_sample_rate(400)
         sensor.set_fifo_average(8)
@@ -49,6 +42,11 @@ class Pulso():
         
         MAX_HISTORY = 32
         history = []
+        minima = 0
+        maxima = 0
+        threshold_on = 0
+        threshold_off = 0
+        
         beats_history = []
         beat = False
         beats = 0
@@ -60,35 +58,27 @@ class Pulso():
                 # The check() method has to be continuously polled, to check if
                 # there are new readings into the sensor's FIFO queue. When new
                 # readings are available, this function will put them into the storage.
-                                        
-                #time.sleep(0.25)
-                    
                 sensor.check()
-                
                 # Check if the storage contains available samples
                 if sensor.available():
                     # Access the storage FIFO and gather the readings (integers)
                     red_reading = sensor.pop_red_from_storage()
                     ir_reading = sensor.pop_ir_from_storage()
-                    
                     valueir = ir_reading
                     valuered = red_reading
                     
-                    Spo2 = valueir * 105/11500 # valueir * 105/16500 para mediciones en el dedo, Spo2 = valueir * 105/11500 para la muñeca por arriba
+                    Spo2 = valueir * 100/10953                                                      # valueir * 105/16500 para mediciones en el dedo, Spo2 = valueir * 105/11500 para la muñeca por arriba
                     self.datos2 = Spo2
                     
                     history.append(valuered)
                     # Get the tail, up to MAX_HISTORY length
                     history = history[-MAX_HISTORY:]
-                    minima = 0
-                    maxima = 0
-                    threshold_on = 0
-                    threshold_off = 0
+
 
                     minima, maxima = min(history), max(history)
 
-                    threshold_on = (minima + maxima * 1.75) // 2.75    # (a+b*2)/3 dedo --------- (a+b*1.5)/2.5
-                    threshold_off = (( 1.3 * minima + maxima) // 2.3)       # (a+b)/2 dedo------ (a+b)/2
+                    threshold_on = (minima + maxima * 1.75) // 2.75                                  # (a+b*2)/3 dedo --------- (a+b*1.5)/2.5
+                    threshold_off = (( 1.3 * minima + maxima) // 2.3)                                   # (a+b)/2 dedo------ (a+b)/2
                     if valuered > 4000:
                         if not beat and valuered > threshold_on:
                             beat = True                    
@@ -102,10 +92,10 @@ class Pulso():
                                 beats_history = beats_history[-MAX_HISTORY:]
                                 beats = round(sum(beats_history)/len(beats_history) )
                                 self.datos = beats
+
                         if beat and valuered< threshold_off:
                             beat = False
 
-                        
                     else:
                         print('Not finger')
                         beats_history.append(0)
