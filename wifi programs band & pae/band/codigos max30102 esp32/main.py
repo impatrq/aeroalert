@@ -3,7 +3,7 @@ from machine import Pin
 import _thread, utime, gc
 import stationv9 as station                                                                                               # Se va a ir cambiando el nombre, cuidado
 
-sensor = Pulso()          # Creo objecto clase pulso
+sensor = Pulso()                                # Creo objecto clase pulso
 pin_conectado = Pin(17, mode=Pin.IN)
 pin_prendido = Pin(16 , mode=Pin.IN)                                                                                         # pin_prendido.value(1)     porque es el boton y tiene 
 pin_led = Pin(19, mode=Pin.OUT)                                                                                                     # que estar prendido para que ande
