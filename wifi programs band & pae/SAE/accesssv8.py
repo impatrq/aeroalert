@@ -372,15 +372,15 @@ def activar_SAE():
     while True:
         time.sleep(4)
         if pin_on_off.value() == 1:
-            pin_luz_ambar.value(0)
-            pin_luz_roja.value(0)
+            #pin_luz_ambar.value(0)
+            #pin_luz_roja.value(0)
+            print("pin on off maldito")
             pass
         else: 
             codigo = actualizar_codigo()
             print(codigo)
             print() 
             
-
 
             # Boton tipo switch
             # Si el boton de reaccion cambio de valor no va a valer lo que valia antes
@@ -515,7 +515,6 @@ def activar_SAE():
                 print("uno muerto")
                 pin_luz_ambar.value(1)
                 ambar_fija = 1                          #ambar no podra titilar
-
                 if not codigo[6] and not codigo[7]:      #si ninguno tiene hipoxia
                     roja_fija = 0
             else:
@@ -536,6 +535,7 @@ def activar_SAE():
                             if not codigo[0] and not codigo[1] and not codigo[2] and not codigo[3]: #si ninguno tiene pulsaciones
                                 pin_luz_ambar.value(0)                          #SE APAGA
                                 ambar_fija = 0
+                                print("ambar apagada1")
             #------------------------------------------------------
             elif ambar_titilando == 1:                           # Si tiene que titilar
                 if not ambar_fija:                               #si no esta fija
@@ -545,7 +545,7 @@ def activar_SAE():
                     elif ambar_prendido == 1:
                         pin_luz_ambar.value(0)
                         ambar_prendido = 0
-
+                    print("ambar titilando")
 
             #---------------------------------------------------
             #---------------------------------------------------
@@ -559,16 +559,12 @@ def activar_SAE():
                     elif prendido_roja == 1:
                         pin_luz_roja.value(0)
                         prendido_roja = 0
+                    print("roja titilando")
             else:                                           #si no esta la activacion manual ni intentional loss
                 if not codigo[6] and not codigo[7]:         #si ninguno tiene hipoxia           
                     if not codigo[12] or not codigo[13]:       #si no estan muertos ambos
                         aterrizar_manual = 0    
                         pin_luz_roja.value(0)                            
-
-
-            
-                if not codigo[14]:
-                    print()
 
             pin_boton_reaccion = 0
                 
