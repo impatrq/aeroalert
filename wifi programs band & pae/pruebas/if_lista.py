@@ -1,5 +1,7 @@
 
-hola = [{"aeropuerto":"ezeiza", "coordenadas": [23,43]},
-        {"aeropuerto":"aeroparque", "coordenadas": [54,22]}]
+global awa
+def a():
+    global awa
+    awa = 1
 
-print(hola[0])
+print(awa)

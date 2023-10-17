@@ -56,10 +56,14 @@ def assets(request, dir, file):
     return send_file("/assets/" + dir + "/" + file)
 
 
-
-@app.route('/update/info')
+@app.route('/update/teclas')
 def index(request):
-    global humidity, temperature
+    global last_key_press
+    return last_key_press
+
+@app.route('/update/alerts')
+def index(request):
+    global 
 
     datos = {'hum': humidity, 'temp': temperature}     #  , 'aleatorio1': random1, 'aleatorio2': random2}
     json_data = ujson.dumps(datos)
@@ -78,7 +82,7 @@ if __name__ == "__main__":
         print("Microdot corriendo en IP/Puerto: " + ip + ":80")
         
         # Inicio la medicion del sensor        
-        _thread.start_new_thread(medir_sensor, ())
+        _thread.start_new_thread(keypad, ())
 
         # Inicio la aplicacion
         app.run(port=80)

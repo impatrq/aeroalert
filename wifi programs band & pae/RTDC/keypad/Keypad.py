@@ -45,7 +45,8 @@ print("iniciando .............Presione una tecla: ")
 
 # poner todas las columnas en bajo
 inicio()
-
+global last_key_press
+last_key_press = ""
 while True:
     for fila in range(4):
         for columna in range(4):
@@ -54,3 +55,4 @@ while True:
                 print("Es el numero: ", teclas[fila][columna])
                 last_key_press = teclas[fila][columna]
                 sleep(0.5)
+                last_key_press = ""

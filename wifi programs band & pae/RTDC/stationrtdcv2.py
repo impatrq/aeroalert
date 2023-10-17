@@ -18,7 +18,7 @@ def do_connect():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((server_ip, server_port))
     print("conecto")
-    return client_socket, sta_if
+    return client_socket, sta_if.ifconfig
     
 def send_type(client_socket, tipo):
     message = json.dumps(tipo).encode('utf-8')
