@@ -2,6 +2,13 @@ import stationrtdcv2 as stationrtdc
 from machine import Pin
 from time import sleep
 
+
+
+
+from microdot_asyncio import Microdot, send_file
+import ujson
+import _thread
+
 global client_socket, sta_if
 client_socket, sta_if = stationrtdc.do_connect()
 stationrtdc.send_type(client_socket, "soy_rtdc")
@@ -45,14 +52,13 @@ def notification(cual, nro_vuelo):
         pin_luz_roja.value(0)
         alert = 0
         emergency = 0
-                                                        #envia a la web page que se pide una solicitud de aterrizaje y emergencias
+    #envia a la web page que se pide una solicitud de aterrizaje y emergencias
     info = {"alert": alert, "emergency": emergency, "solicitud": solicitud, "sae_desactivado": sae_desactivado}
     vuelos[nro_vuelo] = info   #{123:{"alert": alert, "emergency": emergency, "solicitud": solicitud, "sae_desactivado": sae_desactivado}}
     solicitud = 0
 
 def manage_AES():
     global solicitud, sae_desactivado
-
     while True:
         recibido = stationrtdc.receive_data(client_socket)
         print("recibido sae: ", recibido)
@@ -67,7 +73,6 @@ def manage_AES():
             sae_desactivado = 1
         elif msg == "Sae activado":
             sae_desactivado = 0
-
     
         info={"bpm_altos1": data[0],         "bpm_altos2": data[1], 
             "bpm_bajos1": data[2],         "bpm_bajos2": data[3], 
@@ -121,7 +126,6 @@ def escanear(fila, columna):
     # retorne el estado de la tecla
     return key
 
-
 def teclas():
     # poner todas las columnas en bajo
     inicio()
@@ -147,10 +151,6 @@ def teclas():
 
 
 
-
-from microdot_asyncio import Microdot, send_file
-import ujson
-import _thread
 
 def conectar_microdot():
     app = Microdot()
