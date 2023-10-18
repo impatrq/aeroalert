@@ -187,18 +187,23 @@ def conectar_microdot():
         stationrtdc.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
 
 
-    info_aeropuerto = [{"aeropuerto":"ezeiza", "coordenadas": [23,43]},
+    info_aeropuertos = [{"aeropuerto":"ezeiza", "coordenadas": [23,43]},
                     {"aeropuerto":"aeroparque", "coordenadas": [54,22]}]
 
     #en caso de solicitud
-    @app.route('/send/info_aeropuerto/<index>')
-    def index(request, index):
-        stationrtdc.send_message(client_socket, info_aeropuerto[index])
+    @app.route('/send/<nrovuelo>/info_aeropuerto/<index>')
+    def index(request, nrovuelo, index):
+        aeropuerto = {'info aeropuerto': info_aeropuertos[index]}
+        
+        #enviar al <nrovuelo>
+        stationrtdc.send_message(client_socket, aeropuerto)
+        return
 
 
 
-
-    
+    @app.route('/get/aeropuertos')
+    def index(request):
+        return info_aeropuertos
     
     #ambas periodicamente en js
     @app.route('/update/teclas')

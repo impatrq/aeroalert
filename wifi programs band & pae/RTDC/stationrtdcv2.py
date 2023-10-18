@@ -25,7 +25,7 @@ def send_type(client_socket, tipo):
     client_socket.send(message)
 
 def send_message(client_socket,msg):
-    data = {'mensage': msg}
+    data = {'mensaje': msg}
     message = json.dumps(data).encode('utf-8') 
     client_socket.send(message) 
     print('Mensaje enviado:', message)

@@ -73,7 +73,7 @@ def escuchar_tipos():
 
         elif tipo == "soy_PC":
             _thread.start_new_thread(escuchar_PC, (conn, addr))
-            _thread.start_new_thread(enviar_PC, (conn, addr))
+            _thread.start_new_thread(enviar_PC, ())
             print("PC/X-PLANE conectado")
 
 
@@ -93,27 +93,29 @@ def escuchar_band(conn_band, addr):
 
 aterrizar = aterrizar_manual = 0
 def escuchar_rtdc(conn_rtdc,addr):
-    global aterrizar, intentional_loss
+    global aterrizar, intentional_loss, info_aeropuerto
     pin_flag.value(0)
     try:
         while True:
             data = conn_rtdc.recv(1024)
-            print('From RTDC %s' % str(addr))
-
             message = json.loads(data.decode('utf-8'))
+            print('From RTDC %s' % str(addr))
             print(message)
 
-            if message['mensage'] == "aterriza":
+            if message['mensaje'] == "aterriza":
                 print("tiene que aterrizar")                        #ATERRIZAR ATERRIZAR ATERRIZAR ATERRIZAR 
                 aterrizar = 1                                                
-            elif message['mensage'] == "no aterrizes":
+            elif message['mensaje'] == "no aterrizes":
                 print("no tiene que aterrizar")
                 aterrizar = 0
 
-            elif message['mensage'] == "intentional loss":
+            elif message['mensaje'] == type(dict):
+                info_aeropuerto = message['mensaje']['info aeropuerto']
+
+            elif message['mensaje'] == "intentional loss":
                 intentional_loss = 1
                 print("prender alarma Aes activation")
-            elif message['mensage'] == "apagar intentional loss":
+            elif message['mensaje'] == "apagar intentional loss":
                 intentional_loss = 0
                 print("apagar alarma Aes activation")
     except:
@@ -149,7 +151,7 @@ def enviar_rtdc(conn, addr):
                 codigo_enviar = json.dumps(dicc).encode('utf-8')
                 conn.send(codigo_enviar)
                 solicitar = 0
-                info_aeropuerto = conn.recv(1024)
+                
             
             time.sleep(10)
     except:
@@ -181,7 +183,7 @@ def escuchar_PC(conn_PC, addr):
                 elif bloqueo_PC == 1:
                     bloqueo_PC = 0
                                     
-                if estados["Piloto1"]["Bpm"] != 0 and estados["Spo2"] != 0:
+                if estados["Piloto1"]["Bpm"] != 0 and estados['Piloto1']["Spo2"] != 0:
                     bloqueo_PC = 1                                      
                     evaluar_info(estados["Piloto1"]["Bpm"],
                                   estados["Piloto1"]["Spo2"], 15, 1, "PC")
@@ -239,30 +241,30 @@ def evaluar_info_piloto1(info):
         muerte1 = 0
 
 
-alarma_sonora_1 = alarma_sonora_2 = 0
+alarma_sonora_1 = alarma_sonora_2 = info_aeropuerto = 0
 def enviar_PC():
     global aterrizar, aterrizar_manual, solicitar, info_aeropuerto
     global alarma_sonora_1, alarma_sonora_2
     enviado = 0
-    info_aeropuerto = 0
+    sonora1_enviada = 0
+    sonora2_enviada = 0
     
     while True:
         # pedir permiso para aterrizar antes a rtdc
 
-        if (aterrizar == 1 or aterrizar_manual == 1) and enviado == 0:
+        if (aterrizar == 1 or aterrizar_manual == 1) and aterrizaje_enviado == 0:
             solicitar = 1
             print("aterrizar")                                   #------------------------------ UART
-            enviado = 1
-            
-            while True:
-                if info_aeropuerto != 0:
-                    print(info_aeropuerto)                       #------------------------------ UART
-                    info_aeropuerto = 0
-                    break
-
-        elif aterrizar_manual == 0 and aterrizar == 0 and enviado == 1:
+            aterrizaje_enviado = 1
+                
+        elif aterrizar_manual == 0 and aterrizar == 0 and aterrizaje_enviado == 1:
             print("no aterrizar")                                #------------------------------ UART
-            enviado = 0
+            aterrizaje_enviado = 0
+                    
+
+        if info_aeropuerto != 0:
+            print("info aeropuerto", info_aeropuerto)            #------------------------------ UART
+            info_aeropuerto = 0
 
 
 
@@ -395,7 +397,8 @@ def activar_SAE():
             if pin_reaccion.value() != tocado:
                 tocado = pin_reaccion.value()                       # Guarda el valor actual del pin
                 pin_boton_reaccion = 1      # Pone en 1 la variable que se va a usar para saber si se presiono
-                no_reaccion = 0                   
+                no_reaccion = 0      
+                print("boton de reaccion")             
 
             #muerte 1 luz amarilla fija
             #2 muertos luz roja fija y sonido si por 30 segs no boton de reaccion  
@@ -414,6 +417,7 @@ def activar_SAE():
                                              
                 if alarmas_off_spo == 0:                            # Si las alarmas no estan desactivadas
                     pin_luz_roja.value(1)                           # Activa luz alarma (hipoxia?
+                    print("luz roja prendida alarmas off = 0")
                     roja_fija = 1 
                     
                     # Si el piloto toca el boton de reaccion desactiva las alarmas, no deja que tomen el control
@@ -437,6 +441,7 @@ def activar_SAE():
 
                 elif alarmas_off_spo == 1:                          # Sino si estan desactivadas las alarmas spo
                     pin_luz_roja.value(0)                           # Apaga luz alarma
+                    print("luz roja apagada alarmas off = 1")
                     pass                                
                             
             elif not codigo[6] and not codigo[7]:                   # Si ninguno tiene spo2 en 1
@@ -493,7 +498,8 @@ def activar_SAE():
 
             if codigo[4] or codigo[5]:                  # Si esta dormido
                 if ambar_titilando == 0:
-                    pin_luz_ambar.value(1)                          
+                    pin_luz_ambar.value(1)   
+                    print("luz ambar prendida dormidos sin titilar")                       
                     
                 if codigo[4] and codigo[5]:             # Si son ambos
                     print("2 dormidos")
@@ -507,6 +513,7 @@ def activar_SAE():
             if pulsera_conectada == 0:                  # Si la pulsera esta desconectada
                 if ambar_titilando == 0:                # Si no esta titilando    
                     pin_luz_ambar.value(1)
+                    print("luz ambar prendida  pulsera desconectada y no titilando") 
                 print("pulsera mal")
             else:
                 print("pulsera bien")
@@ -516,12 +523,14 @@ def activar_SAE():
             if codigo[12] and codigo[13]:               #si ambos estan muertos
                 print("ambos muertos")
                 pin_luz_roja.value(1)
+                print("luz roja prendida 2 muertos")
                 roja_fija = 1                           #roja no podra titilar
                 ambar_fija = 0
 
             elif codigo[12] or codigo[13]:              #si solo 1 esta muerto
                 print("uno muerto")
                 pin_luz_ambar.value(1)
+                print("luz ambar prendida 1 muerto") 
                 ambar_fija = 1                          #ambar no podra titilar
                 if not codigo[6] and not codigo[7]:      #si ninguno tiene hipoxia
                     roja_fija = 0
@@ -568,12 +577,13 @@ def activar_SAE():
                     elif prendido_roja == 1:
                         pin_luz_roja.value(0)
                         prendido_roja = 0
-                    print("roja titilando")
+                    print("roja titilando coso manual")
             else:                                           #si no esta la activacion manual ni intentional loss
                 aterrizar_manual = 0    
                 if not codigo[6] and not codigo[7]:         #si ninguno tiene hipoxia           
                     if not codigo[12] or not codigo[13]:       #si no estan muertos ambos
-                        pin_luz_roja.value(0)                            
+                        pin_luz_roja.value(0)           
+                        print("luz roja apagada nada")                 
 
             pin_boton_reaccion = 0
                 
