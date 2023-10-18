@@ -22,7 +22,8 @@ pines_Columnas = [Pin(pin_nombre, mode=Pin.IN, pull=Pin.PULL_DOWN) for pin_nombr
 
 
 alert = emergency = solicitud = sae_desactivado = 0
-def notification(cual):
+vuelos = {}
+def notification(cual, nro_vuelo):
     global pin_luz_ambar, pin_luz_roja
     global alert, emergency, solicitud, sae_desactivado
     global alerts
@@ -44,56 +45,56 @@ def notification(cual):
         pin_luz_roja.value(0)
         alert = 0
         emergency = 0
-
-    alerts = {"alert": alert, "emergency": emergency, "solicitud": solicitud, "sae_desactivado": sae_desactivado}
+                                                        #envia a la web page que se pide una solicitud de aterrizaje y emergencias
+    info = {"alert": alert, "emergency": emergency, "solicitud": solicitud, "sae_desactivado": sae_desactivado}
+    vuelos[nro_vuelo] = info   #{123:{"alert": alert, "emergency": emergency, "solicitud": solicitud, "sae_desactivado": sae_desactivado}}
     solicitud = 0
 
 def manage_AES():
     global solicitud, sae_desactivado
 
     while True:
-        data = stationrtdc.receive_data(client_socket)
-        print("data sae: ", data)
-        
-        if data == "solicito aterrizaje":
-            solicitud = 1
-            
-        elif data == "alerta desactivacion del sae":
+        recibido = stationrtdc.receive_data(client_socket)
+        print("recibido sae: ", recibido)
+
+        msg = recibido("msg")                   #puede ser ""
+        nro_vuelo = recibido("nro_vuelo")
+        data = recibido("list")                         #recibido = {"msg":"solicito: aterrizaje", "nro_vuelo": 4334, "list": (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0)}
+
+        if msg == "solicito aterrizaje":
+            solicitud = 1        
+        elif msg == "alerta desactivacion del sae":
             sae_desactivado = 1
-        elif data == "Sae activado":
+        elif msg == "Sae activado":
             sae_desactivado = 0
 
-        elif type(data) == list:
-            info={"bpm_altos1": data[0],         "bpm_altos2": data[1], 
-                "bpm_bajos1": data[2],         "bpm_bajos2": data[3], 
-                "dormido1": data[4],           "dormido2": data[5],
-                "spo_bajos1": data[6],         "spo_bajos2": data[7], 
-                "temp_alta1": data[8],         "temp_alta2": data[9], 
-                "temp_baja1": data[10],        "temp_baja2": data[11],
-                "muerte1": data[12],           "muerte2": data[13], 
-                "manual": data[14], "pulsera_conectada": data[15],
-                "no_reaccion": data[16],        "pin_on_off": data[16]}
-            
-            if data["no_reaccion"] or data["manual"] or info["muerte1"] and info["muerte2"]:
-                notification("emergency")
-            else:
-                if data["muerte1"] or data["muerte2"]:
-                    notification("alert")
-                elif data["spo_bajos1"] or data["spo_bajos2"]:
-                    notification("alert")
-                elif data["dormido1"] or data["dormido2"]:
-                    notification("alert")            
-                elif not data["pulsera_conectada"] or data["pin_on_off"]:
-                    notification("alert") 
-        if estado_sae == 0:
-            notification("alert")
+    
+        info={"bpm_altos1": data[0],         "bpm_altos2": data[1], 
+            "bpm_bajos1": data[2],         "bpm_bajos2": data[3], 
+            "dormido1": data[4],           "dormido2": data[5],
+            "spo_bajos1": data[6],         "spo_bajos2": data[7], 
+            "temp_alta1": data[8],         "temp_alta2": data[9], 
+            "temp_baja1": data[10],        "temp_baja2": data[11],
+            "muerte1": data[12],           "muerte2": data[13], 
+            "manual": data[14], "pulsera_conectada": data[15],
+            "no_reaccion": data[16],        "pin_on_off": data[17]}
+        
+        if info["no_reaccion"] or info["manual"] or info["muerte1"] and info["muerte2"]:
+            notification("emergency",nro_vuelo)
+        
+        elif info["muerte1"] or info["muerte2"] or info["spo_bajos1"] or info["spo_bajos2"] or info["dormido1"] or info["dormido2"] or not info["pulsera_conectada"] or info["pin_on_off"]:
+                notification("alert",nro_vuelo)
+
+
+        if sae_desactivado == 1:
+            notification("alert",nro_vuelo)
         if sum(data) == 1:
-            notification("clean")
+            notification("clean",nro_vuelo)
 
 
 
 
-#Funciónpara inicializar el teclado
+#Función para inicializar el teclado
 
 def inicio():
     for fila in range(0,4):
@@ -145,15 +146,14 @@ def teclas():
                     last_key_press = ""
 
 
+
+
 from microdot_asyncio import Microdot, send_file
 import ujson
 import _thread
 
 def conectar_microdot():
     app = Microdot()
-
-    global client_socket
-    global last_key_press
 
     @app.route('/')
     def index(request):
@@ -172,29 +172,44 @@ def conectar_microdot():
         """
         return send_file("/assets/" + dir + "/" + file)
 
-    info_aeropuerto = [{"aeropuerto":"ezeiza", "coordenadas": [23,43]},
-                    {"aeropuerto":"aeroparque", "coordenadas": [54,22]}]
 
-    @app.route('/send/info_aeropuerto/<index>')
-    def index(request, index):
-        stationrtdc.send_message(client_socket, info_aeropuerto[index])
 
+
+
+    global client_socket
+    global last_key_press
+
+
+
+    #en caso de que se perciba peligro o intentional loss
     @app.route('/send/aes/<instruccion>')
     def index(request, instruccion):
         stationrtdc.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
 
 
+    info_aeropuerto = [{"aeropuerto":"ezeiza", "coordenadas": [23,43]},
+                    {"aeropuerto":"aeroparque", "coordenadas": [54,22]}]
 
+    #en caso de solicitud
+    @app.route('/send/info_aeropuerto/<index>')
+    def index(request, index):
+        stationrtdc.send_message(client_socket, info_aeropuerto[index])
+
+
+
+
+    
+    
+    #ambas periodicamente en js
     @app.route('/update/teclas')
     def index(request):
         return last_key_press
     
-
-    @app.route('/update/alerts')
+    @app.route('/update/vuelos')
     def index(request):
-        global alerts
-        json_data = ujson.dumps(alerts)
-        print("alerts enviadas")
+        global vuelos
+        json_data = ujson.dumps(vuelos)
+        print("vuelos enviados")
         return json_data, 202, {'Content-Type': 'json'}
 
 

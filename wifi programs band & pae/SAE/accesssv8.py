@@ -5,6 +5,11 @@ import time, json, _thread
 import network
 from machine import Pin, Timer, UART
 
+
+nro_vuelo = 7365458
+
+
+
 def definir_pines():
     global pin_luz_ambar, pin_luz_roja, pin_luz_test, pin_flag
     global pin_activacion_manual, pin_test, pin_reaccion, pin_on_off
@@ -68,7 +73,7 @@ def escuchar_tipos():
 
         elif tipo == "soy_PC":
             _thread.start_new_thread(escuchar_PC, (conn, addr))
-            #_thread.start_new_thread(enviar_PC, (conn, addr))
+            _thread.start_new_thread(enviar_PC, (conn, addr))
             print("PC/X-PLANE conectado")
 
 
@@ -108,7 +113,7 @@ def escuchar_rtdc(conn_rtdc,addr):
             elif message['mensage'] == "intentional loss":
                 intentional_loss = 1
                 print("prender alarma Aes activation")
-            elif message['mensage'] == "no more intentional loss":
+            elif message['mensage'] == "apagar intentional loss":
                 intentional_loss = 0
                 print("apagar alarma Aes activation")
     except:
@@ -118,31 +123,34 @@ def escuchar_rtdc(conn_rtdc,addr):
     #recibir rtdc intentional loss se prende luz roja parpadeando
 
 def enviar_rtdc(conn, addr):
-    global codigo, solicitar, info_aeropuerto
+    global solicitar, info_aeropuerto, nro_vuelo
     alerta_enviada = 0
-    solicito_aterrizaje = json.dumps("solicito aterrizaje").encode('utf-8')
-    alerta_desactivacion_sae = json.dumps("alerta desactivacion del sae").encode('utf-8')
-    sae_activado = json.dumps("Sae activado").encode('utf-8')
     try:
         while True:
             print("enviando a RTDC: ", addr)
-            
-            if solicitar == 1:
-                conn.send(solicito_aterrizaje)
-                solicitar = 0
-                info_aeropuerto = conn.recv(1024)
+            msg = ""
 
-            codigo = actualizar_codigo()
-            codigo_enviar = json.dumps(codigo).encode('utf-8')
-            conn.send(codigo_enviar)
             if pin_on_off.value() == 1 and alerta_enviada == 0:
-                codigo_enviar = alerta_desactivacion_sae
-                conn.send(codigo_enviar)
+                msg = "alerta_desactivacion_sae"
                 alerta_enviada = 1
             elif pin_on_off.value() == 0 and alerta_enviada == 1:
-                codigo_enviar = sae_activado
-                conn.send(codigo_enviar)
+                msg = "sae_activado"                
                 alerta_enviada = 0
+ 
+            codigo = actualizar_codigo()
+            dicc = {"msg":msg, "list":codigo, "nro_vuelo":nro_vuelo}
+            codigo_enviar = json.dumps(dicc).encode('utf-8')
+            conn.send(codigo_enviar)
+
+
+            if solicitar == 1:
+                msg = "solicito_aterrizaje"
+                dicc = {"msg":msg, "list":codigo, "nro_vuelo":nro_vuelo}
+                codigo_enviar = json.dumps(dicc).encode('utf-8')
+                conn.send(codigo_enviar)
+                solicitar = 0
+                info_aeropuerto = conn.recv(1024)
+            
             time.sleep(10)
     except:
         print("rtdc perdida")
@@ -230,58 +238,58 @@ def evaluar_info_piloto1(info):
     else:
         muerte1 = 0
 
+
 alarma_sonora_1 = alarma_sonora_2 = 0
-def enviar_PC(conn, addr):
+def enviar_PC():
     global aterrizar, aterrizar_manual, solicitar, info_aeropuerto
     global alarma_sonora_1, alarma_sonora_2
     enviado = 0
     info_aeropuerto = 0
-    msg_aterrizar = json.dumps("ATERRIZAR").encode('utf-8')
-    msg_no_aterrizar = json.dumps("NO ATERRIZAR").encode('utf-8')
+    
     while True:
         # pedir permiso para aterrizar antes a rtdc
 
-        if aterrizar == 1 and enviado == 0 or aterrizar_manual == 1 and enviado == 0:
+        if (aterrizar == 1 or aterrizar_manual == 1) and enviado == 0:
             solicitar = 1
-            print("aterrizar a PC: ", addr)
-            print("aterrizar")
+            print("aterrizar")                                   #------------------------------ UART
             enviado = 1
             
             while True:
                 if info_aeropuerto != 0:
-                    conn.send(json.dumps(info_aeropuerto).encode('utf-8'))
+                    print(info_aeropuerto)                       #------------------------------ UART
                     info_aeropuerto = 0
                     break
 
         elif aterrizar_manual == 0 and aterrizar == 0 and enviado == 1:
-            print("no aterrizar a PC: ", addr)
-            print("no aterrizar")
+            print("no aterrizar")                                #------------------------------ UART
             enviado = 0
 
+
+
         if alarma_sonora_1:
-            print("prender alarma_sonora_1")
+            print("prender alarma_sonora_1")                     #------------------------------ UART
             sonora1_enviada = 1
         elif not alarma_sonora_1 and sonora1_enviada:
-            print("apagar alarma_sonora_1")
+            print("apagar alarma_sonora_1")                      #------------------------------ UART
             sonora1_enviada = 0
         
         if alarma_sonora_2:
-            print("prender alarma_sonora_2")
+            print("prender alarma_sonora_2")                     #------------------------------ UART
             sonora2_enviada = 1
         elif not alarma_sonora_2 and sonora2_enviada:
-            print("apagar alarma_sonora_2")
+            print("apagar alarma_sonora_2")                      #------------------------------ UART
             sonora2_enviada = 0
 
         time.sleep(5)
 
 
 
-bpm_bajos1 = bpm_altos1 = spo_bajos1 = dormido1 = temp_baja1 = temp_alta1 = 0 
-bpm_bajos2 = bpm_altos2 = spo_bajos2 = dormido2 = temp_baja2 = temp_alta2 = 0
-muerte1 = muerte2 = 0
+bpm_bajos1 = bpm_altos1 = spo_bajos1 = dormido1 = temp_baja1 = temp_alta1 = muerte1 = 0 
+bpm_bajos2 = bpm_altos2 = spo_bajos2 = dormido2 = temp_baja2 = temp_alta2 = muerte2 = 0
 manual = no_reaccion = 0
 pulsera_conectada = 1
 intentional_loss = 0
+
 pin_off = pin_on_off.value()
 codigo = [
         bpm_altos1, bpm_altos2, 
@@ -297,9 +305,9 @@ codigo = [
 
 
 def actualizar_codigo():
-    global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1
-    global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2 # se modifican directamente
-    global muerte1, muerte2, manual, pulsera_conectada
+    global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1, muerte1
+    global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2, muerte2 # se modifican directamente
+    global manual, pulsera_conectada
     global codigo, no_reaccion, pin_on_off
     
     manual = pin_activacion_manual.value()
@@ -551,9 +559,10 @@ def activar_SAE():
             #---------------------------------------------------
             # Luz roja titilar 
             if codigo[14] or intentional_loss:              #cuando activacion manual o la rtdc lo indica
+                aterrizar_manual = 1
+                print("aterrizar manual = 1")
                 if not roja_fija:
                     if prendido_roja == 0:
-                        aterrizar_manual = 1
                         pin_luz_roja.value(1)
                         prendido_roja = 1
                     elif prendido_roja == 1:
@@ -561,9 +570,9 @@ def activar_SAE():
                         prendido_roja = 0
                     print("roja titilando")
             else:                                           #si no esta la activacion manual ni intentional loss
+                aterrizar_manual = 0    
                 if not codigo[6] and not codigo[7]:         #si ninguno tiene hipoxia           
                     if not codigo[12] or not codigo[13]:       #si no estan muertos ambos
-                        aterrizar_manual = 0    
                         pin_luz_roja.value(0)                            
 
             pin_boton_reaccion = 0
