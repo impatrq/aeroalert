@@ -20,12 +20,14 @@ pin_luz_roja = Pin(12, Pin.OUT)
 pin_luz_ambar = Pin(13, Pin.OUT)
 emergency = alert = 0
 
+
+# Defininicón de Pines keypad
+filas = [16, 4, 0, 2]
+columnas = [19, 18, 5, 17]
 # Definimos los pines de las filas como salida
 pines_Filas = [Pin(pin_nombre, mode=Pin.OUT) for pin_nombre in filas]
-
 # Definimos los pines de las columnas de salida
 pines_Columnas = [Pin(pin_nombre, mode=Pin.IN, pull=Pin.PULL_DOWN) for pin_nombre in columnas]
-
 
 
 alert = emergency = solicitud = sae_desactivado = 0
@@ -100,7 +102,6 @@ def manage_AES():
 
 
 #Función para inicializar el teclado
-
 def inicio():
     for fila in range(0,4):
         for col in range(0,4):
@@ -131,10 +132,6 @@ def teclas():
     inicio()
 
     teclas = [['1', '4', '7', '*'], ['2', '5', '8', '0'], ['3', '6', '9', '#'], ['A', 'B', 'C', 'D']]
-
-    # Defininicón de Pines
-    filas = [16, 4, 0, 2]
-    columnas = [19, 18, 5, 17]
 
 
     global last_key_press
