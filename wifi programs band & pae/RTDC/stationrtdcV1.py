@@ -19,6 +19,7 @@ def do_connect():
             time.sleep(.1)
         print()
     print('network config:' , sta_if.ifconfig())
+    return sta_if.ifconfig()
 
 def send_message(client_socket):
 
@@ -32,7 +33,7 @@ def send_message(client_socket):
     print('respuesta: ', respuesta)
     
     
-
+"""
 do_connect()
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -49,7 +50,7 @@ client_socket.close()
 #response = requests.post("192.168.4.1", data = "some dummy content")
 #print(response.txt)
 #print(response.json())
-"""
+
 post_data = (a,b,c) = (1,3,5)
 while True:
     resp = requests.post("192.168.4.1", data = post_data)

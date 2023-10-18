@@ -1,9 +1,9 @@
 import stationrtdcv2 as stationrtdc
 from machine import Pin
 import time
+
 client_socket = stationrtdc.do_connect()
-tipo = "soy_rtdc"
-stationrtdc.send_type(client_socket, tipo)
+stationrtdc.send_type(client_socket, "soy_rtdc")
 
 
 
@@ -14,16 +14,6 @@ pin_luz_roja = Pin(12, Pin.OUT)
 pin_luz_ambar = Pin(13, Pin.OUT)
 emergency = alert = 0
 
-
-def alarmas_sonoras ():
-    global pin_luz_ambar, pin_luz_roja
-    global emergency, alert
-    while True:
-        time.sleep(2)
-        if emergency == 1:
-            sound()
-        elif alert == 1:
-            sound()
 
 
 def notification(cual):
