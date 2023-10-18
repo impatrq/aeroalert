@@ -15,11 +15,12 @@ for i in range(4):
     info = [hora_string,  alert , emergency , solicitud , sae_desactivado ]
 
     
-    if nro_vuelo in historial_de_vuelos:
-        historial_de_vuelos[str(nro_vuelo)][0][].append(info)
+    if str(nro_vuelo) in historial_de_vuelos:
+        historial_de_vuelos[str(nro_vuelo)].append(info)
     else:
         historial_de_vuelos[str(nro_vuelo)] = [[   "hora"  , "alert","emergency","solicitud","sae_desactivado"]]
-        historial_de_vuelos[str(nro_vuelo)][0][0].append(info)
+        historial_de_vuelos[str(nro_vuelo)].append(info)
+    time.sleep(1)
 print(historial_de_vuelos)
 
 """historial_de_vuelos= {nro_vuelo:[[   "hora"  , "alert","emergency","solicitud","sae_desactivado"],
