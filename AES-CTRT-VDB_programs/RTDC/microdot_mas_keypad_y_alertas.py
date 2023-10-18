@@ -1,7 +1,7 @@
 import stationrtdcv2 as stationrtdc
 from machine import Pin
 from time import sleep
-
+import time
 
 
 
@@ -59,6 +59,12 @@ def notification(cual, nro_vuelo):
     vuelos[nro_vuelo] = info   #{123:{"alert": alert, "emergency": emergency, "solicitud": solicitud, "sae_desactivado": sae_desactivado}}
     solicitud = 0
 
+    #historial_vuelos[for hora][nro_vuelo]
+    hora = time.localtime()
+    hora_string = str(hora[3],":", hora[4],":", hora[5])
+    historial_vuelos[hora_string] = vuelos
+
+    
 def manage_AES():
     global solicitud, sae_desactivado
     while True:
@@ -93,9 +99,9 @@ def manage_AES():
                 notification("alert",nro_vuelo)
 
 
-        if sae_desactivado == 1:
+        elif sae_desactivado == 1:
             notification("alert",nro_vuelo)
-        if sum(data) == 1:
+        if sum(data) == 1 and info["pulsera_conectada"] == 1:
             notification("clean",nro_vuelo)
 
 
