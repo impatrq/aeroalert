@@ -29,13 +29,14 @@ pines_Filas = [Pin(pin_nombre, mode=Pin.OUT) for pin_nombre in filas]
 # Definimos los pines de las columnas de salida
 pines_Columnas = [Pin(pin_nombre, mode=Pin.IN, pull=Pin.PULL_DOWN) for pin_nombre in columnas]
 
+hora = time.localtime()
 
 alert = emergency = solicitud = sae_desactivado = 0
 vuelos = {}
 def notification(cual, nro_vuelo):
     global pin_luz_ambar, pin_luz_roja
     global alert, emergency, solicitud, sae_desactivado
-    global alerts
+    global historial_de_vuelos
 
     if cual == "emergency":
         print("emergency")
