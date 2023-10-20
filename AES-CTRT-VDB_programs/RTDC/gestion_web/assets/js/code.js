@@ -23,7 +23,7 @@
             // Agregar los valores a las celdas
             //celdaNueva.innerHTML = oxigenoSangre;
 function refreshValues() {
-    fetch('/update/info') 
+    fetch('/update/info')
         .then(response => response.json())
             .then(jsonObject => {{
 
@@ -59,30 +59,53 @@ function refreshValues() {
 
 
 
+//constantemente se ejecuta
 function update_key() {
     fetch('/update/keys')
-
+        .then(response => response.json())
+            .then(jsonObject => {
+                key = jsonObject["key"]
+            })
 }
-
+// constantemente excepto cuando esta en airports
 function update_flights() {
     fetch('/update/flights')
+        .then(response => response.json())
+            .then(jsonObject => {
 
+            })
 }
+
+
+
 
 function get_variables() {
     fetch('/get/names/variables')
-    
+        .then(response => response.json())
+            .then(jsonObject => {
+
+            })
 }
 
 function get_history(nro_vuelo) {
     fetch('get/history/',nro_vuelo)
-    
+    .then(response => response.json())
+        .then(jsonObject => {
+
+    })    
 }
 
 function get_airports() {
     fetch('/get/airports')
-    
+        .then(response => response.json())
+            .then(jsonObject => {
+                jsonObject.forEach(element => {
+                    //append a loista
+                }); 
+            })    
 }
+
+
 
 function send_instruction(nro_vuelo, instruccion) {
     fetch('/send/',nro_vuelo,'/',instruccion)

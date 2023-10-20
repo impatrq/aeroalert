@@ -217,7 +217,9 @@ def conectar_microdot():
     @app.route('/update/keys')
     def index(request):
         print("Key a page")
-        return last_key_press
+        response = {"key":last_key_press}
+        json_data = ujson.dumps(response)
+        return json_data, 202, {'Content-Type': 'json'}
 
     #done ----------------
     #se repite constantemente mientras esta en el inicio
@@ -248,7 +250,8 @@ def conectar_microdot():
     @app.route('/get/history/<nro_vuelo>')
     def index(request, nro_vuelo):
         json_data = ujson.dumps(historial_de_vuelos[nro_vuelo])
-
+        return json_data, 202, {'Content-Type': 'json'}
+        
 
     #done ------------------
     #si ingresa para mandar un aeropuerto
