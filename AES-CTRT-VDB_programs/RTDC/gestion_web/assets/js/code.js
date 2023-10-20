@@ -65,6 +65,27 @@ function update_key() {
         .then(response => response.json())
             .then(jsonObject => {
                 key = jsonObject["key"]
+                if (key === "A") {
+
+                }
+                else if (key === "B") {
+
+                }
+                else if (key === "C") {
+
+                }
+                else if (key === "D") {
+
+                }
+                else if (key === "1") {
+
+                }
+                else if (key === "2") {
+
+                }
+                else if (key === "3") {
+
+                }
             })
 }
 // constantemente excepto cuando esta en airports
@@ -83,7 +104,11 @@ function get_variables() {
     fetch('/get/names/variables')
         .then(response => response.json())
             .then(jsonObject => {
-
+                jsonObject
+                variables.forEach(function callback(currentValue, index, array) {
+                    console.log("variable",currentValue)
+                //lista con los noombres directamente
+                })
             })
 }
 
@@ -92,17 +117,43 @@ function get_history(nro_vuelo) {
     .then(response => response.json())
         .then(jsonObject => {
 
-    })    
-}
+            console.log(jsonObject)
+            vuelo = jsonObject
+            //para este vuelo historial de vuelo
+            //vuelo = {'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+            //    'datos con hora': [
+            //              ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+            //              ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+            //              ], 
+            //           'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}}
 
+            console.log(vuelo['variables'])     //variables
+            datos_hora = vuelo['datos con hora']    //datos 
+            console.log(vuelo['alertas'])       //alertas
+            datos_hora.forEach(function callback(currentValue, index, array) {
+                console.log(currentValue)
+                //add to list of airports
+            });
+        })
+}    
+
+
+
+
+function add_to_airports_list(currentValue) {
+    console.log(currentValue)
+}
 function get_airports() {
     fetch('/get/airports')
         .then(response => response.json())
             .then(jsonObject => {
-                jsonObject.forEach(element => {
-                    //append a loista
-                }); 
-            })    
+
+                jsonObject.forEach(function callback(currentValue, index, array) {
+                    add_to_airports_list(currentValue)
+                    //add to list of airports
+                    });
+            
+                });     
 }
 
 

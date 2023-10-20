@@ -4,9 +4,6 @@ from time import sleep
 import time
 hora = time.localtime()
 
-from microdot_asyncio import Microdot, send_file
-import ujson
-import _thread
 
 
 global client_socket, sta_if
@@ -169,7 +166,10 @@ def teclas():
     inicio()
 
     teclas = [['1', '4', '7', '*'], ['2', '5', '8', '0'], ['3', '6', '9', '#'], ['A', 'B', 'C', 'D']]
-
+    
+    #       * # A B C D
+    # enter, arriba, abajo, deseleccionar
+    #softreset()
 
     global last_key_press
     last_key_press = ""
@@ -185,6 +185,9 @@ def teclas():
 
 
 
+from microdot_asyncio import Microdot, send_file
+import ujson
+import _thread
 
 def conectar_microdot():
     app = Microdot()
@@ -226,12 +229,15 @@ def conectar_microdot():
     vuelos = {}
     @app.route('/update/flights')
     def index(request):
-        for i in historial_de_vuelos:
-            vuelos[i] = {"alertas":{}}
-            vuelos[i]["alertas"] = historial_de_vuelos[i]["alertas"]
+        for vuelo in historial_de_vuelos:
+            vuelos[vuelo] = {"alertas":{}}
+            vuelos[vuelo]["alertas"] = historial_de_vuelos[vuelo]["alertas"]
         json_data = ujson.dumps(vuelos)
         print("vuelos a page")
         return json_data, 202, {'Content-Type': 'json'}
+    # vuelos = {'123':{"alertas":{'alert':1, 'emergency':0}},
+    #           '324':{"alertas":{'alert':1, 'emergency':0}}
+    # }
     
 
 
@@ -241,9 +247,11 @@ def conectar_microdot():
     @app.route('/get/names/variables')
     def index(request): 
         json_data = ujson.dumps(nombres_variables)
+        #lista con nombres de variables
         print("nombres variables a page")
         return json_data, 202, {'Content-Type': 'json'}
-    3
+    
+
     #done ----------------
     #solo se usa 1 vez cuando entra a el historial de un vuelo
     #envia el historial de datos
