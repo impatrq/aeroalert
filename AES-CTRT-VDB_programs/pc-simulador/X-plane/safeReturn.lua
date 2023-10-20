@@ -161,7 +161,7 @@ function checkDist ()
         inNavCrs = math.floor(Course)
         logMsg(inCrs)
         logMsg(inNavCrs)
-        if 7 > inNavCrs  - inCrs then
+        if 8 > inNavCrs  - inCrs then
             if (inNavCrs  - inCrs > 0 and firedRNWY == false) then
                 firedRNWY = true
                 HDG = CRS
@@ -172,7 +172,7 @@ function checkDist ()
             end
         elseif firedRNWY == true and dist < 5 then
             land()
-        elseif (dist > 5 and groundland < 900) then
+        elseif (dist > 25 and groundland < 1000) then
             caps()
             logMsg("Far away from approach route")
         end
@@ -193,7 +193,7 @@ function land()
         SPEEDSET = 110
         command_once("sim/GPS/g1000n1_apr")
     elseif dist < 5 then
-        SPEEDSET = 80
+        SPEEDSET = 110
     end
     -- wait for land
     function checkLand()
@@ -208,12 +208,12 @@ function land()
             rollout()
             logMsg("Great Landing!")
         -- pops chute if near airport but not on GS
-        elseif (dist < 1 and groundland > 500 and vertfpm > -50 and firedThree == false) then
+        elseif (dist < 1 and groundland >= 1300 and vertfpm > -50 and firedThree == false) then
             firedThree = true
             caps()
             logMsg("Near airport but not on GS")
         -- if it starts flying away from the airport (downwind ils etc)
-        elseif (dist > 12 and firedThree == false) then
+        elseif (dist > 25 and firedThree == false) then
             firedThree = true
             caps()
             logMsg("Flying away from airport")
@@ -256,9 +256,12 @@ function rollout()
     play_sound(autolandfour)
 
     -- engines OFF
-    dataref("fuelSelector", "sim/cockpit2/fuel/fuel_tank_selector", "writable")
-    fuelSelector = 0
-
+    altland = XPLMGetDataf(XPLMFindDataRef("sim/flightmodel/position/y_agl"))
+    groundland = altland * 3.2808399
+    if groundland < 25 then
+        dataref("fuelSelector", "sim/cockpit2/fuel/fuel_tank_selector", "writable")
+        fuelSelector = 0
+    end
     -- brakes full
     dataref("PARKBRAKES", "sim/flightmodel/controls/parkbrake", "writable")
     PARKBRAKES = 1
@@ -276,8 +279,3 @@ create_command( "FlyWithLua/ViewPoint/Safe_Return", "Emergency Autoland",
                 "safereturn()",
                 "checkDist()",
                 "phasetwo()")
-
-				create_command( "FlyWithLua/ViewPoint/Phase_Two", "Emergency Autoland",
-                "phasetwo()",
-                "checkILS() checkDist() checker() land() checkLand() caps() rollout()",
-                "")
