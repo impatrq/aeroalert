@@ -214,43 +214,15 @@ def conectar_microdot():
 
     #done ----------------------
     #para mandar las teclas presionadas a la pagina
-    @app.route('/update/teclas')
+    @app.route('/update/keys')
     def index(request):
         print("Key a page")
         return last_key_press
-    
-
-    #en caso de que se perciba peligro o intentional loss
-    @app.route('/send/<nrovuelo>/<instruccion>')
-    def index(request, nrovuelo, instruccion):
-        print("instruccion a ", nrovuelo)
-        stationrtdc.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
-
-
-
-    #done ------------------
-    #si ingresa para mandar un aeropuerto
-    @app.route('/get/aeropuertos')
-    def index(request):
-        json_data = ujson.dumps(info_aeropuertos)
-        print("aeropuertos a page")
-        return json_data, 202, {'Content-Type': 'json'}
-
-    #done ------------------------    
-    #en caso de solicitud
-    @app.route('/send/<nrovuelo>/info_aeropuerto/<index>')
-    def index(request, nrovuelo, index):
-        aeropuerto = {'info aeropuerto': info_aeropuertos[index]}
-        print("info aeropuerto a ", nrovuelo)
-        stationrtdc.send_message(client_socket, aeropuerto)
-        return
-    
-
 
     #done ----------------
     #se repite constantemente mientras esta en el inicio
     vuelos = {}
-    @app.route('/update/vuelos')
+    @app.route('/update/flights')
     def index(request):
         for i in historial_de_vuelos:
             vuelos[i] = {"alertas":{}}
@@ -260,6 +232,7 @@ def conectar_microdot():
         return json_data, 202, {'Content-Type': 'json'}
     
 
+
     #done ------------------
     #solo se usa 1 vez cuando entra a el historial de un vuelo
     #envia los nombres de las variables
@@ -268,27 +241,55 @@ def conectar_microdot():
         json_data = ujson.dumps(nombres_variables)
         print("nombres variables a page")
         return json_data, 202, {'Content-Type': 'json'}
-    
+    3
     #done ----------------
     #solo se usa 1 vez cuando entra a el historial de un vuelo
     #envia el historial de datos
-    @app.route('/update/historial_vuelo/<nro_vuelo>')
+    @app.route('/get/history/<nro_vuelo>')
     def index(request, nro_vuelo):
         json_data = ujson.dumps(historial_de_vuelos[nro_vuelo])
 
+
+    #done ------------------
+    #si ingresa para mandar un aeropuerto
+    @app.route('/get/airports')
+    def index(request):
+        json_data = ujson.dumps(info_aeropuertos)
+        print("aeropuertos a page")
+        return json_data, 202, {'Content-Type': 'json'}
+
+
+    #en caso de que se perciba peligro o intentional loss
+    @app.route('/send/<nrovuelo>/<instruccion>')
+    def index(request, nrovuelo, instruccion):
+        print("instruccion a ", nrovuelo)
+        stationrtdc.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
     
+    #done ------------------------    
+    #en caso de solicitud
+    @app.route('/send/<nro_vuelo>/info_airport/<index>')
+    def index(request, nro_vuelo, index):
+        aeropuerto = {'info aeropuerto': info_aeropuertos[index]}
+        print("info aeropuerto a ", nro_vuelo)
+        stationrtdc.send_message(client_socket, aeropuerto)
+        return
+
+    
+    app.run(port=80)
 
 
 if __name__ == "__main__":
     try:
         # Inicio la medicion del sensor        
-        _thread.start_new_thread(keypad, ())
+        _thread.start_new_thread(teclas, ())
 
+
+        conectar_microdot()
         print("Microdot corriendo en IP/Puerto: " + sta_if + ":80")
         
 
         # Inicio la aplicacion
-        app.run(port=80)
+        
     
     except KeyboardInterrupt:
         # Termina el programa con Ctrl + C
