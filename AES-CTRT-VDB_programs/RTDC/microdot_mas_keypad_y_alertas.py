@@ -32,7 +32,7 @@ alert = emergency = solicitud = sae_desactivado = 0
 info_aeropuertos = [{"aeropuerto":"ezeiza", "coordenadas": [23,43]},
                     {"aeropuerto":"aeroparque", "coordenadas": [54,22]}]
 
-nombres_variables = ["Hora","bpm_altos1","bpm_altos2","bpm_bajos1","bpm_bajos2","dormido1","dormido2","spo_bajos1","spo_bajos2","temp_alta1","temp_alta2","temp_baja1","temp_baja2","muerte1","muerte2","manual","pulsera_conectada","no_reaccion", "pin_off"]
+nombres_variables = {"variables":["Hora","bpm_altos1","bpm_altos2","bpm_bajos1","bpm_bajos2","dormido1","dormido2","spo_bajos1","spo_bajos2","temp_alta1","temp_alta2","temp_baja1","temp_baja2","muerte1","muerte2","manual","pulsera_conectada","no_reaccion", "pin_off"]}
 historial_de_vuelos = {}
 
 
@@ -80,11 +80,10 @@ def notification(cual, nro_vuelo, data):
         historial_de_vuelos[vuelo_nro]["datos con hora"].append(info_hora)
         historial_de_vuelos[vuelo_nro]["alertas"] = alerts
     else:
-        historial_de_vuelos[vuelo_nro] = {"variables":nombres_variables, "datos con hora":[info_hora],"alertas":alerts}
+        historial_de_vuelos[vuelo_nro] = {"datos con hora":[info_hora],"alertas":alerts}
 
         #historial_de_vuelos = 
-        #{'12323': {'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
-        #           'datos con hora': [
+        #{'12323': {'datos con hora': [
         #                              ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
         #                              ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
         #                              ], 
@@ -219,7 +218,7 @@ def conectar_microdot():
     #para mandar las teclas presionadas a la pagina
     @app.route('/update/keys')
     def index(request):
-        print("Key a page")
+        print("Key to page")
         response = {"key":last_key_press}
         json_data = ujson.dumps(response)
         return json_data, 202, {'Content-Type': 'json'}
@@ -233,7 +232,7 @@ def conectar_microdot():
             vuelos[vuelo] = {"alertas":{}}
             vuelos[vuelo]["alertas"] = historial_de_vuelos[vuelo]["alertas"]
         json_data = ujson.dumps(vuelos)
-        print("vuelos a page")
+        print("update flights")
         return json_data, 202, {'Content-Type': 'json'}
     # vuelos = {'123':{"alertas":{'alert':1, 'emergency':0}},
     #           '324':{"alertas":{'alert':1, 'emergency':0}}
@@ -248,7 +247,8 @@ def conectar_microdot():
     def index(request): 
         json_data = ujson.dumps(nombres_variables)
         #lista con nombres de variables
-        print("nombres variables a page")
+        print("get names variables")
+        #{"variables":["hora","spo1","spo2"]}
         return json_data, 202, {'Content-Type': 'json'}
     
 
@@ -258,6 +258,7 @@ def conectar_microdot():
     @app.route('/get/history/<nro_vuelo>')
     def index(request, nro_vuelo):
         json_data = ujson.dumps(historial_de_vuelos[nro_vuelo])
+        print("get histyory nrovuelo")
         return json_data, 202, {'Content-Type': 'json'}
         
 
@@ -266,22 +267,23 @@ def conectar_microdot():
     @app.route('/get/airports')
     def index(request):
         json_data = ujson.dumps(info_aeropuertos)
-        print("aeropuertos a page")
+        print("get airports")
         return json_data, 202, {'Content-Type': 'json'}
 
 
     #en caso de que se perciba peligro o intentional loss
     @app.route('/send/<nrovuelo>/<instruccion>')
     def index(request, nrovuelo, instruccion):
-        print("instruccion a ", nrovuelo)
+        print("send ", nrovuelo, " instruccion")
         stationrtdc.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
+        return
     
     #done ------------------------    
     #en caso de solicitud
     @app.route('/send/<nro_vuelo>/info_airport/<index>')
     def index(request, nro_vuelo, index):
         aeropuerto = {'info aeropuerto': info_aeropuertos[index]}
-        print("info aeropuerto a ", nro_vuelo)
+        print("send to:", nro_vuelo, "info_aeropuerto:",index)
         stationrtdc.send_message(client_socket, aeropuerto)
         return
 

@@ -65,6 +65,7 @@ function update_key() {
         .then(response => response.json())
             .then(jsonObject => {
                 key = jsonObject["key"]
+                
                 if (key === "A") {
 
                 }
@@ -86,15 +87,50 @@ function update_key() {
                 else if (key === "3") {
 
                 }
+                else if (key === "4") {
+
+                }
+                else if (key === "5") {
+
+                }
+                else if (key === "6") {
+
+                }
+                else if (key === "7") {
+
+                }
+                else if (key === "8") {
+
+                }
+                else if (key === "9") {
+
+                }
+                else if (key === "0") {
+
+                }
+                else if (key === "*") {
+
+                }
+                else if (key === "#") {
+
+                }
             })
+           
 }
 // constantemente excepto cuando esta en airports
 function update_flights() {
     fetch('/update/flights')
         .then(response => response.json())
             .then(jsonObject => {
-
-            })
+                var vuelos = jsonObject
+                for (const vuelo in vuelos) {
+                    if (vuelos.hasOwnProperty(vuelo)) {
+                        console.log(vuelo) // nro de vuelo    
+                        console.log(vuelos[vuelo]['alertas'])
+                        // poner en lista de vuelos con alertas y eso
+                    }
+                }
+            })      
 }
 
 
@@ -104,16 +140,18 @@ function get_variables() {
     fetch('/get/names/variables')
         .then(response => response.json())
             .then(jsonObject => {
-                jsonObject
-                variables.forEach(function callback(currentValue, index, array) {
-                    console.log("variable",currentValue)
-                //lista con los noombres directamente
+                variables = jsonObjectÑ["variables"]
+                
+                jsonObject.forEach(function callback(nombre, index, array) {
+                    console.log("variable:",nombre)
+                //lista con los nombres directamente
+                // ponerlos en lista de historial de vuelo
                 })
             })
 }
 
 function get_history(nro_vuelo) {
-    fetch('get/history/',nro_vuelo)
+    fetch('/get/history/',nro_vuelo)
     .then(response => response.json())
         .then(jsonObject => {
 
@@ -127,7 +165,7 @@ function get_history(nro_vuelo) {
             //              ], 
             //           'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}}
 
-            console.log(vuelo['variables'])     //variables
+            
             datos_hora = vuelo['datos con hora']    //datos 
             console.log(vuelo['alertas'])       //alertas
             datos_hora.forEach(function callback(currentValue, index, array) {
