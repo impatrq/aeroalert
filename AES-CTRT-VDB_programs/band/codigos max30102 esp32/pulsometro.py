@@ -79,7 +79,7 @@ class Pulso():
                 threshold_off = (( 1.3 * minima + maxima) // 2.3)                                   # (a+b)/2 dedo------ (a+b)/2
 
                 
-                if valuered > 3000:         #estaba en 4k
+                if valuered > 4000:        
                     if not beat and valuered > threshold_on:
                         beat = True                    
                         t_us = ticks_diff(ticks_us(), t_start)
