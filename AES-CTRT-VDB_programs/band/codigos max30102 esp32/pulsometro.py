@@ -97,7 +97,6 @@ class Pulso():
                         beat = False
 
                 else:
-                    
                     print('Not finger', valuered)
                     beats_history.append(0)
                     beats_history = beats_history[-MAX_HISTORY:]
