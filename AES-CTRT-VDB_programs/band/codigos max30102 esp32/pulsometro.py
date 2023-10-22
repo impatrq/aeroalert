@@ -53,7 +53,6 @@ class Pulso():
         
 
         while True:
-            utime.sleep(3)
             #while pin_prendido.value():
             # The check() method has to be continuously polled, to check if
             # there are new readings into the sensor's FIFO queue. When new
@@ -62,30 +61,34 @@ class Pulso():
             # Check if the storage contains available samples
             if sensor.available():
                 # Access the storage FIFO and gather the readings (integers)
-                red_reading = sensor.pop_red_from_storage()
-                ir_reading = sensor.pop_ir_from_storage()
-                valueir = ir_reading
-                valuered = red_reading
+                valueir = sensor.pop_red_from_storage()
+                valuered = sensor.pop_ir_from_storage()
                 
-                Spo2 = valueir * 100/10953                                                      # valueir * 105/16500 para mediciones en el dedo, Spo2 = valueir * 105/11500 para la muñeca por arriba
-                self.datos2 = Spo2
+                 
                 
-                history.append(valuered)
-                # Get the tail, up to MAX_HISTORY length
-                history = history[-MAX_HISTORY:]
+                Spo2 = valueir * 105/11500                                                     # valueir * 105/16500 para mediciones en el dedo, Spo2 = valueir * 105/11500 para la muñeca por arriba
+                self.datos2 = valuered
+                if valuered < 30000:
+                    history.append(valuered)
+                    # Get the tail, up to MAX_HISTORY length
+                    history = history[-MAX_HISTORY:]
 
 
                 minima, maxima = min(history), max(history)
 
-                threshold_on = (minima + maxima * 1.75) // 2.75                                  # (a+b*2)/3 dedo --------- (a+b*1.5)/2.5
-                threshold_off = (( 1.3 * minima + maxima) // 2.3)                                   # (a+b)/2 dedo------ (a+b)/2
+                threshold_on =(minima + maxima * 1.75) // 2.748   #(minima + maxima * 1.75) // 2.748       # (a+b*2)/3 dedo --------- (a+b*1.5)/2.5
+                threshold_off =(( 1.3 * minima + maxima) // 2.302) #(( 1.3 * minima + maxima) // 2.302)    # (a+b)/2 dedo------ (a+b)/2
+                
                 if valuered > 4000:
+                    self.datos3 = [threshold_off, threshold_on]
+                    
                     if not beat and valuered > threshold_on:
                         beat = True                    
                         t_us = ticks_diff(ticks_us(), t_start)
                         t_s = t_us/1000000
                         f = 1/t_s
                         bpm = f * 60
+                        
                         if bpm < 300:
                             t_start = ticks_us()
                             beats_history.append(bpm)                    
@@ -97,10 +100,10 @@ class Pulso():
                         beat = False
 
                 else:
-                    print('Not finger')
+                    print('Not finger',beats_history)
                     beats_history.append(0)
                     beats_history = beats_history[-MAX_HISTORY:]
                     beats = round(sum(beats_history)/len(beats_history) )
                     self.datos = beats
-                    utime.sleep(1)
+                    utime.sleep(2)
                 
