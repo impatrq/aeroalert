@@ -2,23 +2,21 @@ import stationrtdcv2 as stationrtdc
 from machine import Pin
 from time import sleep
 import time
-
-
+hora = time.localtime()
 
 from microdot_asyncio import Microdot, send_file
 import ujson
 import _thread
+
 
 global client_socket, sta_if
 client_socket, sta_if = stationrtdc.do_connect()
 stationrtdc.send_type(client_socket, "soy_rtdc")
 
 
-#msg = "aterriza"    # o "no_aterrizes"
-#stationrtdc.send_message(client_socket,msg)
 pin_luz_roja = Pin(12, Pin.OUT)
 pin_luz_ambar = Pin(13, Pin.OUT)
-emergency = alert = 0
+
 
 
 # Defininicón de Pines keypad
@@ -29,11 +27,19 @@ pines_Filas = [Pin(pin_nombre, mode=Pin.OUT) for pin_nombre in filas]
 # Definimos los pines de las columnas de salida
 pines_Columnas = [Pin(pin_nombre, mode=Pin.IN, pull=Pin.PULL_DOWN) for pin_nombre in columnas]
 
-hora = time.localtime()
+
 
 alert = emergency = solicitud = sae_desactivado = 0
-vuelos = {}
-def notification(cual, nro_vuelo):
+
+#informacion de aeropuertos
+info_aeropuertos = [{"aeropuerto":"ezeiza", "coordenadas": [23,43]},
+                    {"aeropuerto":"aeroparque", "coordenadas": [54,22]}]
+
+nombres_variables = ["Hora","bpm_altos1","bpm_altos2","bpm_bajos1","bpm_bajos2","dormido1","dormido2","spo_bajos1","spo_bajos2","temp_alta1","temp_alta2","temp_baja1","temp_baja2","muerte1","muerte2","manual","pulsera_conectada","no_reaccion", "pin_off"]
+historial_de_vuelos = {}
+
+
+def notification(cual, nro_vuelo, data):
     global pin_luz_ambar, pin_luz_roja
     global alert, emergency, solicitud, sae_desactivado
     global historial_de_vuelos
@@ -55,17 +61,40 @@ def notification(cual, nro_vuelo):
         pin_luz_roja.value(0)
         alert = 0
         emergency = 0
-    #envia a la web page que se pide una solicitud de aterrizaje y emergencias
-    info = {"alert": alert, "emergency": emergency, "solicitud": solicitud, "sae_desactivado": sae_desactivado}
-    vuelos[nro_vuelo] = info   #{123:{"alert": alert, "emergency": emergency, "solicitud": solicitud, "sae_desactivado": sae_desactivado}}
-    solicitud = 0
-
-    #historial_vuelos[for hora][nro_vuelo]
-    hora = time.localtime()
-    hora_string = str(hora[3],":", hora[4],":", hora[5])
-    historial_vuelos[hora_string] = vuelos
-
     
+
+
+    vuelo_nro = str(nro_vuelo)
+
+    hora = time.localtime()
+    hora_string = str(f"{hora[3]}:{hora[4]}:{hora[5]}")
+
+    info_hora = [hora_string]
+    for i in data:  
+        info_hora.append(i)
+    #info_hora = ["23:23:43",0,0,0,0,0,0,0,0,0,0,0,0,1,0,0]
+
+
+
+    alerts = {"alert": alert, "emergency": emergency, "solicitud": solicitud, "sae_desactivado": sae_desactivado}
+
+
+    if vuelo_nro in historial_de_vuelos:
+        historial_de_vuelos[vuelo_nro]["datos con hora"].append(info_hora)
+        historial_de_vuelos[vuelo_nro]["alertas"] = alerts
+    else:
+        historial_de_vuelos[vuelo_nro] = {"variables":nombres_variables, "datos con hora":[info_hora],"alertas":alerts}
+
+        #historial_de_vuelos = 
+        #{'12323': {'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+        #           'datos con hora': [
+        #                              ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+        #                              ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+        #                              ], 
+        #           'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}}}
+
+
+
 def manage_AES():
     global solicitud, sae_desactivado
     while True:
@@ -82,8 +111,9 @@ def manage_AES():
             sae_desactivado = 1
         elif msg == "Sae activado":
             sae_desactivado = 0
-    
-        info={"bpm_altos1": data[0],         "bpm_altos2": data[1], 
+
+        #Info
+        I={"bpm_altos1": data[0],         "bpm_altos2": data[1], 
             "bpm_bajos1": data[2],         "bpm_bajos2": data[3], 
             "dormido1": data[4],           "dormido2": data[5],
             "spo_bajos1": data[6],         "spo_bajos2": data[7], 
@@ -93,17 +123,17 @@ def manage_AES():
             "manual": data[14], "pulsera_conectada": data[15],
             "no_reaccion": data[16],        "pin_on_off": data[17]}
         
-        if info["no_reaccion"] or info["manual"] or info["muerte1"] and info["muerte2"]:
-            notification("emergency",nro_vuelo)
+        if I["no_reaccion"] or I["manual"] or I["muerte1"] and I["muerte2"]:
+            notification("emergency",nro_vuelo, data)
         
-        elif info["muerte1"] or info["muerte2"] or info["spo_bajos1"] or info["spo_bajos2"] or info["dormido1"] or info["dormido2"] or not info["pulsera_conectada"] or info["pin_on_off"]:
-                notification("alert",nro_vuelo)
+        elif I["muerte1"] or I["muerte2"] or I["spo_bajos1"] or I["spo_bajos2"] or I["dormido1"] or I["dormido2"] or not I["pulsera_conectada"] or I["pin_on_off"]:
+                notification("alert",nro_vuelo,  data)
 
 
         elif sae_desactivado == 1:
-            notification("alert",nro_vuelo)
-        if sum(data) == 1 and info["pulsera_conectada"] == 1:
-            notification("clean",nro_vuelo)
+            notification("alert",nro_vuelo, data)
+        if sum(data) == 1 and I["pulsera_conectada"] == 1:
+            notification("clean",nro_vuelo, data)
 
 
 
@@ -178,50 +208,75 @@ def conectar_microdot():
 
 
 
-
-
     global client_socket
     global last_key_press
+    global historial_de_vuelos
 
-
+    #done ----------------------
+    #para mandar las teclas presionadas a la pagina
+    @app.route('/update/teclas')
+    def index(request):
+        print("Key a page")
+        return last_key_press
+    
 
     #en caso de que se perciba peligro o intentional loss
-    @app.route('/send/aes/<instruccion>')
-    def index(request, instruccion):
+    @app.route('/send/<nrovuelo>/<instruccion>')
+    def index(request, nrovuelo, instruccion):
+        print("instruccion a ", nrovuelo)
         stationrtdc.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
 
 
-    info_aeropuertos = [{"aeropuerto":"ezeiza", "coordenadas": [23,43]},
-                    {"aeropuerto":"aeroparque", "coordenadas": [54,22]}]
 
+    #done ------------------
+    #si ingresa para mandar un aeropuerto
+    @app.route('/get/aeropuertos')
+    def index(request):
+        json_data = ujson.dumps(info_aeropuertos)
+        print("aeropuertos a page")
+        return json_data, 202, {'Content-Type': 'json'}
+
+    #done ------------------------    
     #en caso de solicitud
     @app.route('/send/<nrovuelo>/info_aeropuerto/<index>')
     def index(request, nrovuelo, index):
         aeropuerto = {'info aeropuerto': info_aeropuertos[index]}
-        
-        #enviar al <nrovuelo>
+        print("info aeropuerto a ", nrovuelo)
         stationrtdc.send_message(client_socket, aeropuerto)
         return
-
-
-
-    @app.route('/get/aeropuertos')
-    def index(request):
-        return info_aeropuertos
     
-    #ambas periodicamente en js
-    @app.route('/update/teclas')
-    def index(request):
-        return last_key_press
-    
+
+
+    #done ----------------
+    #se repite constantemente mientras esta en el inicio
+    vuelos = {}
     @app.route('/update/vuelos')
     def index(request):
-        global vuelos
+        for i in historial_de_vuelos:
+            vuelos[i] = {"alertas":{}}
+            vuelos[i]["alertas"] = historial_de_vuelos[i]["alertas"]
         json_data = ujson.dumps(vuelos)
-        print("vuelos enviados")
+        print("vuelos a page")
         return json_data, 202, {'Content-Type': 'json'}
+    
 
+    #done ------------------
+    #solo se usa 1 vez cuando entra a el historial de un vuelo
+    #envia los nombres de las variables
+    @app.route('/get/names/variables')
+    def index(request): 
+        json_data = ujson.dumps(nombres_variables)
+        print("nombres variables a page")
+        return json_data, 202, {'Content-Type': 'json'}
+    
+    #done ----------------
+    #solo se usa 1 vez cuando entra a el historial de un vuelo
+    #envia el historial de datos
+    @app.route('/update/historial_vuelo/<nro_vuelo>')
+    def index(request, nro_vuelo):
+        json_data = ujson.dumps(historial_de_vuelos[nro_vuelo])
 
+    
 
 
 if __name__ == "__main__":
