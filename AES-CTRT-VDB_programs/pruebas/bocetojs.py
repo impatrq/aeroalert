@@ -1,7 +1,7 @@
 index = 1
 index_flights = 1
 index_data = 1
-
+interfaz = "flights"
 
 #la lista que recibe del micro
 max_airports = len(airports)
