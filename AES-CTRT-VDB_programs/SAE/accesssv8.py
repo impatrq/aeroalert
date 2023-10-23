@@ -19,7 +19,7 @@ def definir_pines():
     pin_luz_roja = Pin(4, Pin.OUT)              
             
     pin_flag = Pin(26, Pin.OUT)               
-    pin_activacion_manual = Pin(21, Pin.IN)
+    pin_activacion_manual = Pin(22, Pin.IN)
     pin_on_off = Pin(35, Pin.IN)
 
     pin_test = Pin(18, Pin.IN)                   
@@ -27,7 +27,7 @@ def definir_pines():
     
     pin_reaccion = Pin(19, Pin.IN)
     pin_boton_reaccion = pin_reaccion.value()
-
+    # 4 17 18 19 21 35
 definir_pines()
 
 def conectar_wifi():
@@ -637,7 +637,7 @@ def evaluar_info(bpm, spo, temp, conectado, de):
         if bpm < 60:
             bpm_bajos1 = 1
             bpm_altos1 = 0
-        elif bpm > 140:
+        elif bpm > 130:
             bpm_altos1 = 1
             bpm_bajos1 = 0
         else:

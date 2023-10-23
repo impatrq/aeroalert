@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Vuelos</title>
+    <style>
+        /* Estilos para la tabla */
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+        thd {
+            padding: 6px;
+            text-align: center;
+            align-content:center ;
+            border: 2px solid #ddd;
+        }
+
+    </style>
+</head>
+<body>
+
+    <table style="display: block;">
+        <thead>
+            <tr>
+                <th>Flight Number</th>
+                <th>Status</th>
+                <th>Landing Request</th>
+                <th>Aes Status</th>
+            </tr>
+        </thead>
+        <tbody id="listaVuelos">
+            
+        </tbody>
+    </table>
+
+    <table style="display: block">
+        <thead>
+            <tr id="variables">
+                
+            </tr>
+        </thead>
+        <tbody id="datosHora">
+
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th>indice</th>
+                <th>Nombre</th>
+                <th>Coordenadas</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="tablaAeropuertos">
+
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+
+        var vuelos = {
+                    '12323': {
+                        'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+                        'datos con hora': [
+                                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                           ], 
+                        'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}},
+                   
+                    '434545': {
+                        'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+                        'datos con hora': [
+                                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                           ], 
+                        'alertas': {'alert': 0, 'emergency': 1, 'solicitud': 1, 'sae_desactivado': 1}}}
+        
+
+        // Supongamos que tienes un JSON llamado 'vuelos' con la información de los vuelos
+
+        // Obtén una referencia a la tabla HTML
+
+function crearTablaVuelos(){
+    const listaVuelos = document.getElementById("listaVuelos");
+    // por cada vuelo
+    for (const vuelo in vuelos) {
+        console.log(vuelos)
+        // Crea una fila de tabla <tr> para cada vuelo
+        const vueloRow = document.createElement("tr");
+        vueloRow.id = `fila-${vuelo}`
+        
+        // Crea celdas de tabla <td> para cada fila
+        
+        
+        const nroVueloCell = document.createElement("td");
+        nroVueloCell.textContent = vuelo;
+     
+
+        const statusCell = document.createElement("td");
+        if (vuelos[vuelo]['alertas']['emergency'] == 1){
+            statusCell.textContent = "emergency"
+            statusCell.style.backgroundColor = "red";
+        }
+        else if (vuelos[vuelo]['alertas']['alert'] == 1){
+            statusCell.textContent = "alert"
+            statusCell.style.backgroundColor = "yellow";
+        }
+        else {
+            statusCell.textContent = "normal"
+            statusCell.style.backgroundColor = "white"
+        }
+        
+
+        
+        const landingCell = document.createElement("td");
+        if (vuelos[vuelo]['alertas']['solicitud'] == 1){
+            landingCell.textContent = "Waiting"
+            landingCell.style.backgroundColor = "yellow";
+        }
+        else {
+            landingCell.textContent = "Done"
+            landingCell.style.backgroundColor = "white";
+        }
+        
+
+        const aesCell = document.createElement("td");
+        if (vuelos[vuelo]['alertas']['sae_desactivado'] == 1){
+            aesCell.textContent = "Aes Disabled"
+            aesCell.style.backgroundColor = "red";
+        }
+        else {
+            aesCell.textContent = "Active"
+            aesCell.style.backgroundColor = "green";
+        }
+
+        
+        // Agrega las celdas a la fila
+        vueloRow.appendChild(nroVueloCell);
+        vueloRow.appendChild(statusCell);
+        vueloRow.appendChild(landingCell);
+        vueloRow.appendChild(aesCell);
+
+        // Agrega la fila a la tabla
+        listaVuelos.appendChild(vueloRow);
+    }
+}
+function actualizarTablaVuelos(vuelos){
+    
+    for (const vuelo in vuelos) {
+
+            const fila_de_vuelo = document.getElementById(`fila-${vuelo}`);
+            
+
+            if (vuelos[vuelo]['alertas']['emergency'] == 1){
+                fila_de_vuelo.cells[1].textContent = "emergency"
+                fila_de_vuelo.cells[1].style.backgroundColor = "red";
+            }
+            else if (vuelos[vuelo]['alertas']['alert'] == 1){
+                fila_de_vuelo.cells[1].textContent = "alert"
+                fila_de_vuelo.cells[1].style.backgroundColor = "yellow";
+            }
+            else {
+                fila_de_vuelo.cells[1].textContent = "normal"
+                fila_de_vuelo.cells[1].style.backgroundColor = "white"
+            }
+
+    
+
+            if (vuelos[vuelo]['alertas']['solicitud'] == 1){
+                fila_de_vuelo.cells[2].textContent = "Waiting"
+                fila_de_vuelo.cells[2].style.backgroundColor = "yellow";
+            }
+            else {
+                fila_de_vuelo.cells[2].textContent = "Done"
+                fila_de_vuelo.cells[2].style.backgroundColor = "white";
+            }
+
+
+
+            if (vuelos[vuelo]['alertas']['sae_desactivado'] == 1){
+                fila_de_vuelo.cells[3].textContent = "Aes Disabled"
+                fila_de_vuelo.cells[3].style.backgroundColor = "red";
+            }
+            else {
+                fila_de_vuelo.cells[3].textContent = "Active"
+                fila_de_vuelo.cells[3].style.backgroundColor = "green";
+            }
+        };
+    }
+
+
+    
+crearTablaVuelos()
+           
+setInterval(() => {
+        actualizarTablaVuelos(vuelos)
+    }, 3000); // Actualiza cada 2 segundos 
+
+
+
+
+function getHistory(nro_vuelo){
+    var historialDeVuelo = {'datos con hora': [
+                        ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                        ['10:18:37', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                        ['10:18:40', 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
+                        ['10:18:43', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                        ['10:18:46', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                        ['10:18:49', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                        ], 
+                   'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}
+                   }
+    return(historialDeVuelo)
+}
+
+function getVariables(){
+    variables = ["Hora","bpmHigh","bpmHigh2","bpmLow1","bpmLow2","sleep1","sleep2",
+                "spoLow1","spoLow2","highTemp1","highTemp2","lowTemp1","lowTemp2",
+                "death1","death2","manual","bandConnected","noReaction", "pin_off"]
+    return(variables)
+}
+
+function crearTablaDatosHora(nro_vuelo){
+    
+    // pone los nombres de las variables en la fila de arriba
+    var variables = getVariables()      //["hora","bpm_altos"]  
+    const headVariables = document.getElementById("variables")
+    
+    variables.forEach(variable => {
+        const variableCelda = document.createElement("th");
+        variableCelda.textContent = variable
+        variableCelda.style.backgroundColor = "blue"
+        headVariables.appendChild(variableCelda);
+    });
+
+
+    // pone los valores con cada color en la tabla
+    datos = getHistory(nro_vuelo)
+    const dataTiempo = datos['datos con hora']
+    const datosYHora = dataTiempo.reverse()
+
+    const tablaDatosHora = document.getElementById("datosHora")
+
+    datosYHora.forEach(filaDatos => {
+        console.log(filaDatos)
+
+        const rowTablaDatos = document.createElement("tr")
+        var indice = 0
+
+        filaDatos.forEach(dato => {
+            indice += 1
+
+            const celdaDatos = document.createElement("td")
+            
+            celdaDatos.textContent = dato
+            if (indice == 1){
+                celdaDatos.style.backgroundColor = "orange"
+            }
+            else if (indice == 17){      // si es el de pulsera conectada
+                if (dato == 0){
+                    celdaDatos.style.backgroundColor = "red"
+                }
+                else {
+                    celdaDatos.style.backgroundColor = "green"
+                }
+            }
+            else if (dato == 1){
+                celdaDatos.style.backgroundColor = "red"
+            }
+            else{
+                celdaDatos.style.backgroundColor = "green"
+            }
+
+            rowTablaDatos.appendChild(celdaDatos)
+        })
+
+        tablaDatosHora.appendChild(rowTablaDatos)
+    })
+
+    
+
+}
+crearTablaDatosHora(12323)
+
+    </script>
+</body>
+</html>
