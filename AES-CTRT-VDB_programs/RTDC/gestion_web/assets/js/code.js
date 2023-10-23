@@ -59,6 +59,155 @@ function refreshValues() {
 
 
 
+        var vuelos = {
+                    '12323': {
+                        'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+                        'datos con hora': [
+                                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                           ], 
+                        'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}},
+                   
+                    '434545': {
+                        'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+                        'datos con hora': [
+                                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                           ], 
+                        'alertas': {'alert': 0, 'emergency': 1, 'solicitud': 1, 'sae_desactivado': 1}}}
+        
+
+        // Supongamos que tienes un JSON llamado 'vuelos' con la información de los vuelos
+
+        // Obtén una referencia a la tabla HTML
+
+function crearTablaVuelos(){
+    const listaVuelos = document.getElementById("listaVuelos");
+    // por cada vuelo
+    for (const vuelo in vuelos) {
+
+        // Crea una fila de tabla <tr> para cada vuelo
+        const vueloRow = document.createElement("tr");
+        vueloRow.id = `fila-${vuelo}`
+        
+        // Crea celdas de tabla <td> para cada fila
+        
+        
+        const nroVueloCell = document.createElement("td");
+        nroVueloCell.textContent = vuelo;
+     
+
+        const statusCell = document.createElement("td");
+        if (vuelos[vuelo]['alertas']['emergency'] == 1){
+            statusCell.textContent = "emergency"
+            statusCell.style.backgroundColor = "red";
+        }
+        else if (vuelos[vuelo]['alertas']['alert'] == 1){
+            statusCell.textContent = "alert"
+            statusCell.style.backgroundColor = "yellow";
+        }
+        else {
+            statusCell.textContent = "normal"
+            statusCell.style.backgroundColor = "white"
+        }
+        
+
+        
+        const landingCell = document.createElement("td");
+        if (vuelos[vuelo]['alertas']['solicitud'] == 1){
+            landingCell.textContent = "Waiting"
+            landingCell.style.backgroundColor = "yellow";
+        }
+        else {
+            landingCell.textContent = "Done"
+            landingCell.style.backgroundColor = "white";
+        }
+        
+
+        const aesCell = document.createElement("td");
+        if (vuelos[vuelo]['alertas']['sae_desactivado'] == 1){
+            aesCell.textContent = "Aes Disabled"
+            aesCell.style.backgroundColor = "red";
+        }
+        else {
+            aesCell.textContent = "Active"
+            aesCell.style.backgroundColor = "green";
+        }
+
+        
+        // Agrega las celdas a la fila
+        vueloRow.appendChild(nroVueloCell);
+        vueloRow.appendChild(statusCell);
+        vueloRow.appendChild(landingCell);
+        vueloRow.appendChild(aesCell);
+
+        // Agrega la fila a la tabla
+        listaVuelos.appendChild(vueloRow);
+    }
+}
+function actualizarTablaVuelos(vuelos){
+    for (const vuelo in vuelos) {
+        const fila_de_vuelo = document.getElementById(`fila-${vuelo}`);
+        
+
+        if (vuelos[vuelo]['alertas']['emergency'] == 1){
+            fila_de_vuelo.cells[1].textContent = "emergency"
+            fila_de_vuelo.cells[1].style.backgroundColor = "red";
+        }
+        else if (vuelos[vuelo]['alertas']['alert'] == 1){
+            fila_de_vuelo.cells[1].textContent = "alert"
+            fila_de_vuelo.cells[1].style.backgroundColor = "yellow";
+        }
+        else {
+            fila_de_vuelo.cells[1].textContent = "normal"
+            fila_de_vuelo.cells[1].style.backgroundColor = "white"
+        }
+
+
+
+        if (vuelos[vuelo]['alertas']['solicitud'] == 1){
+            fila_de_vuelo.cells[2].textContent = "Waiting"
+            fila_de_vuelo.cells[2].style.backgroundColor = "yellow";
+        }
+        else {
+            fila_de_vuelo.cells[2].textContent = "Done"
+            fila_de_vuelo.cells[2].style.backgroundColor = "white";
+        }
+
+
+
+        if (vuelos[vuelo]['alertas']['sae_desactivado'] == 1){
+            fila_de_vuelo.cells[3].textContent = "Aes Disabled"
+            fila_de_vuelo.cells[3].style.backgroundColor = "red";
+        }
+        else {
+            fila_de_vuelo.cells[3].textContent = "Active"
+            fila_de_vuelo.cells[3].style.backgroundColor = "green";
+        }
+    };
+}
+
+function createFlights() {
+    fetch('/update/flights')
+    .then(response => response.json())
+        .then(jsonObject => {
+            var vuelos = jsonObject
+            crearTablaVuelos(vuelos)
+        })      
+}
+
+//constantemente
+function updateFlights() {
+    fetch('/update/flights')
+    .then(response => response.json())
+        .then(jsonObject => {
+            var vuelos = jsonObject
+            actualizarTablaVuelos(vuelos)
+        })      
+}
+
+
+
 //constantemente se ejecuta
 var interfaz = "flights"
 var index_flights = 1
@@ -140,46 +289,14 @@ function update_key() {
 }
 
 
-function add_flights() {
-    fetch('/update/flights')
-    .then(response => response.json())
-        .then(jsonObject => {
-            var vuelos = jsonObject
-            for (const vuelo in vuelos) {
-                if (vuelos.hasOwnProperty(vuelo)) {
-                    
-                    console.log(vuelo)                      // nro de vuelo    
-                    console.log(vuelos[vuelo]['alertas'])
-                    // poner en lista de vuelos con alertas y eso
-                }
-            }
-        })      
-}
-
-// constantemente 
-function update_flights() {
-    fetch('/update/flights')
-        .then(response => response.json())
-            .then(jsonObject => {
-                var vuelos = jsonObject
-                for (const vuelo in vuelos) {
-                    if (vuelos.hasOwnProperty(vuelo)) {
-                        console.log(vuelo)                      // nro de vuelo    
-                        console.log(vuelos[vuelo]['alertas'])
-                        // poner en lista de vuelos con alertas y eso
-                    }
-                }
-            })      
-}
 
 
 
-
-function get_variables() {
+function getVariables() {
     fetch('/get/names/variables')
         .then(response => response.json())
             .then(jsonObject => {
-                variables = jsonObjectÑ["variables"]
+                variables = jsonObject["variables"]
                 
                 jsonObject.forEach(function callback(nombre, index, array) {
                     console.log("variable:",nombre)
@@ -189,7 +306,7 @@ function get_variables() {
             })
 }
 
-function get_history(nro_vuelo) {
+function getHistory(nro_vuelo) {
     fetch('/get/history/',nro_vuelo)
     .then(response => response.json())
         .then(jsonObject => {
@@ -217,10 +334,10 @@ function get_history(nro_vuelo) {
 
 
 
-function add_to_airports_list(currentValue) {
+function addToAirportsList(currentValue) {
     console.log(currentValue)
 }
-function get_airports() {
+function getAirports() {
     fetch('/get/airports')
         .then(response => response.json())
             .then(jsonObject => {
@@ -235,12 +352,12 @@ function get_airports() {
 
 
 
-function send_instruction(nro_vuelo, instruccion) {
+function sendInstruction(nro_vuelo, instruccion) {
     fetch('/send/',nro_vuelo,'/',instruccion)
     // "aterriza" o "no_aterrizes"
 }
 
-function send_info_airport(nro_vuelo, index) {
+function sendInfoAirport(nro_vuelo, index) {
     fetch('/send/',nro_vuelo,'info_airport/',index)
 
 }
