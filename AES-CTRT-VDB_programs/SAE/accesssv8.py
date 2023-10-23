@@ -637,7 +637,7 @@ def evaluar_info(bpm, spo, temp, conectado, de):
         if bpm < 60:
             bpm_bajos1 = 1
             bpm_altos1 = 0
-        elif bpm > 140:
+        elif bpm > 130:
             bpm_altos1 = 1
             bpm_bajos1 = 0
         else:
