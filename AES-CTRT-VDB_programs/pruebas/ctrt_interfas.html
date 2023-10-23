@@ -29,6 +29,7 @@
     </style>
 </head>
 <body>
+
     <table style="display: block;">
         <thead>
             <tr>
@@ -42,6 +43,7 @@
             
         </tbody>
     </table>
+
     <table style="display: block">
         <thead>
             <tr id="variables">
@@ -50,6 +52,21 @@
         </thead>
         <tbody id="datosHora">
 
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th>indice</th>
+                <th>Nombre</th>
+                <th>Coordenadas</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="tablaAeropuertos">
+
+            </tr>
         </tbody>
     </table>
 
@@ -197,12 +214,13 @@ setInterval(() => {
 
 
 function getHistory(nro_vuelo){
-    var historialDeVuelo = {'datos con hora': [['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-                        ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-                        ['10:18:36', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
+    var historialDeVuelo = {'datos con hora': [
+                        ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
                         ['10:18:37', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-                        ['10:18:38', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-                        ['10:18:39', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                        ['10:18:40', 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
+                        ['10:18:43', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                        ['10:18:46', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                        ['10:18:49', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
                         ], 
                    'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}
                    }
@@ -232,7 +250,8 @@ function crearTablaDatosHora(nro_vuelo){
 
     // pone los valores con cada color en la tabla
     datos = getHistory(nro_vuelo)
-    var datosYHora = datos['datos con hora']
+    const dataTiempo = datos['datos con hora']
+    const datosYHora = dataTiempo.reverse()
 
     const tablaDatosHora = document.getElementById("datosHora")
 

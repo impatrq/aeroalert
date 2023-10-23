@@ -78,6 +78,8 @@ def notification(cual, nro_vuelo, data):
 
     if vuelo_nro in historial_de_vuelos:
         historial_de_vuelos[vuelo_nro]["datos con hora"].append(info_hora)
+        historial_de_vuelos[vuelo_nro]["datos con hora"] = historial_de_vuelos[vuelo_nro]["datos con hora"][-20:]
+        #maximo 20 datos con hora
         historial_de_vuelos[vuelo_nro]["alertas"] = alerts
     else:
         historial_de_vuelos[vuelo_nro] = {"datos con hora":[info_hora],"alertas":alerts}
