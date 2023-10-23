@@ -1,27 +1,4 @@
-//        function refreshValues() {
-//            fetch('/update/info')
-//                .then(response => response.json())
-//                .then(data => {{
-//                    console.log(data);
-//                    document.getElementById('valorHum').textContent = data.hum;
-//                    document.getElementById('valorTemp').textContent = data.temp;
-//                }})
-//                .catch(error => console.error(error));
-//                
-    //    };
-        
-        
-            //var tablajson = document.getElementById('tabla-de-valores');
 
-            // Crear una nueva fila
-            //var nuevaFila = tablajson.insertRow(-1);
-
-            //Crear las celdas de la nueva fila
-            //var celdaNueva = nuevaFila.insertCell(0);
-
-
-            // Agregar los valores a las celdas
-            //celdaNueva.innerHTML = oxigenoSangre;
 function refreshValues() {
     fetch('/update/info')
         .then(response => response.json())
@@ -58,28 +35,27 @@ function refreshValues() {
 };        
 
 
+var vuelos = {
+            '12323': {
+                'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+                'datos con hora': [
+                                    ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                    ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                    ], 
+                'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}},
+            
+            '434545': {
+                'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+                'datos con hora': [
+                                    ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                    ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                    ], 
+                'alertas': {'alert': 0, 'emergency': 1, 'solicitud': 1, 'sae_desactivado': 1}}}
 
-        var vuelos = {
-                    '12323': {
-                        'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
-                        'datos con hora': [
-                                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-                                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-                                           ], 
-                        'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}},
-                   
-                    '434545': {
-                        'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
-                        'datos con hora': [
-                                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-                                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-                                           ], 
-                        'alertas': {'alert': 0, 'emergency': 1, 'solicitud': 1, 'sae_desactivado': 1}}}
-        
 
-        // Supongamos que tienes un JSON llamado 'vuelos' con la información de los vuelos
+// Supongamos que tienes un JSON llamado 'vuelos' con la información de los vuelos
 
-        // Obtén una referencia a la tabla HTML
+// Obtén una referencia a la tabla HTML
 
 function crearTablaVuelos(){
     const listaVuelos = document.getElementById("listaVuelos");
@@ -296,54 +272,98 @@ function getVariables() {
     fetch('/get/names/variables')
         .then(response => response.json())
             .then(jsonObject => {
-                variables = jsonObject["variables"]
-                
-                jsonObject.forEach(function callback(nombre, index, array) {
-                    console.log("variable:",nombre)
-                //lista con los nombres directamente
-                // ponerlos en lista de historial de vuelo
-                })
+                var variables = jsonObject["variables"]
+                return variables
             })
 }
+
 
 function getHistory(nro_vuelo) {
     fetch('/get/history/',nro_vuelo)
     .then(response => response.json())
         .then(jsonObject => {
-
-            console.log(jsonObject)
-            vuelo = jsonObject
-            //para este vuelo historial de vuelo
-            //vuelo = {'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
-            //    'datos con hora': [
-            //              ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-            //              ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-            //              ], 
-            //           'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}}
-
-            
-            datos_hora = vuelo['datos con hora']    //datos 
-            console.log(vuelo['alertas'])       //alertas
-            datos_hora.forEach(function callback(currentValue, index, array) {
-                console.log(currentValue)
-                //add to list of airports
-            });
-        })
-}    
-
-
-
-
-function addToAirportsList(currentValue) {
-    console.log(currentValue)
+            var historialVuelo = jsonObject
+            //vuelo = {'datos con hora': [
+            //                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+            //                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+            //                            ], 
+            //         'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}}
+            return historialVuelo
+        });
 }
+
+function crearTablaDatosHora(nro_vuelo){
+    
+    // pone los nombres de las variables en la fila de arriba
+    var variables = getVariables()      //["hora","bpm_altos"]  
+    console.log(variables)
+    const headVariables = document.getElementById("variables")
+    
+
+    variables.forEach(variable => {
+        const variableCelda = document.createElement("th");
+        variableCelda.textContent = variable
+        variableCelda.style.backgroundColor = "blue"
+        headVariables.appendChild(variableCelda);
+    });
+
+
+    // pone los valores con cada color en la tabla
+    datos = getHistory(nro_vuelo)
+    var datosYHora = datos['datos con hora']
+
+    const tablaDatosHora = document.getElementById("datosHora")
+
+    datosYHora.forEach(filaDatos => {
+        console.log(filaDatos)
+
+        const rowTablaDatos = document.createElement("tr")
+        var indice = 0
+
+        filaDatos.forEach(dato => {
+            indice += 1
+
+            const celdaDatos = document.createElement("td")
+            celdaDatos.textContent = dato
+            
+            if (indice == 1){            // si es la hora
+                celdaDatos.style.backgroundColor = "orange"
+            }
+            
+            else if (indice == 17){      // si es el de pulsera conectada
+                if (dato == 0){
+                    celdaDatos.style.backgroundColor = "red"
+                }
+                else {
+                    celdaDatos.style.backgroundColor = "green"
+                }
+            }
+            
+            else if (dato == 1){
+                celdaDatos.style.backgroundColor = "red"
+            }
+            
+            else{
+                celdaDatos.style.backgroundColor = "green"
+            }
+
+            rowTablaDatos.appendChild(celdaDatos)
+        })
+        tablaDatosHora.appendChild(rowTablaDatos)
+    })
+}
+
+
+
+
+
 function getAirports() {
     fetch('/get/airports')
         .then(response => response.json())
             .then(jsonObject => {
 
                 jsonObject.forEach(function callback(currentValue, index, array) {
-                    add_to_airports_list(currentValue)
+                    addToAirportsList(currentValue)
                     //add to list of airports
                     });
             
@@ -379,8 +399,8 @@ function refreshDate() {
     document.getElementById('hora').textContent = hour +":"+ min +":"+ seg;
 };
 
-refreshValues();
+//refreshValues();
 refreshDate();
-setInterval(refreshValues, 1000000);
+//setInterval(refreshValues, 1000000);
 setInterval(refreshDate, 900);
 

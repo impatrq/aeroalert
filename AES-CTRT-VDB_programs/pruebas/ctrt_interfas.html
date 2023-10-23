@@ -19,10 +19,17 @@
         th {
             background-color: #f4f4f4;
         }
+        thd {
+            padding: 6px;
+            text-align: center;
+            align-content:center ;
+            border: 2px solid #ddd;
+        }
+
     </style>
 </head>
 <body>
-    <table>
+    <table style="display: block;">
         <thead>
             <tr>
                 <th>Flight Number</th>
@@ -32,10 +39,22 @@
             </tr>
         </thead>
         <tbody id="listaVuelos">
+            
+        </tbody>
+    </table>
+    <table style="display: block">
+        <thead>
+            <tr id="variables">
+                
+            </tr>
+        </thead>
+        <tbody id="datosHora">
+
         </tbody>
     </table>
 
     <script>
+
         var vuelos = {
                     '12323': {
                         'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
@@ -62,7 +81,7 @@ function crearTablaVuelos(){
     const listaVuelos = document.getElementById("listaVuelos");
     // por cada vuelo
     for (const vuelo in vuelos) {
-
+        console.log(vuelos)
         // Crea una fila de tabla <tr> para cada vuelo
         const vueloRow = document.createElement("tr");
         vueloRow.id = `fila-${vuelo}`
@@ -123,6 +142,7 @@ function crearTablaVuelos(){
     }
 }
 function actualizarTablaVuelos(vuelos){
+    
     for (const vuelo in vuelos) {
 
             const fila_de_vuelo = document.getElementById(`fila-${vuelo}`);
@@ -166,30 +186,96 @@ function actualizarTablaVuelos(vuelos){
     }
 
 
+    
 crearTablaVuelos()
-
-var vuelos = {
-        '12323': {
-            'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
-            'datos con hora': [
-                                ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-                                ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-                                ], 
-            'alertas': {'alert': 1, 'emergency': 1, 'solicitud': 0, 'sae_desactivado': 0}},
-        
-        '434545': {
-            'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
-            'datos con hora': [
-                                ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-                                ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-                                ], 
-            'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 1}}}
-
-                    
+           
 setInterval(() => {
         actualizarTablaVuelos(vuelos)
-    }, 2000); // Actualiza cada 5 segundos (ajusta el intervalo según tus necesidades)
+    }, 3000); // Actualiza cada 2 segundos 
 
+
+
+
+function getHistory(nro_vuelo){
+    var historialDeVuelo = {'datos con hora': [['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                        ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                        ['10:18:36', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
+                        ['10:18:37', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                        ['10:18:38', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                        ['10:18:39', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                        ], 
+                   'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}
+                   }
+    return(historialDeVuelo)
+}
+
+function getVariables(){
+    variables = ["Hora","bpmHigh","bpmHigh2","bpmLow1","bpmLow2","sleep1","sleep2",
+                "spoLow1","spoLow2","highTemp1","highTemp2","lowTemp1","lowTemp2",
+                "death1","death2","manual","bandConnected","noReaction", "pin_off"]
+    return(variables)
+}
+
+function crearTablaDatosHora(nro_vuelo){
+    
+    // pone los nombres de las variables en la fila de arriba
+    var variables = getVariables()      //["hora","bpm_altos"]  
+    const headVariables = document.getElementById("variables")
+    
+    variables.forEach(variable => {
+        const variableCelda = document.createElement("th");
+        variableCelda.textContent = variable
+        variableCelda.style.backgroundColor = "blue"
+        headVariables.appendChild(variableCelda);
+    });
+
+
+    // pone los valores con cada color en la tabla
+    datos = getHistory(nro_vuelo)
+    var datosYHora = datos['datos con hora']
+
+    const tablaDatosHora = document.getElementById("datosHora")
+
+    datosYHora.forEach(filaDatos => {
+        console.log(filaDatos)
+
+        const rowTablaDatos = document.createElement("tr")
+        var indice = 0
+
+        filaDatos.forEach(dato => {
+            indice += 1
+
+            const celdaDatos = document.createElement("td")
+            
+            celdaDatos.textContent = dato
+            if (indice == 1){
+                celdaDatos.style.backgroundColor = "orange"
+            }
+            else if (indice == 17){      // si es el de pulsera conectada
+                if (dato == 0){
+                    celdaDatos.style.backgroundColor = "red"
+                }
+                else {
+                    celdaDatos.style.backgroundColor = "green"
+                }
+            }
+            else if (dato == 1){
+                celdaDatos.style.backgroundColor = "red"
+            }
+            else{
+                celdaDatos.style.backgroundColor = "green"
+            }
+
+            rowTablaDatos.appendChild(celdaDatos)
+        })
+
+        tablaDatosHora.appendChild(rowTablaDatos)
+    })
+
+    
+
+}
+crearTablaDatosHora(12323)
 
     </script>
 </body>

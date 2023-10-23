@@ -7,38 +7,51 @@
     <title>ESP32</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="assets/css/styles.css">
-  </head>
+    <title>Interfaz CTRT</title>
+    <style>
+        /* Estilos para la tabla */
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 0 auto;
+        }
 
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+  </head>
   <body>
-    <div class="container">
-      <h1>Datos del ESP32</h1>
-        <table>
-        
-            <thead>
-                <tr>             
-                  <th>Fecha: </th>
-                  <th id="fecha" class="value">9/08/2023</th>
-                  <th>Hora: </th>
-                  <th id="hora" class="value">16:19:51</th>
-                </tr>     
-            </thead>
-        </table>
-        
-        <table>
-        
-          <thead >
+    <table style="display: none;">
+        <thead>
             <tr>
-              <th>Informacion</th>
-              <th class="value">Valor</th>
-            </tr>     
-          </thead>
-      </table>
-      <div id="tabla-de-valores" class="container">
-        <ul><li><span class="value">hum</span><span>123123</span></li><li><span class="value">temp</span><span>1231231</span></li></ul>
-        <ul><li><span class="value">hum</span><span>123123</span></li><li><span class="value">temp</span><span>1231231</span></li></ul>
-      </div>
-      
-    </div>
+                <th>Flight Number</th>
+                <th>Status</th>
+                <th>Landing Request</th>
+                <th>Aes Status</th>
+            </tr>
+        </thead>
+        <tbody id="listaVuelos">
+            
+        </tbody>
+    </table>
+    <table style="display: block">
+        <thead>
+            <tr id="variables">
+                
+            </tr>
+        </thead>
+        <tbody id="datosHora">
+
+        </tbody>
+    </table>
+
     <script src="../js/code.js"></script>
     <script src="assets/js/code.js"></script>
     
