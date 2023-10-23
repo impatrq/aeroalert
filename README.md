@@ -28,8 +28,8 @@ AeroAlert es un proyecto actualmente en proceso, realizado por alumnos del 7mo A
     📷 Instagram: @cuccaro_juan
     📧 Email: manucucca10@gmail.com
 ### Mateo Husulak
-    📷 Instagram:
-    📧 Email:
+    📷 Instagram:@matehusu_2
+    📧 Email:matehusu@gmail.com
 ### Teo Lopez
     📷 Instagram: @nico67676
     📧 Email: teonicolaslopez7@gmail.com
