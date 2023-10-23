@@ -1,77 +1,196 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flights</title>
+    <title>Lista de Vuelos</title>
+    <style>
+        /* Estilos para la tabla */
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
 </head>
 <body>
-    <h1>Flights</h1>
-
-    <table id="flightTable">
+    <table>
         <thead>
             <tr>
-                <th>Aerolínea</th>
-                <th>Origen</th>
-                <th>Destino</th>
-                <th>Hora de Salida</th>
+                <th>Flight Number</th>
+                <th>Status</th>
+                <th>Landing Request</th>
+                <th>Aes Status</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td>Aerolínea 1</td>
-                <td>Origen 1</td>
-                <td>Destino 1</td>
-                <td>08:00 AM</td>
-            </tr>
+        <tbody id="listaVuelos">
         </tbody>
     </table>
 
     <script>
-        const table = document.getElementById("flightTable");
-        let selectedRowIndex = -1;
+        var vuelos = {
+                    '12323': {
+                        'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+                        'datos con hora': [
+                                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                           ], 
+                        'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}},
+                   
+                    '434545': {
+                        'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+                        'datos con hora': [
+                                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                           ], 
+                        'alertas': {'alert': 0, 'emergency': 1, 'solicitud': 1, 'sae_desactivado': 1}}}
+        
 
-        // Función para agregar una fila a la tabla.
-        function addRow(airline, origin, destination, departureTime) {
-            const newRow = table.querySelector("tbody").insertRow(-1);
-            newRow.insertCell(0).textContent = airline;
-            newRow.insertCell(1).textContent = origin;
-            newRow.insertCell(2).textContent = destination;
-            newRow.insertCell(3).textContent = departureTime;
+        // Supongamos que tienes un JSON llamado 'vuelos' con la información de los vuelos
+
+        // Obtén una referencia a la tabla HTML
+
+function crearTablaVuelos(){
+    const listaVuelos = document.getElementById("listaVuelos");
+    // por cada vuelo
+    for (const vuelo in vuelos) {
+
+        // Crea una fila de tabla <tr> para cada vuelo
+        const vueloRow = document.createElement("tr");
+        vueloRow.id = `fila-${vuelo}`
+        
+        // Crea celdas de tabla <td> para cada fila
+        
+        
+        const nroVueloCell = document.createElement("td");
+        nroVueloCell.textContent = vuelo;
+     
+
+        const statusCell = document.createElement("td");
+        if (vuelos[vuelo]['alertas']['emergency'] == 1){
+            statusCell.textContent = "emergency"
+            statusCell.style.backgroundColor = "red";
+        }
+        else if (vuelos[vuelo]['alertas']['alert'] == 1){
+            statusCell.textContent = "alert"
+            statusCell.style.backgroundColor = "yellow";
+        }
+        else {
+            statusCell.textContent = "normal"
+            statusCell.style.backgroundColor = "white"
+        }
+        
+
+        
+        const landingCell = document.createElement("td");
+        if (vuelos[vuelo]['alertas']['solicitud'] == 1){
+            landingCell.textContent = "Waiting"
+            landingCell.style.backgroundColor = "yellow";
+        }
+        else {
+            landingCell.textContent = "Done"
+            landingCell.style.backgroundColor = "white";
+        }
+        
+
+        const aesCell = document.createElement("td");
+        if (vuelos[vuelo]['alertas']['sae_desactivado'] == 1){
+            aesCell.textContent = "Aes Disabled"
+            aesCell.style.backgroundColor = "red";
+        }
+        else {
+            aesCell.textContent = "Active"
+            aesCell.style.backgroundColor = "green";
         }
 
-        // Evento para imprimir la información de la fila seleccionada en la consola.
-        function printSelectedRow() {
-            if (selectedRowIndex !== -1) {
-                const selectedRow = table.rows[selectedRowIndex];
-                const airline = selectedRow.cells[0].textContent;
-                const origin = selectedRow.cells[1].textContent;
-                const destination = selectedRow.cells[2].textContent;
-                const departureTime = selectedRow.cells[3].textContent;
-                console.log(`Aerolínea: ${airline}, Origen: ${origin}, Destino: ${destination}, Hora de Salida: ${departureTime}`);
-            }
-        }
+        
+        // Agrega las celdas a la fila
+        vueloRow.appendChild(nroVueloCell);
+        vueloRow.appendChild(statusCell);
+        vueloRow.appendChild(landingCell);
+        vueloRow.appendChild(aesCell);
 
-        // Evento para seleccionar una fila con las flechas arriba y abajo.
-        document.addEventListener("keydown", (event) => {
-            if (event.key === "ArrowUp") {
-                if (selectedRowIndex > 0) {
-                    selectedRowIndex--;
-                }
-            } else if (event.key === "ArrowDown") {
-                if (selectedRowIndex < table.rows.length - 1) {
-                    selectedRowIndex++;
-                }
-            } else if (event.key === "Enter") {
-                printSelectedRow();
+        // Agrega la fila a la tabla
+        listaVuelos.appendChild(vueloRow);
+    }
+}
+function actualizarTablaVuelos(vuelos){
+    for (const vuelo in vuelos) {
+
+            const fila_de_vuelo = document.getElementById(`fila-${vuelo}`);
+            
+
+            if (vuelos[vuelo]['alertas']['emergency'] == 1){
+                fila_de_vuelo.cells[1].textContent = "emergency"
+                fila_de_vuelo.cells[1].style.backgroundColor = "red";
+            }
+            else if (vuelos[vuelo]['alertas']['alert'] == 1){
+                fila_de_vuelo.cells[1].textContent = "alert"
+                fila_de_vuelo.cells[1].style.backgroundColor = "yellow";
+            }
+            else {
+                fila_de_vuelo.cells[1].textContent = "normal"
+                fila_de_vuelo.cells[1].style.backgroundColor = "white"
             }
 
-            // Resaltar la fila seleccionada.
-            for (let i = 0; i < table.rows.length; i++) {
-                table.rows[i].classList.remove("selected");
+    
+
+            if (vuelos[vuelo]['alertas']['solicitud'] == 1){
+                fila_de_vuelo.cells[2].textContent = "Waiting"
+                fila_de_vuelo.cells[2].style.backgroundColor = "yellow";
             }
-            table.rows[selectedRowIndex].classList.add("selected");
-        });
+            else {
+                fila_de_vuelo.cells[2].textContent = "Done"
+                fila_de_vuelo.cells[2].style.backgroundColor = "white";
+            }
+
+
+
+            if (vuelos[vuelo]['alertas']['sae_desactivado'] == 1){
+                fila_de_vuelo.cells[3].textContent = "Aes Disabled"
+                fila_de_vuelo.cells[3].style.backgroundColor = "red";
+            }
+            else {
+                fila_de_vuelo.cells[3].textContent = "Active"
+                fila_de_vuelo.cells[3].style.backgroundColor = "green";
+            }
+        };
+    }
+
+
+crearTablaVuelos()
+
+var vuelos = {
+        '12323': {
+            'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+            'datos con hora': [
+                                ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                ], 
+            'alertas': {'alert': 1, 'emergency': 1, 'solicitud': 0, 'sae_desactivado': 0}},
+        
+        '434545': {
+            'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+            'datos con hora': [
+                                ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                ], 
+            'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 1}}}
+
+                    
+setInterval(() => {
+        actualizarTablaVuelos(vuelos)
+    }, 2000); // Actualiza cada 5 segundos (ajusta el intervalo según tus necesidades)
+
+
     </script>
 </body>
 </html>

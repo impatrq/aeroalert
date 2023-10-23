@@ -27,39 +27,30 @@ if interfaz == "flights":
         if index_flights != 1:
             index_flights = index_flights -1
             cambiar_vuelo_seleccionado(index_flights)
+            # cuidado al cambiar los datos que no se deseleccione
+            # se tienen que cambiar los datos de la lista ya creada
+            # cantidad de filas segun  el largo de la lista de vuelos
 
     elif inpt == "8":       #flecha para abajo
         if index_flights != max_vuelos:
             index_flights = index_flights+1
             cambiar_vuelo_seleccionado(index_flights)
 
-    if inpt == "6":         #enter o derecha 
+    elif inpt == "6":         #enter o derecha 
         cambiar_interfaz("flight", index_flights)
         interfaz = "flight"
         
 
 
 elif interfaz == "flight":
-    
-    if inpt == "2":         #flecha para arriba
-        if index_data > 1:
-            index_data = index_data -1
-            cambiar_data_seleccionada(index_data)
-
-    elif inpt == "8":       #flecha para abajo
-        if index_data < max_data:
-            index_data = index_data+1
-            cambiar_data_seleccionada(index_data)
-
 
     if inpt == "4":  #para atras o izquierda
-        cambiar_interfaz("flights", index_flights)
+        cambiar_interfaz("flights", index)
         interfaz = "flights"
-        index_data = 1
+        
     if inpt == "6":         #enter o derecha 
         cambiar_interfaz("airports", index)
-        index_data = 1
-
+        
 
     if inpt == "A":
         enviar_instruccion("aterriza",index_flights)

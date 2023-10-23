@@ -60,64 +60,103 @@ function refreshValues() {
 
 
 //constantemente se ejecuta
+var interfaz = "flights"
+var index_flights = 1
+var index = 1
+
 function update_key() {
     fetch('/update/keys')
         .then(response => response.json())
             .then(jsonObject => {
                 key = jsonObject["key"]
                 
-                if (key === "A") {
 
+                if (interfaz == "flights"){
+                    if (key == "2") {       //flecha para arriba
+                        if (index_flights != 1){
+                            index_flights = index_flights - 1
+                            cambiar_vuelo_seleccionado(index_flights)
+                            // cuidado al cambiar los datos que no se deseleccione
+                            // se tienen que cambiar los datos de la lista ya creada
+                            // cantidad de filas segun  el largo de la lista de vuelos
+                        }
+                    }
+                    else if (key == "8"){         //flecha para abajo
+                        if (index_flights != max_vuelos){
+                            index_flights = index_flights+1
+                            cambiar_vuelo_seleccionado(index_flights)
+                        }
+                    }   
+
+                    else if (key == "6"){         //enter o derecha 
+                        cambiar_interfaz("flight", index_flights)
+                        interfaz = "flight"
+                    }
+                    
                 }
-                else if (key === "B") {
 
+                else if (interfaz == "flight") {
+
+                    if (key == "4"){                 //para atras o izquierda
+                        cambiar_interfaz("flights", index)
+                        interfaz = "flights"
+                    }
+                    else if (key == "6"){        //enter o derecha 
+                        cambiar_interfaz("airports", index)
+                    }
+
+                    else if (key == "A"){
+                        enviar_instruccion("aterriza",index_flights)
+                    }
+                    else if (inpt == "B"){
+                        enviar_instruccion("no aterrizes",index_flights)
+                    }
                 }
-                else if (key === "C") {
 
+                else if (interfaz == "airports"){
+                    if (key == type(int)){              //cualquier numero para seleccionar airport
+                        if (key <= max_airport){
+                            enviar_airport(inpt)
+                            cambiar_interfaz("flights", index_flights)
+                            interfaz = "flights"
+                        }   
+                    }
+                    if (key == "A"){
+                        enviar_instruccion("aterriza",index_flights)
+                    }
+                    else if (key == "B"){
+                        enviar_instruccion("no aterrizes",index_flights)
+                    }
+                    if (key== "C"){                   //para cancelar
+                        cambiar_interfaz("flight", index_flights)
+                        interfaz = "flight"            
+                    }
                 }
-                else if (key === "D") {
 
-                }
-                else if (key === "1") {
-
-                }
-                else if (key === "2") {
-
-                }
-                else if (key === "3") {
-
-                }
-                else if (key === "4") {
-
-                }
-                else if (key === "5") {
-
-                }
-                else if (key === "6") {
-
-                }
-                else if (key === "7") {
-
-                }
-                else if (key === "8") {
-
-                }
-                else if (key === "9") {
-
-                }
-                else if (key === "0") {
-
-                }
-                else if (key === "*") {
-
-                }
-                else if (key === "#") {
-
+                if (key == "D"){
+                    refreshPage()
                 }
             })
-           
 }
-// constantemente excepto cuando esta en airports
+
+
+function add_flights() {
+    fetch('/update/flights')
+    .then(response => response.json())
+        .then(jsonObject => {
+            var vuelos = jsonObject
+            for (const vuelo in vuelos) {
+                if (vuelos.hasOwnProperty(vuelo)) {
+                    
+                    console.log(vuelo)                      // nro de vuelo    
+                    console.log(vuelos[vuelo]['alertas'])
+                    // poner en lista de vuelos con alertas y eso
+                }
+            }
+        })      
+}
+
+// constantemente 
 function update_flights() {
     fetch('/update/flights')
         .then(response => response.json())
@@ -125,7 +164,7 @@ function update_flights() {
                 var vuelos = jsonObject
                 for (const vuelo in vuelos) {
                     if (vuelos.hasOwnProperty(vuelo)) {
-                        console.log(vuelo) // nro de vuelo    
+                        console.log(vuelo)                      // nro de vuelo    
                         console.log(vuelos[vuelo]['alertas'])
                         // poner en lista de vuelos con alertas y eso
                     }
