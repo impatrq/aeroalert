@@ -66,8 +66,8 @@ class Pulso():
                 
                  
                 
-                Spo2 = valueir * 105/11500                                                     # valueir * 105/16500 para mediciones en el dedo, Spo2 = valueir * 105/11500 para la muñeca por arriba
-                self.datos2 = valuered
+                Spo2 = valueir * 100/13000                                                     # valueir * 105/16500 para mediciones en el dedo, Spo2 = valueir * 105/11500 para la muñeca por arriba
+                self.datos2 = Spo2
                 if valuered < 30000:
                     history.append(valuered)
                     # Get the tail, up to MAX_HISTORY length
@@ -76,11 +76,10 @@ class Pulso():
 
                 minima, maxima = min(history), max(history)
 
-                threshold_on =(minima + maxima * 1.75) // 2.748   #(minima + maxima * 1.75) // 2.748       # (a+b*2)/3 dedo --------- (a+b*1.5)/2.5
-                threshold_off =(( 1.3 * minima + maxima) // 2.302) #(( 1.3 * minima + maxima) // 2.302)    # (a+b)/2 dedo------ (a+b)/2
+                threshold_on =(minima + maxima * 2) / 3   #(minima + maxima * 1.75) // 2.748       # (a+b*2)/3 dedo --------- (a+b*1.5)/2.5
+                threshold_off =((minima + maxima) / 2) #(( 1.3 * minima + maxima) // 2.302)    # (a+b)/2 dedo------ (a+b)/2
                 
                 if valuered > 4000:
-                    self.datos3 = [threshold_off, threshold_on]
                     
                     if not beat and valuered > threshold_on:
                         beat = True                    

@@ -6,7 +6,7 @@ import network
 from machine import Pin, Timer, UART
 
 
-nro_vuelo = 7365458
+
 
 
 
@@ -89,7 +89,7 @@ def escuchar_band(conn_band, addr):
         temp = data['3']
         conectado = data['4']
         print("bpm={:02} spo={:02}% Temp={:02}°C puesta={:1}".format(bpm, spo, temp, conectado))
-        evaluar_info(bpm, spo, temp, conectado, "band")    
+        evaluar_info(bpm, spo, temp, conectado, "band")
 
 aterrizar = aterrizar_manual = 0
 def escuchar_rtdc(conn_rtdc,addr):
@@ -127,6 +127,7 @@ def escuchar_rtdc(conn_rtdc,addr):
 def enviar_rtdc(conn, addr):
     global solicitar, info_aeropuerto, nro_vuelo
     alerta_enviada = 0
+    nro_vuelo = 7365458
     try:
         while True:
             print("enviando a RTDC: ", addr)
@@ -384,7 +385,7 @@ def activar_SAE():
         if pin_on_off.value() == 1:
             #pin_luz_ambar.value(0)
             #pin_luz_roja.value(0)
-            print("pin on off maldito")
+            print("pin on off")
             pass
         else: 
             codigo = actualizar_codigo()
@@ -597,7 +598,7 @@ def evaluar_info(bpm, spo, temp, conectado, de):
     global bloqueo_PC
     global pulsera_conectada
 
-    if bloqueo_PC == 0:          # se evalua la info si es de band sin bloqueo
+    if bloqueo_PC == 0:          # se evalua la info si es de band /sin bloqueo
         #Listas de pulsaciones y oxigeno
         #--------------------------------------------------------------------------
         pulsera_conectada = conectado
