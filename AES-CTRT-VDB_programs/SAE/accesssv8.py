@@ -252,13 +252,12 @@ def enviar_PC():
         if (aterrizar == 1 or aterrizar_manual == 1) and aterrizaje_enviado == 0:
             solicitar = 1
             print("aterrizar")                                   #------------------------------ UART
-            print("alarma_sonora_aes_activation_1")
             aterrizaje_enviado = 1
                 
         elif aterrizar_manual == 0 and aterrizar == 0 and aterrizaje_enviado == 1:
             print("no aterrizar")                                #------------------------------ UART
             aterrizaje_enviado = 0
-            print("alarma_sonora_aes_activation_0")
+            
 
         if info_aeropuerto != 0:
             print("info aeropuerto:", info_aeropuerto)            #------------------------------ UART
@@ -360,7 +359,8 @@ def activar_SAE():
     ambar_titilando = ambar_prendido = 0
     prendido_roja = 0
     enviado_aes_activation = 0
-
+    enviado_aes_alert = 0
+    enviado_hypoxia = 0
     while True:
         time.sleep(4)
         
@@ -392,12 +392,17 @@ def activar_SAE():
 
             # Protocolo hipoxia---------------------------------------------------------------------------------------------
             if codigo[6] or codigo[7]:                              # Si alguno tiene  hipoxia 
+
+                if alarmas_off_spo == 0 and enviado_hypoxia == 0 :                  #UART------
+                    print("alarma_sonora_hypoxia = 1")    #UART------
+                    enviado_hypoxia = 1                   #UART------
+                elif alarmas_off_spo == 1 and enviado_hypoxia == 1:                  #UART------
+                    print("alarma_sonora_hypoxia = 0")    #UART------
+                    enviado_hypoxia = 0                   #UART------
+                         
                 if codigo[6] and codigo[7]:                         # Si ambos tienen  hipoxia 
                     print("2 spo")  
-                    if alarmas_off_spo == 0:                        # Si las alarmas no estan desactivadas
-                        print("alarma_sonora_hipoxia_1")  # UART
-                    else:
-                         print("alarma_sonora_hipoxia_0") # UART
+
                 elif codigo[6] or codigo[7]:                        # Si solo 1 tiene
                     print("1 spo")
                     print("alarma_sonora_hipoxia_0") #UART
@@ -431,7 +436,9 @@ def activar_SAE():
                             
             elif not codigo[6] and not codigo[7]:                   # Si ninguno tiene spo2 en 1
                 print("no spo")
-                print("alarma_sonora_hipoxia_0")         #UART 
+                if enviado_hypoxia == 1:                  #UART------
+                    print("alarma_sonora_hypoxia = 0")    #UART------
+                    enviado_hypoxia = 0                   #UART------
 
                 #si pasan 30 segs se prende "aes activation" y se apaga esta
                 #tambien manda una "emergencia" a ctrt
@@ -454,7 +461,10 @@ def activar_SAE():
 
                 if alarmas_off_bpm == 0:                          # Si las alarmas no estan desactivadas
                     ambar_titilando = 1         # DEBERIA TITILAR
-                    print("alarma_sonora_bpm_1")  # UART
+
+                    if enviado_aes_alert == 0:                  #UART------
+                        print("alarma_sonora_aes_alert = 1")    #UART------
+                        enviado_aes_alert = 1                   #UART------
 
                     if pin_boton_reaccion == 1:                   # Si el boton esta presionado
                         alarmas_off_bpm = 1                       # DESACTIVA las alarmas                          
@@ -475,13 +485,19 @@ def activar_SAE():
                 elif alarmas_off_bpm == 1:                        # Sino, si estan apagadas las alarmas
                     ambar_titilando = 0 # DEBE DEJAR DE TITILAR
                     contador_iniciado_30_bpm = 0    
-                    print("alarma_sonora_bpm_0")  # UART
+                    
+                    if enviado_aes_alert == 1:                  #UART------
+                        print("alarma_sonora_aes_alert = 0")    #UART------
+                        enviado_aes_alert = 0                   #UART------
                     
                 #alarma = 0
             elif not codigo[0] and not codigo[1] and not codigo[2] and not codigo[3]:   # Si ninguno tiene pulsaciones raras
                 print("no bpm")
                 ambar_titilando = 0
-                #alarma = 0
+                
+                if enviado_aes_alert == 1:                  #UART------
+                    print("alarma_sonora_aes_alert = 0")    #UART------
+                    enviado_aes_alert = 0                   #UART------
             
 
             #-----------------------------------------
@@ -518,6 +534,12 @@ def activar_SAE():
                 ambar_fija = 0
 
             elif codigo[12] or codigo[13]:              #si solo 1 esta muerto
+                
+                if enviado_aes_alert == 0:                  #UART------
+                    print("alarma_sonora_aes_alert = 1")    #UART------
+                    enviado_aes_alert = 1                   #UART------
+
+
                 print("uno muerto")
                 pin_luz_ambar.value(1)
                 print("luz ambar prendida 1 muerto") 
@@ -528,6 +550,11 @@ def activar_SAE():
                 if not codigo[6] or not codigo[7]:      
                     roja_fija = 0   
                 ambar_fija = 0
+
+                if enviado_aes_alert == 1:                  #UART------
+                    print("alarma_sonora_aes_alert = 0")    #UART------
+                    enviado_aes_alert = 0                   #UART------
+
                 print("todos vivos")
 
             #-----------------------------------------------------
@@ -555,11 +582,15 @@ def activar_SAE():
                     print("ambar titilando")
 
             #---------------------------------------------------
+            if codigo[14]:
+                print("alarma_sonora_manual_activation = 1")
+            else:
+                print("alarma_sonora_manual_activation = 0")
             #---------------------------------------------------
             # Luz roja titilar 
             if codigo[14] or intentional_loss:              #cuando activacion manual o la rtdc lo indica
                 aterrizar_manual = 1
-                print("aterrizar manual = 1")
+
                 if not roja_fija:
                     if prendido_roja == 0:
                         pin_luz_roja.value(1)
@@ -567,7 +598,7 @@ def activar_SAE():
                     elif prendido_roja == 1:
                         pin_luz_roja.value(0)
                         prendido_roja = 0
-                    print("roja titilando coso manual")
+                    print("roja titilando coso manual o intentional loss")
             else:                                           #si no esta la activacion manual ni intentional loss
                 aterrizar_manual = 0    
                 if not codigo[6] and not codigo[7]:         #si ninguno tiene hipoxia           
@@ -576,9 +607,9 @@ def activar_SAE():
                         print("luz roja apagada nada")                 
 
 
-            if no_reaccion == 1 or intentional_loss == 1:
+            if (no_reaccion == 1 or intentional_loss == 1) and enviado_aes_activation == 0:
                 print("alarma_sonora_aes_activation = 1")
-                enviado_aes_activation = 0
+                enviado_aes_activation = 1
             elif enviado_aes_activation == 1:
                 print("alarma_sonora_aes_activation = 0")
                 enviado_aes_activation = 0
