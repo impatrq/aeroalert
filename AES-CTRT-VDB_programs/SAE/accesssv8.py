@@ -361,6 +361,8 @@ def activar_SAE():
     enviado_aes_activation = 0
     enviado_aes_alert = 0
     enviado_hypoxia = 0
+    enviado_sleep = 0
+    enviado_manual = 0
     while True:
         time.sleep(4)
         
@@ -393,19 +395,18 @@ def activar_SAE():
             # Protocolo hipoxia---------------------------------------------------------------------------------------------
             if codigo[6] or codigo[7]:                              # Si alguno tiene  hipoxia 
 
-                if alarmas_off_spo == 0 and enviado_hypoxia == 0 :                  #UART------
-                    print("alarma_sonora_hypoxia = 1")    #UART------
-                    enviado_hypoxia = 1                   #UART------
-                elif alarmas_off_spo == 1 and enviado_hypoxia == 1:                  #UART------
-                    print("alarma_sonora_hypoxia = 0")    #UART------
-                    enviado_hypoxia = 0                   #UART------
+                if alarmas_off_spo == 0 and enviado_hypoxia == 0 :      #UART------
+                    print("alarma_sonora_hypoxia = 1")                  #UART------
+                    enviado_hypoxia = 1                                 #UART------
+                elif alarmas_off_spo == 1 and enviado_hypoxia == 1:     #UART------
+                    print("alarma_sonora_hypoxia = 0")                  #UART------
+                    enviado_hypoxia = 0                                 #UART------
                          
                 if codigo[6] and codigo[7]:                         # Si ambos tienen  hipoxia 
                     print("2 spo")  
 
                 elif codigo[6] or codigo[7]:                        # Si solo 1 tiene
                     print("1 spo")
-                    print("alarma_sonora_hipoxia_0") #UART
                                              
                 if alarmas_off_spo == 0:                            # Si las alarmas no estan desactivadas
                     pin_luz_roja.value(1)                           # Activa luz alarma (hipoxia?
@@ -436,6 +437,7 @@ def activar_SAE():
                             
             elif not codigo[6] and not codigo[7]:                   # Si ninguno tiene spo2 en 1
                 print("no spo")
+
                 if enviado_hypoxia == 1:                  #UART------
                     print("alarma_sonora_hypoxia = 0")    #UART------
                     enviado_hypoxia = 0                   #UART------
@@ -509,13 +511,18 @@ def activar_SAE():
                     
                 if codigo[4] and codigo[5]:             # Si son ambos
                     print("2 dormidos")
-                    print("alarma_sonora_dormidos_1")  # UART
+                    if enviado_sleep == 0:                  #UART------
+                        print("alarma_sonora_sleep = 1")    #UART------
+                        enviado_sleep = 0                   #UART------
                     #   2dormidos hacer coso de 30 segs
                 else:
                     print("1 dormido")
             else:
                 print("0 dormidos")
-                    
+                if enviado_sleep == 1:                  #UART------
+                    print("alarma_sonora_sleep = 0")    #UART------
+                    enviado_sleep = 0                   #UART------
+                
             #-----------------------------------------
             if pulsera_conectada == 0:                  # Si la pulsera esta desconectada
                 if ambar_titilando == 0:                # Si no esta titilando    
@@ -583,9 +590,13 @@ def activar_SAE():
 
             #---------------------------------------------------
             if codigo[14]:
-                print("alarma_sonora_manual_activation = 1")
+                if enviado_manual == 0:                             #UART------
+                    print("alarma_sonora_manual_activation = 1")    #UART------
+                    enviado_manual = 1                              #UART------
             else:
-                print("alarma_sonora_manual_activation = 0")
+                if enviado_manual == 1:                             #UART------
+                    print("alarma_sonora_manual_activation = 0")    #UART------
+                    enviado_manual = 0                              #UART------
             #---------------------------------------------------
             # Luz roja titilar 
             if codigo[14] or intentional_loss:              #cuando activacion manual o la rtdc lo indica
@@ -615,7 +626,18 @@ def activar_SAE():
                 enviado_aes_activation = 0
 
             pin_boton_reaccion = 0
-                
+
+
+        if pin_test.value() != pin_boton_test:
+            pin_boton_test = pin_test.value()
+        
+            pin_luz_ambar.value(1)
+            pin_luz_roja.value(1)
+            pin_flag.value(1)
+            time.sleep(5)
+            pin_luz_ambar.value(0)
+            pin_luz_roja.value(0)
+            pin_flag.value(0)
 
 
 listabpm = []
