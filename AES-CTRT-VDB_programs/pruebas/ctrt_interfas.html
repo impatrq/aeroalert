@@ -6,70 +6,158 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interfaz CTRT</title>
     <style>
-        /* Estilos para la tabla */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #3F0082;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            width: 90%;
+            margin: 20px 0;
+            margin-right: 20px;
+        }
+
         table {
+            width: 100%;
             border-collapse: collapse;
-            width: 80%;
-            margin: 0 auto;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         th, td {
-            padding: 10px;
+            padding: 15px;
             text-align: center;
-            border: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            font-weight: normal;
+            font-size: 14px;
         }
 
         th {
-            background-color: #f4f4f4;
-        }
-        thd {
-            padding: 6px;
-            text-align: center;
-            align-content:center ;
-            border: 2px solid #ddd;
+            background-color: #3F0082;
+            color: white;
         }
 
+        .emergency, .alert, .normal, .waiting, .done, .aes-disabled, .active {
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .emergency {
+            background-color: #ff3333;
+            color: white;
+        }
+
+        .alert {
+            background-color: #ffcc00;
+        }
+
+        .normal, .done {
+            background-color: #f9f9f9;
+        }
+
+        .waiting {
+            background-color: #ffcc00;
+        }
+
+        .aes-disabled {
+            background-color: #ff3333;
+            color: white;
+        }
+
+        .active {
+            background-color: #33cc33;
+            color: white;
+        }
+
+        footer {
+            background-color: #3F0082;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
     </style>
 </head>
+
 <body>
-    <table id="VUELOS" style="display: block;">
-        <thead>
-            <tr>
-                <th>Flight Number</th>
-                <th>Status</th>
-                <th>Landing Request</th>
-                <th>Aes Status</th>
-            </tr>
-        </thead>
-        <tbody id="listaVuelos">
-            
-        </tbody>
-    </table>
+    <header>
+        <h1>Flights</h1>
+    </header>
 
-    <table id="HISTORY" style="display: none;">
-        <thead>
-            <tr id="variables">
+    <div class="container">
+        <table id="VUELOS" style="display:;">
+            <thead>
+                <tr>
+                    <th>Flight Number</th>
+                    <th>Status</th>
+                    <th>Landing Request</th>
+                    <th>Aes Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="listaVuelos">
                 
-            </tr>
-        </thead>
-        <tbody id="datosHora">
+            </tbody>
+        </table>
+    </div>
+    <div class="container">
+        <table id="HISTORY" style="display:none;">
+            <thead>
+                <tr id="variables">
+                    
+                </tr>
+            </thead>
+            <tbody id="datosHora">
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
+    <div class="container">
+        <table id="AIRPORTS" style="display:none;">
+            <thead>
+                <tr>
+                    <th>indice</th>
+                    <th>Nombre</th>
+                    <th>Coordenadas</th>
+                </tr>
+            </thead>
+            <tbody id="tablaAeropuertos">
+                
+            </tbody>
+        </table>
+    </div>
 
-    <table id="AIRPORTS" style="display: none;">
-        <thead>
-            <tr>
-                <th>indice</th>
-                <th>Nombre</th>
-                <th>Coordenadas</th>
-            </tr>
-        </thead>
-        <tbody id="tablaAeropuertos">
-            
-        </tbody>
-    </table>
-
+    <footer>
+        <p>&copy; 2023 Vuelos. Todos los derechos reservados.</p>
+    </footer>
 
     <audio id="audioAlert">
         <source src="sonido-alert.mp3" type="audio/mpeg">
@@ -384,19 +472,19 @@ function cambiarInterfaz(nuevaInterfaz,nro_vuelo){
     displayHistory = document.getElementById("HISTORY")
     displayAirports = document.getElementById("AIRPORTS")
     if (nuevaInterfaz == "flights"){
-        displayFlights.style = "display:block;"
+        displayFlights.style = "display:;"
         displayHistory.style = "display:none;"
         displayAirports.style = "display:none;"
     }
     else if (nuevaInterfaz == "flight"){
         crearTablaDatosHora(nro_vuelo)
         console.log(displayHistory)
-        displayHistory.style = "display:block;"
+        displayHistory.style = "display:;"
         displayFlights.style = "display:none;"
         displayAirports.style = "display:none;"
     }
     else if (nuevaInterfaz == "airports"){
-        displayAirports.style = "display:block;"
+        displayAirports.style = "display:;"
         displayFlights.style = "display:none;"
         displayHistory.style = "display:none;"
     }

@@ -30,7 +30,6 @@ def send_message(bpm, spo2, temp, conectado, client_socket, sta_if):
     message = json.dumps(data).encode('utf-8')    		      #.encode('utf-8') para un string se encodea
 
     client_socket.send(message)
-    print(f'{bpm}, {spo2}, {temp}, {conectado}')
 
 def send_type(client_socket, sta_if):
     message = json.dumps('soy_band').encode('utf-8')

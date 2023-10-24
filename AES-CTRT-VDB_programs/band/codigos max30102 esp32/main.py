@@ -8,10 +8,10 @@ pin_conectado = Pin(17, mode=Pin.IN)
 #pin_prendido = Pin(16 , mode=Pin.IN)                                                                                         # pin_prendido.value(1)     porque es el boton y tiene 
 #pin_led = Pin(19, mode=Pin.OUT)                                                                                                     # que estar prendido para que ande
 conectado = pin_conectado.value()
-client_socket = led_prendido = 0
+client_socket = 0
                                                                                     
 def mediciones():
-    sensor.muestra(pin_prendido)     # Realiza las mediciones
+    sensor.muestra()     # Realiza las mediciones
 
 def mostrar():
     utime.sleep(2)
@@ -24,7 +24,7 @@ def mostrar():
         station.send_type(client_socket, sta_if)
 
         while True:
-        """
+            """
             while pin_prendido.value():
                 if led_prendido == 0:
                     pin_led.value(1)
@@ -38,11 +38,11 @@ def mostrar():
             try:
                 station.send_message(beats, spo2, temp, 
                                      conectado, client_socket, sta_if)
-            	print("enviado")
+                print("enviado")
             except:
                 print("No enviado")
             gc.collect()
-            utime.sleep(2)
+            utime.sleep(4)
         """
         if led_prendido == 1:
             pin_led.value(0)

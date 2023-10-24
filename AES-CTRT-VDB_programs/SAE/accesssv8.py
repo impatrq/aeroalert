@@ -156,7 +156,7 @@ def enviar_rtdc(conn, addr):
     except:
         print("rtdc perdida")
 
-
+bloqueo_PC = 0
 def escuchar_PC(conn_PC, addr):
     global bloqueo_PC
     global dormido1
@@ -353,6 +353,7 @@ def activar_SAE():
     global alarmas_off_spo, alarmas_off_bpm
     global aterrizar, aterrizar_manual
     global no_reaccion, intentional_loss
+    global pin_boton_test
 
     tocado = pin_reaccion.value()
     pin_boton_reaccion = 0
@@ -618,9 +619,11 @@ def activar_SAE():
                         print("luz roja apagada nada")                 
 
 
-            if (no_reaccion == 1 or intentional_loss == 1) and enviado_aes_activation == 0:
-                print("alarma_sonora_aes_activation = 1")
-                enviado_aes_activation = 1
+            if no_reaccion == 1 or intentional_loss == 1:
+                if enviado_aes_activation == 0:
+                    print(no_reaccion,intentional_loss)
+                    print("alarma_sonora_aes_activation = 1")
+                    enviado_aes_activation = 1
             elif enviado_aes_activation == 1:
                 print("alarma_sonora_aes_activation = 0")
                 enviado_aes_activation = 0
