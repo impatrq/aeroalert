@@ -29,8 +29,7 @@
     </style>
 </head>
 <body>
-
-    <table style="display: block;">
+    <table id="VUELOS" style="display: block;">
         <thead>
             <tr>
                 <th>Flight Number</th>
@@ -44,7 +43,7 @@
         </tbody>
     </table>
 
-    <table style="display: block">
+    <table id="HISTORY" style="display: none;">
         <thead>
             <tr id="variables">
                 
@@ -55,7 +54,7 @@
         </tbody>
     </table>
 
-    <table>
+    <table id="AIRPORTS" style="display: none;">
         <thead>
             <tr>
                 <th>indice</th>
@@ -63,18 +62,28 @@
                 <th>Coordenadas</th>
             </tr>
         </thead>
-        <tbody>
-            <tr id="tablaAeropuertos">
-
-            </tr>
+        <tbody id="tablaAeropuertos">
+            
         </tbody>
     </table>
 
+
+    <audio id="audioAlert">
+        <source src="sonido-alert.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audioEmergency">
+        <source src="sonido-emergency.mp3" type="audio/mpeg">
+    </audio>
+    
+
+
     <script>
+    
+
 
         var vuelos = {
                     '12323': {
-                        'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+                        'variables': ['Hour', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
                         'datos con hora': [
                                             ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
                                             ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
@@ -82,7 +91,7 @@
                         'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}},
                    
                     '434545': {
-                        'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
+                        'variables': ['Hour', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
                         'datos con hora': [
                                             ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
                                             ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
@@ -99,6 +108,9 @@ function crearTablaVuelos(){
     // por cada vuelo
     for (const vuelo in vuelos) {
         console.log(vuelos)
+        var audioAlert = document.getElementById("audioAlert");
+        var audioEmergency = document.getElementById("audioEmergency");
+        
         // Crea una fila de tabla <tr> para cada vuelo
         const vueloRow = document.createElement("tr");
         vueloRow.id = `fila-${vuelo}`
@@ -112,15 +124,17 @@ function crearTablaVuelos(){
 
         const statusCell = document.createElement("td");
         if (vuelos[vuelo]['alertas']['emergency'] == 1){
-            statusCell.textContent = "emergency"
+            statusCell.textContent = "Emergency"
             statusCell.style.backgroundColor = "red";
+            audioEmergency.play()
         }
         else if (vuelos[vuelo]['alertas']['alert'] == 1){
-            statusCell.textContent = "alert"
+            statusCell.textContent = "Alert"
             statusCell.style.backgroundColor = "yellow";
+            audioAlert.play()
         }
         else {
-            statusCell.textContent = "normal"
+            statusCell.textContent = "Normal"
             statusCell.style.backgroundColor = "white"
         }
         
@@ -141,6 +155,7 @@ function crearTablaVuelos(){
         if (vuelos[vuelo]['alertas']['sae_desactivado'] == 1){
             aesCell.textContent = "Aes Disabled"
             aesCell.style.backgroundColor = "red";
+            audioEmergency.play()
         }
         else {
             aesCell.textContent = "Active"
@@ -159,6 +174,8 @@ function crearTablaVuelos(){
     }
 }
 function actualizarTablaVuelos(vuelos){
+    var audioAlert = document.getElementById("audioAlert");
+    var audioEmergency = document.getElementById("audioEmergency");
     
     for (const vuelo in vuelos) {
 
@@ -166,15 +183,17 @@ function actualizarTablaVuelos(vuelos){
             
 
             if (vuelos[vuelo]['alertas']['emergency'] == 1){
-                fila_de_vuelo.cells[1].textContent = "emergency"
+                fila_de_vuelo.cells[1].textContent = "Emergency"
                 fila_de_vuelo.cells[1].style.backgroundColor = "red";
+                audioEmergency.play()
             }
             else if (vuelos[vuelo]['alertas']['alert'] == 1){
-                fila_de_vuelo.cells[1].textContent = "alert"
+                fila_de_vuelo.cells[1].textContent = "Alert"
                 fila_de_vuelo.cells[1].style.backgroundColor = "yellow";
+                audioAlert.play()
             }
             else {
-                fila_de_vuelo.cells[1].textContent = "normal"
+                fila_de_vuelo.cells[1].textContent = "Normal"
                 fila_de_vuelo.cells[1].style.backgroundColor = "white"
             }
 
@@ -192,8 +211,9 @@ function actualizarTablaVuelos(vuelos){
 
 
             if (vuelos[vuelo]['alertas']['sae_desactivado'] == 1){
-                fila_de_vuelo.cells[3].textContent = "Aes Disabled"
+                fila_de_vuelo.cells[3].textContent = "AES Disabled"
                 fila_de_vuelo.cells[3].style.backgroundColor = "red";
+                audioEmergency.play()
             }
             else {
                 fila_de_vuelo.cells[3].textContent = "Active"
@@ -228,9 +248,9 @@ function getHistory(nro_vuelo){
 }
 
 function getVariables(){
-    variables = ["Hora","bpmHigh","bpmHigh2","bpmLow1","bpmLow2","sleep1","sleep2",
-                "spoLow1","spoLow2","highTemp1","highTemp2","lowTemp1","lowTemp2",
-                "death1","death2","manual","bandConnected","noReaction", "pin_off"]
+    variables = ["Hour","BpmH1","BpmH2","BpmL1","BpmL2","Sle1","Sle2",
+                "Oxi1","Oxi2","C°H1","C°H2","C°L1","C°L2",
+                "Death1","Death2","Manual","BandCable","NoReact", "Off"]
     return(variables)
 }
 
@@ -239,6 +259,7 @@ function crearTablaDatosHora(nro_vuelo){
     // pone los nombres de las variables en la fila de arriba
     var variables = getVariables()      //["hora","bpm_altos"]  
     const headVariables = document.getElementById("variables")
+    headVariables.innerHTML = ""
     
     variables.forEach(variable => {
         const variableCelda = document.createElement("th");
@@ -254,6 +275,7 @@ function crearTablaDatosHora(nro_vuelo){
     const datosYHora = dataTiempo.reverse()
 
     const tablaDatosHora = document.getElementById("datosHora")
+    tablaDatosHora.innerHTML = ""
 
     datosYHora.forEach(filaDatos => {
         console.log(filaDatos)
@@ -291,10 +313,95 @@ function crearTablaDatosHora(nro_vuelo){
         tablaDatosHora.appendChild(rowTablaDatos)
     })
 
-    
-
 }
 crearTablaDatosHora(12323)
+
+
+function getAirports(){
+    info_aeropuertos = [{"nombre":"Ezeiza", "coordenadas": ["34°49′25″, 58°31′44″"]},
+                    {"nombre":"Aeroparque", "coordenadas": ["34°33'27″ 58°24'43″"]},
+                    {"nombre":"Ambrosio Taravella", "coordenadas": ["31°19'03″ 64°12'36″"]},
+                    {"nombre":"Moron", "coordenadas": ["232534523423"]},
+                    {"nombre":"Quilmes", "coordenadas": ["324334"]}]
+    return(info_aeropuertos)
+}
+
+function crearTablaAirports() {
+    const aeropuertos = getAirports()
+    const tableAeropuertos= document.getElementById("tablaAeropuertos")
+    indiceAirport = 0
+    aeropuertos.forEach(aeropuerto => {
+        
+        filaAeropuerto = document.createElement("tr")
+        var nombreAeropuerto = aeropuerto["nombre"]
+        var coordsAeropuerto = aeropuerto["coordenadas"]
+        
+        indiceAirport += 1
+        const index = document.createElement("td")
+        index.textContent = indiceAirport
+        const airNombre = document.createElement("td")
+        airNombre.textContent = nombreAeropuerto
+        const airCoords = document.createElement("td")
+        airCoords.textContent = coordsAeropuerto
+
+        
+        filaAeropuerto.appendChild(index)
+        filaAeropuerto.appendChild(airNombre)
+        filaAeropuerto.appendChild(airCoords)
+
+
+        tableAeropuertos.appendChild(filaAeropuerto)
+    });
+
+}
+crearTablaAirports()
+
+
+
+function cambiarVueloSeleccionado(indiceVuelo){
+    const tableFlights = document.getElementById("listaVuelos");
+    var rows = tableFlights.getElementsByTagName("tr");
+
+    for (var i = 0; i < rows.length; i++){
+        if (rows[indiceVuelo] == rows[i]){
+            rows[indiceVuelo].style = "border: 2px solid black;"
+            continue
+        }
+        else{
+            rows[i].style= "border:none;"
+        }
+    }
+}
+cambiarVueloSeleccionado(0)
+
+
+function cambiarInterfaz(nuevaInterfaz,nro_vuelo){
+    
+    displayFlights = document.getElementById("VUELOS")
+    displayHistory = document.getElementById("HISTORY")
+    displayAirports = document.getElementById("AIRPORTS")
+    if (nuevaInterfaz == "flights"){
+        displayFlights.style = "display:block;"
+        displayHistory.style = "display:none;"
+        displayAirports.style = "display:none;"
+    }
+    else if (nuevaInterfaz == "flight"){
+        crearTablaDatosHora(nro_vuelo)
+        console.log(displayHistory)
+        displayHistory.style = "display:block;"
+        displayFlights.style = "display:none;"
+        displayAirports.style = "display:none;"
+    }
+    else if (nuevaInterfaz == "airports"){
+        displayAirports.style = "display:block;"
+        displayFlights.style = "display:none;"
+        displayHistory.style = "display:none;"
+    }
+}
+//cambiarInterfaz("flight", 12323)
+
+
+    
 
     </script>
 </body>
