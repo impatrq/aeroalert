@@ -1,40 +1,4 @@
 
-function refreshValues() {
-    fetch('/update/info')
-        .then(response => response.json())
-            .then(jsonObject => {{
-
-            //jsonObject = {'hum': 123123, 'temp': 1231231}
-            //const jsonObject = JSON.parse(jsonData);
-            // Get the reference to the div where you want to display the content
-            const tabla = document.getElementById('tabla-de-valores');
-
-            // Create an unordered list (ul) element to hold the variables and values
-            const variableList = document.createElement('ul');
-
-            // Loop through the variables in the JSON object and create list items (li) for each variable
-            for (const variableName in jsonObject) {    
-                if (jsonObject.hasOwnProperty(variableName)) {
-                    const listItem = document.createElement('li');
-                    
-                    const variableSpan = document.createElement('span');
-                    variableSpan.className = 'value';
-                    variableSpan.textContent = variableName;
-                    
-                    const valueSpan = document.createElement('span');
-                    valueSpan.textContent = jsonObject[variableName];
-                    
-                    listItem.appendChild(variableSpan);
-                    listItem.appendChild(valueSpan);
-                    
-                    variableList.appendChild(listItem);
-                }
-            }
-            tabla.appendChild(variableList);
-        };})
-};        
-
-
 var vuelos = {
             '12323': {
                 'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
@@ -163,6 +127,7 @@ function actualizarTablaVuelos(vuelos){
     };
 }
 
+
 function createFlights() {
     fetch('/update/flights')
     .then(response => response.json())
@@ -171,7 +136,6 @@ function createFlights() {
             crearTablaVuelos(vuelos)
         })      
 }
-
 //constantemente
 function updateFlights() {
     fetch('/update/flights')

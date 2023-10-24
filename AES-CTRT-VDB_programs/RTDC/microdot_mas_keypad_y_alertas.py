@@ -29,8 +29,8 @@ pines_Columnas = [Pin(pin_nombre, mode=Pin.IN, pull=Pin.PULL_DOWN) for pin_nombr
 alert = emergency = solicitud = sae_desactivado = 0
 
 #informacion de aeropuertos
-info_aeropuertos = [{"aeropuerto":"ezeiza", "coordenadas": [23,43]},
-                    {"aeropuerto":"aeroparque", "coordenadas": [54,22]}]
+info_aeropuertos = [{"nombre":"ezeiza", "coordenadas": [23,43]},
+                    {"nombre":"aeroparque", "coordenadas": [54,22]}]
 
 nombres_variables = {"variables":["Hora","bpm_altos1","bpm_altos2","bpm_bajos1","bpm_bajos2","dormido1","dormido2","spo_bajos1","spo_bajos2","temp_alta1","temp_alta2","temp_baja1","temp_baja2","muerte1","muerte2","manual","pulsera_conectada","no_reaccion", "pin_off"]}
 historial_de_vuelos = {}

@@ -29,8 +29,9 @@
     </style>
 </head>
 <body>
-
-    <table style="display: block;">
+    <div>    <title> vuelo2</title>
+    </div>
+    <table style="display:;">
         <thead>
             <tr>
                 <th>Flight Number</th>
@@ -44,7 +45,7 @@
         </tbody>
     </table>
 
-    <table style="display: block">
+    <table style="display:">
         <thead>
             <tr id="variables">
                 
@@ -55,7 +56,7 @@
         </tbody>
     </table>
 
-    <table>
+    <table style="display:">
         <thead>
             <tr>
                 <th>indice</th>
@@ -63,10 +64,8 @@
                 <th>Coordenadas</th>
             </tr>
         </thead>
-        <tbody>
-            <tr id="tablaAeropuertos">
-
-            </tr>
+        <tbody id="tablaAeropuertos">
+            
         </tbody>
     </table>
 
@@ -228,9 +227,9 @@ function getHistory(nro_vuelo){
 }
 
 function getVariables(){
-    variables = ["Hora","bpmHigh","bpmHigh2","bpmLow1","bpmLow2","sleep1","sleep2",
-                "spoLow1","spoLow2","highTemp1","highTemp2","lowTemp1","lowTemp2",
-                "death1","death2","manual","bandConnected","noReaction", "pin_off"]
+    variables = ["Hora","bpmH1","bpmH2","bpmL1","bpmL2","sle1","sle2",
+                "spoL1","spoL2","C°H1","C°H2","C°L1","C°L2",
+                "death1","death2","manual","bandCable","noReact", "pin_off"]
     return(variables)
 }
 
@@ -296,6 +295,43 @@ function crearTablaDatosHora(nro_vuelo){
 }
 crearTablaDatosHora(12323)
 
+
+function getAirports(){
+    info_aeropuertos = [{"nombre":"ezeiza", "coordenadas": [23,43]},
+                    {"nombre":"aeroparque", "coordenadas": [54,22]}]
+    return(info_aeropuertos)
+}
+
+function crearTablaAirports() {
+    const aeropuertos = getAirports()
+    const tableAeropuertos= document.getElementById("tablaAeropuertos")
+    indiceAirport = 0
+    aeropuertos.forEach(aeropuerto => {
+        
+        filaAeropuerto = document.createElement("tr")
+        var nombreAeropuerto = aeropuerto["nombre"]
+        var coordsAeropuerto = aeropuerto["coordenadas"]
+        
+        indiceAirport += 1
+        const index = document.createElement("td")
+        index.textContent = indiceAirport
+        const airNombre = document.createElement("td")
+        airNombre.textContent = nombreAeropuerto
+        const airCoords = document.createElement("td")
+        airCoords.textContent = coordsAeropuerto
+
+        
+        filaAeropuerto.appendChild(index)
+        filaAeropuerto.appendChild(airNombre)
+        filaAeropuerto.appendChild(airCoords)
+
+
+        tableAeropuertos.appendChild(filaAeropuerto)
+    });
+
+}
+
+crearTablaAirports()
     </script>
 </body>
 </html>
