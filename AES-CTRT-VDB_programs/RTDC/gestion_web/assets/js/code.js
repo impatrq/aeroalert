@@ -1,7 +1,6 @@
 
 var vuelos = {
             '12323': {
-                'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
                 'datos con hora': [
                                     ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
                                     ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
@@ -9,7 +8,6 @@ var vuelos = {
                 'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}},
             
             '434545': {
-                'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
                 'datos con hora': [
                                     ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
                                     ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
@@ -20,8 +18,8 @@ var vuelos = {
 // Supongamos que tienes un JSON llamado 'vuelos' con la información de los vuelos
 
 // Obtén una referencia a la tabla HTML
-
-function crearTablaVuelos(){
+//------------------------------------------------------------------
+function crearTablaVuelos(vuelos){
     const listaVuelos = document.getElementById("listaVuelos");
     // por cada vuelo
     for (const vuelo in vuelos) {
@@ -91,6 +89,7 @@ function crearTablaVuelos(){
         listaVuelos.appendChild(vueloRow);
     }
 }
+
 function actualizarTablaVuelos(vuelos){
     var audioAlert = document.getElementById("audioAlert");
     var audioEmergency = document.getElementById("audioEmergency");
@@ -99,7 +98,7 @@ function actualizarTablaVuelos(vuelos){
 
         const fila_de_vuelo = document.getElementById(`fila-${vuelo}`);
         
-        // status emergency and alert--------------
+
         if (vuelos[vuelo]['alertas']['emergency'] == 1){
             fila_de_vuelo.cells[1].textContent = "Emergency"
             fila_de_vuelo.cells[1].style.backgroundColor = "red";
@@ -115,7 +114,8 @@ function actualizarTablaVuelos(vuelos){
             fila_de_vuelo.cells[1].style.backgroundColor = "white"
         }
 
-        //status solicitud------------------------
+
+
         if (vuelos[vuelo]['alertas']['solicitud'] == 1){
             fila_de_vuelo.cells[2].textContent = "Waiting"
             fila_de_vuelo.cells[2].style.backgroundColor = "yellow";
@@ -125,7 +125,8 @@ function actualizarTablaVuelos(vuelos){
             fila_de_vuelo.cells[2].style.backgroundColor = "white";
         }
 
-        //status aes ------------------------------
+
+
         if (vuelos[vuelo]['alertas']['sae_desactivado'] == 1){
             fila_de_vuelo.cells[3].textContent = "AES Disabled"
             fila_de_vuelo.cells[3].style.backgroundColor = "red";
@@ -138,7 +139,6 @@ function actualizarTablaVuelos(vuelos){
     };
 }
 
-
 //una vez
 function createFlights() {
     fetch('/update/flights')
@@ -147,8 +147,9 @@ function createFlights() {
             crearTablaVuelos(jsonObject)
         })      
 }
-//constantemente recibe y actualiza los datos de los aviones 
-//4500 usegs por alarmas sonoras
+createFlights()
+
+
 function updateFlights() {
     fetch('/update/flights')
     .then(response => response.json())
@@ -157,6 +158,12 @@ function updateFlights() {
             return jsonObject
         })      
 }
+
+setInterval(() => {
+    updateFlights()
+}, 4500);
+//--------------------------------------------------------------------------
+
 
 function cambiarVueloSeleccionado(indiceVuelo){
     const tableFlights = document.getElementById("listaVuelos");
@@ -174,17 +181,40 @@ function cambiarVueloSeleccionado(indiceVuelo){
 }
 cambiarVueloSeleccionado(0)
 
+//----------------------------------------------
+
+
+
+function getVariables() {
+    fetch('/get/names/variables')
+        .then(response => response.json())
+            .then(jsonObject => {
+                var variables = jsonObject["variables"]
+                return variables
+            })
+}
+
+function getHistory(nro_vuelo) {
+    fetch('/get/history/',nro_vuelo)
+    .then(response => response.json())
+        .then(jsonObject => {
+            //vuelo = {'datos con hora': [
+            //                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+            //                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+            //                            ], 
+            //         'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}}
+            return jsonObject
+        });
+}
+
+
 function crearTablaDatosHora(nro_vuelo){
-    //vacia la tabla antes de llenarla de nuevo
+    
+    // pone los nombres de las variables en la fila de arriba
+    var variables = getVariables()      //["hora","bpm_altos"]  
     const headVariables = document.getElementById("variables")
     headVariables.innerHTML = ""
     
-    const tablaDatos = document.getElementById("datosHora")
-    tablaDatos.innerHTML = ""
-    
-
-    // pone los nombres de las variables en la fila de arriba
-    var variables = getVariables()      //["hora","bpm_altos"]  
     variables.forEach(variable => {
         const variableCelda = document.createElement("th");
         variableCelda.textContent = variable
@@ -192,12 +222,15 @@ function crearTablaDatosHora(nro_vuelo){
         headVariables.appendChild(variableCelda);
     });
 
+
     // pone los valores con cada color en la tabla
     datos = getHistory(nro_vuelo)
     const dataTiempo = datos['datos con hora']
     const datosYHora = dataTiempo.reverse()
 
-    //para cada fila en datosYHora
+    const tablaDatosHora = document.getElementById("datosHora")
+    tablaDatosHora.innerHTML = ""
+
     datosYHora.forEach(filaDatos => {
         console.log(filaDatos)
 
@@ -231,40 +264,102 @@ function crearTablaDatosHora(nro_vuelo){
             rowTablaDatos.appendChild(celdaDatos)
         })
 
-        tablaDatos.appendChild(rowTablaDatos)
+        tablaDatosHora.appendChild(rowTablaDatos)
     })
 }
+
+//------------------------------------------
+
+function getAirports() {
+    fetch('/get/airports')
+        .then(response => response.json())
+            .then(jsonObject => {
+                return jsonObject            
+            });     
+}
+
+function crearTablaAirports() {
+    const aeropuertos = getAirports()
+    const tableAeropuertos= document.getElementById("tablaAeropuertos")
+    indiceAirport = 0
+    aeropuertos.forEach(aeropuerto => {
+        
+        const filaAeropuerto = document.createElement("tr")
+        var nombreAeropuerto = aeropuerto["nombre"]
+        var coordsAeropuerto = aeropuerto["coordenadas"]
+        
+        indiceAirport += 1
+        const index = document.createElement("td")
+        index.textContent = indiceAirport
+        const airNombre = document.createElement("td")
+        airNombre.textContent = nombreAeropuerto
+        const airCoords = document.createElement("td")
+        airCoords.textContent = coordsAeropuerto
+
+        
+        filaAeropuerto.appendChild(index)
+        filaAeropuerto.appendChild(airNombre)
+        filaAeropuerto.appendChild(airCoords)
+
+
+        tableAeropuertos.appendChild(filaAeropuerto)
+    });
+
+}
+crearTablaAirports()
+
+//---------------------------------------------------------------------------------
+
+
 
 function cambiarInterfaz(nuevaInterfaz,nro_vuelo){
     displayFlights = document.getElementById("VUELOS")
     displayHistory = document.getElementById("HISTORY")
     displayAirports = document.getElementById("AIRPORTS")
     if (nuevaInterfaz == "flights"){
-        displayFlights.style = "display:block;"
+        displayFlights.style = "display:;"
         displayHistory.style = "display:none;"
         displayAirports.style = "display:none;"
     }
     else if (nuevaInterfaz == "flight"){
         crearTablaDatosHora(nro_vuelo)
         console.log(displayHistory)
-        displayHistory.style = "display:block;"
+        displayHistory.style = "display:;"
         displayFlights.style = "display:none;"
         displayAirports.style = "display:none;"
     }
     else if (nuevaInterfaz == "airports"){
-        displayAirports.style = "display:block;"
+        displayAirports.style = "display:;"
         displayFlights.style = "display:none;"
         displayHistory.style = "display:none;"
     }
 }
-//constantemente se ejecuta
+
+
+
+
+
+//done
+function sendInstruction(nro_vuelo, instruccion) {
+    fetch('/send/',nro_vuelo,'/',instruccion)
+    console.log("enviado:", nro_vuelo, "instruccion:", instruccion)
+}
+
+function sendInfoAirport(nro_vuelo, index) {
+    fetch('/send/',nro_vuelo,'info_airport/',index)
+    console.log("enviado:", nro_vuelo, "indice:", index)
+    return
+}
+
+
 var interfaz = "flights"
 var index_flights = 0
 
 const max_vuelos = length(updateFlights())
 const max_airport = length(getAirports())
 
-function update_key() {
+//constantemente se ejecuta
+function updateKey() {
     fetch('/update/keys')
         .then(response => response.json())
             .then(jsonObject => {
@@ -276,20 +371,20 @@ function update_key() {
 
                 if (interfaz == "flights"){
                     if (key == "2") {       //flecha para arriba
-                        if (index_flights != 0){
+                        if (index_flights > 0){
                             index_flights = index_flights - 1
                             cambiarVueloSeleccionado(index_flights)    
                         }
                     }
                     else if (key == "8"){         //flecha para abajo
-                        if (index_flights != max_vuelos){
+                        if (index_flights <  max_vuelos){
                             index_flights = index_flights+1
                             cambiarVueloSeleccionado(index_flights)
                         }
                     }  
 
                     else if (key == "6"){         //enter o derecha 
-                        cambiarInterfaz("flight", index_flights)
+                        cambiarInterfaz("flight", nro_vuelo)
                         interfaz = "flight"
                     }
                 }
@@ -302,15 +397,16 @@ function update_key() {
                     }
                     else if (key == "6"){        //enter o derecha 
                         cambiarInterfaz("airports")
+                        interfaz = "airports"
                     }
 
                     else if (key == "A"){
-                        enviar_instruccion("aterriza",index_flights)
+                        sendInstruccion("aterriza",nro_vuelo)
                         cambiarInterfaz("airports")
+                        interfaz = "airports"
                     }
                     else if (inpt == "B"){
-                        enviar_instruccion("no aterrizes",index_flights)
-                        cambiarInterfaz("flights")
+                        sendInstruction("no aterrizes",nro_vuelo)
                     }
                 }
 
@@ -322,15 +418,15 @@ function update_key() {
                             interfaz = "flights"
                         }   
                     }
-                    if (key == "A"){
-                        sendInstruction(index_flights,"aterriza")
+                    else if (key == "A"){
+                        sendInstruction(nro_vuelo, "aterriza")
                     }
                     else if (key == "B"){
-                        sendInstruction(index_flights, "no aterrizes")
+                        sendInstruction(nro_vuelo,"no aterrizes")
                     }
 
-                    if (key== "C"){                   //para cancelar
-                        cambiarInterfaz("flight", index_flights)
+                    else if (key== "C"){                   //para cancelar
+                        cambiarInterfaz("flight", nro_vuelo)
                         interfaz = "flight"            
                     }
                 }
@@ -343,115 +439,6 @@ function update_key() {
 
 
 
-
-
-function getVariables() {
-    fetch('/get/names/variables')
-        .then(response => response.json())
-            .then(jsonObject => {
-                var variables = jsonObject["variables"]
-                return variables
-            })
-}
-
-
-function getHistory(nro_vuelo) {
-    fetch('/get/history/',nro_vuelo)
-    .then(response => response.json())
-        .then(jsonObject => {
-            var historialVuelo = jsonObject
-            //vuelo = {'datos con hora': [
-            //                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-            //                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-            //                            ], 
-            //         'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}}
-            return historialVuelo
-        });
-}
-
-function crearTablaDatosHora(nro_vuelo){
-    
-    // pone los nombres de las variables en la fila de arriba
-    var variables = getVariables()      //["hora","bpm_altos"]  
-    console.log(variables)
-    const headVariables = document.getElementById("variables")
-    
-
-    variables.forEach(variable => {
-        const variableCelda = document.createElement("th");
-        variableCelda.textContent = variable
-        variableCelda.style.backgroundColor = "blue"
-        headVariables.appendChild(variableCelda);
-    });
-
-
-    // pone los valores con cada color en la tabla
-    datos = getHistory(nro_vuelo)
-    var datosYHora = datos['datos con hora']
-
-    const tablaDatosHora = document.getElementById("datosHora")
-
-    datosYHora.forEach(filaDatos => {
-        console.log(filaDatos)
-
-        const rowTablaDatos = document.createElement("tr")
-        var indice = 0
-
-        filaDatos.forEach(dato => {
-            indice += 1
-
-            const celdaDatos = document.createElement("td")
-            celdaDatos.textContent = dato
-            
-            if (indice == 1){            // si es la hora
-                celdaDatos.style.backgroundColor = "orange"
-            }
-            
-            else if (indice == 17){      // si es el de pulsera conectada
-                if (dato == 0){
-                    celdaDatos.style.backgroundColor = "red"
-                }
-                else {
-                    celdaDatos.style.backgroundColor = "green"
-                }
-            }
-            
-            else if (dato == 1){
-                celdaDatos.style.backgroundColor = "red"
-            }
-            
-            else{
-                celdaDatos.style.backgroundColor = "green"
-            }
-
-            rowTablaDatos.appendChild(celdaDatos)
-        })
-        tablaDatosHora.appendChild(rowTablaDatos)
-    })
-}
-
-
-
-
-
-function getAirports() {
-    fetch('/get/airports')
-        .then(response => response.json())
-            .then(jsonObject => {
-                return jsonObject            
-            });     
-}
-
-//done
-function sendInstruction(nro_vuelo, instruccion) {
-    fetch('/send/',nro_vuelo,'/',instruccion)
-    // "aterriza" o "no_aterrizes"
-}
-
-function sendInfoAirport(nro_vuelo, index) {
-    fetch('/send/',nro_vuelo,'info_airport/',index)
-
-}
 
 
             
@@ -473,5 +460,5 @@ function refreshDate() {
 //refreshValues();
 refreshDate();
 //setInterval(refreshValues, 1000000);
-setInterval(refreshDate, 900);
+setInterval(updateKey, 300);
 

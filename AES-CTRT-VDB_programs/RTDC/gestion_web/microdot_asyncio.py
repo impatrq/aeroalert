@@ -15,10 +15,10 @@ try:
     import uio as io
 except ImportError:
     import io
-
+import gc
+gc.collect()
 from microdot import Microdot as BaseMicrodot
-from microdot import mro
-from microdot import NoCaseDict
+from microdot import mro, NoCaseDict
 from microdot import Request as BaseRequest
 from microdot import Response as BaseResponse
 from microdot import print_exception

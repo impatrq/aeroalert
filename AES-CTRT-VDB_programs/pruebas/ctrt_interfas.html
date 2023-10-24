@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
     <title>Interfaz CTRT</title>
     <style>
         body {
@@ -166,7 +168,8 @@
         <source src="sonido-emergency.mp3" type="audio/mpeg">
     </audio>
     
-
+    <script src="../js/code.js"></script>
+    <script src="assets/js/code.js"></script>
 
     <script>
     
@@ -194,7 +197,7 @@
 
         // Obtén una referencia a la tabla HTML
 
-function crearTablaVuelos(){
+function crearTablaVuelos(vuelos){
     const listaVuelos = document.getElementById("listaVuelos");
     // por cada vuelo
     for (const vuelo in vuelos) {
@@ -403,7 +406,6 @@ function crearTablaDatosHora(nro_vuelo){
 
         tablaDatosHora.appendChild(rowTablaDatos)
     })
-
 }
 crearTablaDatosHora(12323)
 

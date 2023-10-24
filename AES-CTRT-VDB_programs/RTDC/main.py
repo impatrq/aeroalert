@@ -1,6 +1,9 @@
 import stationrtdcv2 as stationrtdc
 from machine import Pin
 from time import sleep
+import gc
+gc.collect()
+
 import time
 hora = time.localtime()
 
@@ -39,7 +42,19 @@ nombres_variables = {"variables":
                      ["Hour","BpmH1","BpmH2","BpmL1","BpmL2","Sle1","Sle2",
                     "Oxi1","Oxi2","C°H1","C°H2","C°L1","C°L2",
                     "Death1","Death2","Manual","BandCable","NoReact", "Off"]}
-historial_de_vuelos = {}
+historial_de_vuelos = {'12323': {'datos con hora': [
+                                      ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                      ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                      ], 
+                   'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}
+                   },
+                    '5643': {'datos con hora': [
+                                      ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                      ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                      ], 
+                   'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}
+                 }
+         }
 
 
 def notification(cual, nro_vuelo, data):
@@ -89,21 +104,6 @@ def notification(cual, nro_vuelo, data):
         historial_de_vuelos[vuelo_nro]["alertas"] = alerts
     else:
         historial_de_vuelos[vuelo_nro] = {"datos con hora":[info_hora],"alertas":alerts}
-
-        #historial_de_vuelos = 
-        #{'12323': {'datos con hora': [
-        #                              ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-        #                              ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-        #                              ], 
-        #           'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}
-        #           }
-        #'5643': {'datos con hora': [
-        #                              ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-        #                              ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-        #                              ], 
-        #           'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}
-        #         }
-        # }
 
 
 
@@ -196,18 +196,24 @@ def teclas():
                     last_key_press = teclas[fila][columna]
                     sleep(0.5)
 
-
+print("lel1")
+gc.collect()
+print(gc.mem_free())
 
 from microdot_asyncio import Microdot, send_file
 import ujson
 import _thread
 
+print("lel2")
+
 def conectar_microdot():
+    print("preniendo__microdot")
     app = Microdot()
 
     @app.route('/')
     def index(request):
-        return send_file("index.html")
+        print("enviando index")
+        return send_file("/assets/html/index.html")
 
     @app.route("/assets/<dir>/<file>")
     def assets(request, dir, file):
@@ -307,21 +313,17 @@ def conectar_microdot():
     app.run(port=80)
 
 
-if __name__ == "__main__":
-    try:
-        # Inicio la medicion del sensor        
-        _thread.start_new_thread(teclas, ())
 
+try:
+    # Inicio la medicion del sensor        
+    _thread.start_new_thread(teclas, ())
 
-        conectar_microdot()
-        print("Microdot corriendo en IP/Puerto: " + sta_if + ":80")
-        
-
-        # Inicio la aplicacion
-        
+    print("Microdot corriendo en IP/Puerto: " , sta_if , ":80")
+    conectar_microdot()
     
-    except KeyboardInterrupt:
-        # Termina el programa con Ctrl + C
-        print("Aplicacion terminada")
+    
+except KeyboardInterrupt:
+    # Termina el programa con Ctrl + C
+    print("Aplicacion terminada")
 
 

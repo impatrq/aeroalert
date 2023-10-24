@@ -366,15 +366,13 @@ def activar_SAE():
     enviado_manual = 0
     while True:
         time.sleep(4)
+        print()
         
-        # Boton tipo switch
-        # Si el boton de reaccion cambio de valor no va a valer lo que valia antes
-        if pin_reaccion.value() != tocado:
-            tocado = pin_reaccion.value()                       # Guarda el valor actual del pin
+        if pin_reaccion.value():
             pin_boton_reaccion = 1      # Pone en 1 la variable que se va a usar para saber si se presiono
             no_reaccion = 0      
-            print("boton de reaccion")             
-        
+            print("boton de reaccion")    
+
         codigo = actualizar_codigo()
         print(codigo)
         print() 
@@ -387,7 +385,7 @@ def activar_SAE():
             pass
 
         else: 
-
+            pin_flag.value(0)
             #muerte 1 luz amarilla fija
             #2 muertos luz roja fija y sonido si por 30 segs no boton de reaccion  
             #avisa a rtdc emergencia 2 muertos
@@ -408,19 +406,18 @@ def activar_SAE():
 
                 elif codigo[6] or codigo[7]:                        # Si solo 1 tiene
                     print("1 spo")
-                                             
+
+
+
                 if alarmas_off_spo == 0:                            # Si las alarmas no estan desactivadas
                     pin_luz_roja.value(1)                           # Activa luz alarma (hipoxia?
                     roja_fija = 1 
                     
-                    # Si el piloto toca el boton de reaccion desactiva las alarmas, no deja que tomen el control
-                    # Tmb inicia un contador de 60segs que estara sin las alarmas
+                    # Si el piloto toca el boton de reaccion desactiva las alarmas
                     if pin_boton_reaccion == 1:                     # Si el boton de reaccion fue presionado
                         alarmas_off_spo = 1                         # Las alarmas de spo2 se desactivan
-                        
-                        if contador_iniciado_60_spo != 1:           # Si el contador de 60s spo2 no esta iniciado
-                            t60spo.init(mode=Timer.ONE_SHOT, period=60000, callback=contador60spo) #Lo inicia
-                            contador_iniciado_60_spo = 1            # Cambia la variable para que la prox sepa que esta activado
+                        t60spo.init(mode=Timer.ONE_SHOT, period=60000, callback=contador60spo) 
+                        #dentro de 60 segs se pone alarmas off spo en 0 de nuevo
 
                     # Inicia contador 30 segs para definir hipoxia peligrosa
                     elif contador_iniciado_30_spo != 1:             # Sino si el contador de 30s spo2 no esta iniciado
@@ -466,15 +463,14 @@ def activar_SAE():
                     ambar_titilando = 1         # DEBERIA TITILAR
 
                     if enviado_aes_alert == 0:                  #UART------
-                        print("alarma_sonora_aes_alert = 1")    #UART------
+                        print("1 alarma_sonora_aes_alert = 1")    #UART------
                         enviado_aes_alert = 1                   #UART------
 
                     if pin_boton_reaccion == 1:                   # Si el boton esta presionado
                         alarmas_off_bpm = 1                       # DESACTIVA las alarmas                          
-                        if contador_iniciado_60_bpm != 1:         # Si no esta iniciado el contador 60s
-                            t60bpm.init(mode=Timer.ONE_SHOT, period=6000, callback=contador60bpm)
-                            # INICIA temporizador, luego apagara la variable del contador 60s
-                            # desactiva el apagado de las alarmas
+                        t60bpm.init(mode=Timer.ONE_SHOT, period=6000, callback=contador60bpm)
+                        # luego de 60 segs pone alarmas off bpm en 0
+                        # desactiva el apagado de las alarmas
 
                     elif contador_iniciado_30_bpm != 1:           # Sino, si no esta iniciado contador de 30s          
                         t30bpm.init(mode=Timer.ONE_SHOT, period=3000, callback=contador30bpm)
@@ -490,7 +486,7 @@ def activar_SAE():
                     contador_iniciado_30_bpm = 0    
                     
                     if enviado_aes_alert == 1:                  #UART------
-                        print("alarma_sonora_aes_alert = 0")    #UART------
+                        print("2 alarma_sonora_aes_alert = 0")    #UART------
                         enviado_aes_alert = 0                   #UART------
                     
                 #alarma = 0
@@ -498,9 +494,10 @@ def activar_SAE():
                 print("no bpm")
                 ambar_titilando = 0
                 
-                if enviado_aes_alert == 1:                  #UART------
-                    print("alarma_sonora_aes_alert = 0")    #UART------
-                    enviado_aes_alert = 0                   #UART------
+                if not codigo[12] and not codigo[13]:           #si ninguno esta muerto
+                    if enviado_aes_alert == 1:                  #UART------
+                        print("3 alarma_sonora_aes_alert = 0")    #UART------
+                        enviado_aes_alert = 0                   #UART------
             
 
             #-----------------------------------------
@@ -533,35 +530,39 @@ def activar_SAE():
                 print("pulsera bien")
 
             #-------------------------------------------------
+            if codigo[12] or codigo[13]:                    # si uno esta muerto
+                if not codigo[0] and not codigo[1] and not codigo[2] and not codigo[3]:    #si no tienen bpms
+                    if enviado_aes_alert == 0:                  #UART------
+                        print("4 alarma_sonora_aes_alert = 1")    #UART------
+                        enviado_aes_alert = 1                   #UART------
             
-            if codigo[12] and codigo[13]:               #si ambos estan muertos
-                print("ambos muertos")
-                pin_luz_roja.value(1)
-                print("luz roja prendida 2 muertos")
-                roja_fija = 1                           #roja no podra titilar
-                ambar_fija = 0
+            
+                if codigo[12] and codigo[13]:               #si ambos estan muertos
+                    print("ambos muertos")
+                    pin_luz_roja.value(1)
+                    print("luz roja prendida 2 muertos")
+                    roja_fija = 1                           #roja no podra titilar
+                    ambar_fija = 0
 
-            elif codigo[12] or codigo[13]:              #si solo 1 esta muerto
-                
-                if enviado_aes_alert == 0:                  #UART------
-                    print("alarma_sonora_aes_alert = 1")    #UART------
-                    enviado_aes_alert = 1                   #UART------
+                elif codigo[12] or codigo[13]:
 
-
-                print("uno muerto")
-                pin_luz_ambar.value(1)
-                print("luz ambar prendida 1 muerto") 
-                ambar_fija = 1                          #ambar no podra titilar
-                if not codigo[6] and not codigo[7]:      #si ninguno tiene hipoxia
-                    roja_fija = 0
-            else:
-                if not codigo[6] or not codigo[7]:      
+                    print("uno muerto")
+                    pin_luz_ambar.value(1)
+                    print("luz ambar prendida 1 muerto") 
+                    ambar_fija = 1                          #ambar no podra titilar
+                                                            
+                                                            #si esta solo 1 muerto y
+                    if not codigo[6] and not codigo[7]:      #si ninguno tiene hipoxia
+                        roja_fija = 0
+            else:                                               #si ninguno esta muerto
+                if not codigo[6] or not codigo[7]:              #si no tienen hipoxia
                     roja_fija = 0   
                 ambar_fija = 0
 
-                if enviado_aes_alert == 1:                  #UART------
-                    print("alarma_sonora_aes_alert = 0")    #UART------
-                    enviado_aes_alert = 0                   #UART------
+                if not codigo[0] and not codigo[1] and not codigo[2] and not codigo[3]:
+                    if enviado_aes_alert == 1:                  #UART------
+                        print("5 alarma_sonora_aes_alert = 0")    #UART------
+                        enviado_aes_alert = 0                   #UART------
 
                 print("todos vivos")
 
@@ -633,7 +634,8 @@ def activar_SAE():
 
         if pin_test.value() != pin_boton_test:
             pin_boton_test = pin_test.value()
-        
+
+            print("pin_test prendido, analizando")
             pin_luz_ambar.value(1)
             pin_luz_roja.value(1)
             pin_flag.value(1)
@@ -731,3 +733,4 @@ time.sleep(1)
 _thread.start_new_thread(escuchar_tipos, ())
 print("Comunicación activada")
 
+    
