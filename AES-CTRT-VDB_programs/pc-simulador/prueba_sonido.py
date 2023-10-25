@@ -5,7 +5,6 @@ import time
 # cambiar a directorio "pc-simulador"
 global alarma_sonora_aes_activation, alarma_sonora_aes_alert, alarma_sonora_sleep, alarma_sonora_hypoxia, alarma_sonora_manual_activation, alarma_sonora_test_failed, alarma_sonora_test_pass
 
-
 alarma_sonora_aes_activation = alarma_sonora_aes_alert = alarma_sonora_sleep = alarma_sonora_hypoxia = alarma_sonora_manual_activation = alarma_sonora_test_failed = alarma_sonora_test_pass = 1
 
 def thread_sonidos():
@@ -31,8 +30,7 @@ def thread_sonidos():
 
 _thread.start_new_thread(thread_sonidos, ())
 
-time.sleep(5)
+
 while True:
     print(".", end="", flush=True)
     time.sleep(.01)
-alarma_sonora_hypoxia = 1
