@@ -1,60 +1,75 @@
 <!DOCTYPE html>
-<html lang="es">
-  <head>
+<html lang="en">
+
+<head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32</title>
-    <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="assets/css/styles.css">
     <title>Interfaz CTRT</title>
-    <style>
-        /* Estilos para la tabla */
-        table {
-            border-collapse: collapse;
-            width: 80%;
-            margin: 0 auto;
-        }
 
-        th, td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
+</head>
 
-        th {
-            background-color: #f4f4f4;
-        }
-    </style>
-  </head>
-  <body>
-    <table style="display: none;">
-        <thead>
-            <tr>
-                <th>Flight Number</th>
-                <th>Status</th>
-                <th>Landing Request</th>
-                <th>Aes Status</th>
-            </tr>
-        </thead>
-        <tbody id="listaVuelos">
-            
-        </tbody>
-    </table>
-    <table style="display: block">
-        <thead>
-            <tr id="variables">
+<body>
+    <header>
+        <h1>Flights</h1>
+    </header>
+
+    <div class="container">
+        <table id="VUELOS" style="display:;">
+            <thead>
+                <tr>
+                    <th>Flight Number</th>
+                    <th>Status</th>
+                    <th>Landing Request</th>
+                    <th>Aes Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="listaVuelos">
                 
-            </tr>
-        </thead>
-        <tbody id="datosHora">
+            </tbody>
+        </table>
+    </div>
+    <div class="container">
+        <table id="HISTORY" style="display:none;">
+            <thead>
+                <tr id="variables">
+                    
+                </tr>
+            </thead>
+            <tbody id="datosHora">
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
+    <div class="container">
+        <table id="AIRPORTS" style="display:none;">
+            <thead>
+                <tr>
+                    <th>indice</th>
+                    <th>Nombre</th>
+                    <th>Coordenadas</th>
+                </tr>
+            </thead>
+            <tbody id="tablaAeropuertos">
+                
+            </tbody>
+        </table>
+    </div>
 
-    <script src="../js/code.js"></script>
-    <script src="assets/js/code.js"></script>
+    <footer>
+        <p>&copy; 2023 Vuelos. Todos los derechos reservados.</p>
+    </footer>
+
+    <audio id="audioAlert">
+        <source src="/assets/sound_alerts/sonido-alert.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audioEmergency">
+        <source src="/assets/sound_alerts/sonido-emergency.mp3" type="audio/mpeg">
+    </audio>
     
+    <script src="assets/js/code.js"></script>
+
   </body>
   
 </html>

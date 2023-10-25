@@ -106,7 +106,7 @@ class Diccionario():
         self.Muerte_valor = Muerte
         self.Somnolencia_valor = Somnolencia
         self.Pulso_valor = int(Pulso)
-        self.Pulso_estado = Pulso2
+        self.Pulso_estado = Pulso2  
         self.Saturacion_valor = int(Saturacion)
         self.Dic = {
             'Piloto' : self.Piloto_valor,
