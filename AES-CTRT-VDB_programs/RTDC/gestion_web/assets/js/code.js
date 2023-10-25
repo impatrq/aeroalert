@@ -2,8 +2,7 @@
 var vuelos = {
             '12323': {
                 'datos con hora': [
-                                    ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-                                    ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                    ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
                                     ], 
                 'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}},
             
@@ -93,18 +92,19 @@ function crearTablaVuelos(vuelos){
 function actualizarTablaVuelos(vuelos){
     var audioAlert = document.getElementById("audioAlert");
     var audioEmergency = document.getElementById("audioEmergency");
-    
+    //{'12323': {'alert': 1, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 1},
+    // '122324324': {'alert': 1, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 1}}
     for (const vuelo in vuelos) {
 
         const fila_de_vuelo = document.getElementById(`fila-${vuelo}`);
         
 
-        if (vuelos[vuelo]['alertas']['emergency'] == 1){
+        if (vuelos[vuelo]['emergency'] == 1){
             fila_de_vuelo.cells[1].textContent = "Emergency"
             fila_de_vuelo.cells[1].style.backgroundColor = "red";
             audioEmergency.play()
         }
-        else if (vuelos[vuelo]['alertas']['alert'] == 1){
+        else if (vuelos[vuelo]['alert'] == 1){
             fila_de_vuelo.cells[1].textContent = "Alert"
             fila_de_vuelo.cells[1].style.backgroundColor = "yellow";
             audioAlert.play()
@@ -116,7 +116,7 @@ function actualizarTablaVuelos(vuelos){
 
 
 
-        if (vuelos[vuelo]['alertas']['solicitud'] == 1){
+        if (vuelos[vuelo]['solicitud'] == 1){
             fila_de_vuelo.cells[2].textContent = "Waiting"
             fila_de_vuelo.cells[2].style.backgroundColor = "yellow";
         }
@@ -127,7 +127,7 @@ function actualizarTablaVuelos(vuelos){
 
 
 
-        if (vuelos[vuelo]['alertas']['sae_desactivado'] == 1){
+        if (vuelos[vuelo]['sae_desactivado'] == 1){
             fila_de_vuelo.cells[3].textContent = "AES Disabled"
             fila_de_vuelo.cells[3].style.backgroundColor = "red";
             audioEmergency.play()
@@ -144,6 +144,8 @@ function createFlights() {
     fetch('/update/flights')
     .then(response => response.json())
         .then(jsonObject => {
+            //{'12323': {'alert': 1, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 1},
+            // '122324324': {'alert': 1, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 1}}
             crearTablaVuelos(jsonObject)
         })      
 }
@@ -274,12 +276,17 @@ function getAirports() {
     fetch('/get/airports')
         .then(response => response.json())
             .then(jsonObject => {
-                return jsonObject            
+                return jsonObject 
+                //{"airports":[ {"nombre":"Ezeiza", "coordenadas": ["34°49'25″, 58°31'44″"]},
+                //              {"nombre":"Aeroparque", "coordenadas": ["34°33'27″ 58°24'43″"]} ] }          
             });     
 }
 
 function crearTablaAirports() {
-    const aeropuertos = getAirports()
+    const response = getAirports()
+    aeropuertos = response["airports"]
+    // [ {"nombre":"Ezeiza", "coordenadas": ["34°49'25″, 58°31'44″"]},
+    //   {"nombre":"Aeroparque", "coordenadas": ["34°33'27″ 58°24'43″"]} ]
     const tableAeropuertos= document.getElementById("tablaAeropuertos")
     indiceAirport = 0
     aeropuertos.forEach(aeropuerto => {
@@ -356,11 +363,11 @@ var interfaz = "flights"
 var index_flights = 0
 
 const max_vuelos = length(updateFlights())
-const max_airport = length(getAirports())
+const max_airport = length((getAirports())[airports])
 
 //constantemente se ejecuta
-function updateKey() {
-    fetch('/update/keys')
+function getKey() {
+    fetch('/get/key')
         .then(response => response.json())
             .then(jsonObject => {
                 key = jsonObject["key"]
@@ -460,5 +467,5 @@ function refreshDate() {
 //refreshValues();
 refreshDate();
 //setInterval(refreshValues, 1000000);
-setInterval(updateKey, 300);
+setInterval(getKey, 300);
 
