@@ -44,8 +44,8 @@ function safereturn()
 
     -- check we're in GPS mode
     dataref("CDIVLOC", "sim/cockpit2/radios/actuators/HSI_source_select_pilot", "writable")
-    CDIVLOC = 2
-    
+    CDIVLOC = 0
+    command_once("sim/cockpit/autopilot/heading")
     dataref("altitude", "sim/cockpit2/autopilot/altitude_readout_preselector", "writable")
     -- DESCEND ON CURRENT HEADING
 
@@ -56,9 +56,12 @@ function safereturn()
     if altitude < 4200 then
         ln_vs[0] = -1500
     elseif altitude > 4200 then
-        ln_vs[0] = -1800
+        if altitude > 7500 then
+            ln_vs[0] = -2200
+        elseif altitude < 7500 then
+            ln_vs[0] = -1800
+        end
     end
-    command_once("sim/autopilot/vertical_speed_pre_sel")
 
     -- AT ON
     dataref("ATON", "sim/cockpit2/autopilot/autothrottle_enabled", "writable")
@@ -75,6 +78,7 @@ function safereturn()
             fired = true
             command_once("sim/autopilot/altitude_hold")
             phasetwo()
+            command_once("sim/autopilot/vertical_speed_pre_sel")
         end
     end
 
@@ -92,6 +96,7 @@ function phasetwo()
     command_once("sim/flight_controls/flaps_down")
     -- gear down
     command_once("sim/flight_controls/landing_gear_down")
+    command_once("sim/autopilot/vertical_speed")
     -- check ILS is valid (if not, keep checking) and run distance check
     function checkILS()
         -- get my lat lon
@@ -112,7 +117,11 @@ function phasetwo()
                     ln_vs[0] = -150
                 end
             elseif altitude > 4200 then
-                ln_vs[0] = -1800
+                if altitude > 7500 then
+                    ln_vs[0] = -2200
+                elseif altitude < 7500 then
+                    ln_vs[0] = -1800
+                end
             end
         end
         do_often("altitude_check()")
@@ -152,27 +161,33 @@ function checkDist ()
         dist = XPLMGetDataf(XPLMFindDataRef("sim/cockpit2/radios/indicators/gps_dme_distance_nm"))
         altland = XPLMGetDataf(XPLMFindDataRef("sim/flightmodel/position/y_agl"))
         groundland = altland * 3.2808399
-        dataref("CRS", "sim/cockpit/radios/gps_course_degtm","readonly")
+        dataref("CRS", "sim/cockpit/radios/nav1_course_degm","readonly")
         dataref("HDG", "sim/cockpit/autopilot/heading_mag", "writable")
         dataref("Course", "sim/cockpit/radios/nav1_course_degm", "writable")
         dataref("APP", "sim/private/controls/atc/routing/runway_steep_angle", "writable")
+        hdgcounter = 0
         HDG = CRS + 270
         inCrs = math.floor(CRS)
         inNavCrs = math.floor(Course)
         logMsg(inCrs)
         logMsg(inNavCrs)
-        if 7 > inNavCrs  - inCrs then
-            if (inNavCrs  - inCrs > 0 and firedRNWY == false) then
+        logMsg(HDG)
+        if 8 > inNavCrs  - inCrs then
+            hdgcounter = hdgcounter +1
+            if (inNavCrs  - inCrs > 1  and firedRNWY == false) then
                 firedRNWY = true
                 HDG = CRS
                 land()
-            elseif firedRNWY == true then
-                HDG = CRS 
-                land()
+                logMsg('one')
             end
-        elseif firedRNWY == true and dist < 5 then
+       elseif firedRNWY == true then
+            HDG = CRS 
             land()
-        elseif (dist > 5 and groundland < 900) then
+            logMsg('onee')
+    
+       elseif firedRNWY == true and dist < 5 then
+            land()
+        elseif (dist > 25 and groundland < 1000) then
             caps()
             logMsg("Far away from approach route")
         end
@@ -183,17 +198,17 @@ end
 function land()
 
     -- APPROACH PHASE
-
+    dist = XPLMGetDataf(XPLMFindDataRef("sim/cockpit2/radios/indicators/gps_dme_distance_nm"))
     -- switch to radio beacon nav for ILS
+    dataref("SPEEDSET", "sim/cockpit/autopilot/airspeed", "writable")
     CDIVLOC = 0
     ln_alt = dataref_table("sim/cockpit/autopilot/altitude", "writable")
     ln_alt[0] = 1200
     ln_vs = dataref_table("sim/cockpit/autopilot/vertical_velocity", "writable")
-    if dist >= 5 then
+    if dist >= 6 then
         SPEEDSET = 110
-        command_once("sim/GPS/g1000n1_apr")
-    elseif dist < 5 then
-        SPEEDSET = 80
+    elseif dist < 6 then
+        SPEEDSET = 85
     end
     -- wait for land
     function checkLand()
@@ -201,19 +216,20 @@ function land()
         groundland = altland * 3.2808399
         vertfpm = XPLMGetDataf(XPLMFindDataRef("sim/flightmodel/position/vh_ind_fpm"))
         dist = XPLMGetDataf(XPLMFindDataRef("sim/cockpit2/radios/indicators/gps_dme_distance_nm"))
-        dataref('trk', 'sim/cockpit2/autopilot/trk_fpa')
+        dataref("APR", "sim/cockpit2/autopilot/approach_status", "writable")
+        APR = 2
         -- all has gone well, cut engine at touchdown
-        if (groundland < 25 and firedThree == false) then
+        if (groundland < 75 and firedThree == false) then
             firedThree = true
             rollout()
             logMsg("Great Landing!")
         -- pops chute if near airport but not on GS
-        elseif (dist < 1 and groundland > 500 and vertfpm > -50 and firedThree == false) then
+        elseif (dist < 1 and groundland >= 1300 and vertfpm > -50 and firedThree == false) then
             firedThree = true
             caps()
             logMsg("Near airport but not on GS")
         -- if it starts flying away from the airport (downwind ils etc)
-        elseif (dist > 12 and firedThree == false) then
+        elseif (dist > 25 and firedThree == false) then
             firedThree = true
             caps()
             logMsg("Flying away from airport")
@@ -256,9 +272,12 @@ function rollout()
     play_sound(autolandfour)
 
     -- engines OFF
-    dataref("fuelSelector", "sim/cockpit2/fuel/fuel_tank_selector", "writable")
-    fuelSelector = 0
-
+    altland = XPLMGetDataf(XPLMFindDataRef("sim/flightmodel/position/y_agl"))
+    groundland = altland * 3.2808399
+    if groundland < 75 then
+        dataref("fuelSelector", "sim/cockpit2/fuel/fuel_tank_selector", "writable")
+        fuelSelector = 0
+    end
     -- brakes full
     dataref("PARKBRAKES", "sim/flightmodel/controls/parkbrake", "writable")
     PARKBRAKES = 1
@@ -276,8 +295,3 @@ create_command( "FlyWithLua/ViewPoint/Safe_Return", "Emergency Autoland",
                 "safereturn()",
                 "checkDist()",
                 "phasetwo()")
-
-				create_command( "FlyWithLua/ViewPoint/Phase_Two", "Emergency Autoland",
-                "phasetwo()",
-                "checkILS() checkDist() checker() land() checkLand() caps() rollout()",
-                "")

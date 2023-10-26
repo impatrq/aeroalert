@@ -1,5 +1,14 @@
-#from winsound import PlaySound
-from playsound import playsound
+from time import sleep
+import sys
 
-PlaySound("Nombre del archivo.mp3")
-print("haciendo sonido")
+for i in range(5):
+   print(".", end="", flush=True)
+   sleep(.1)
+print()
+
+
+
+"""
+while True:
+    print(".", end="")
+    sleep(0.1)"""
