@@ -382,7 +382,7 @@ def activar_SAE():
             pin_luz_roja.value(0)
             pin_flag.value(1)
             print("pin on off")
-            pass
+            continue
 
         else: 
             pin_flag.value(0)

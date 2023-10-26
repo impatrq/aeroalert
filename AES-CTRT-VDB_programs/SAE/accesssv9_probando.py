@@ -411,15 +411,38 @@ def activar_SAE():
             #avisa a rtdc emergencia 2 muertos
 
 
+
+
+            #determinacion muertos
+            if codigo[12] and codigo[13]:
+                muertos2 = 1
+                muertos1 = 0
+                print("2Muertos")
+            elif codigo[12] or codigo[13]:
+                muertos1 = 1
+                muertos2 = 0
+                print("1Muerto")
+            else:
+                muertos2 = 0
+                muertos1 = 0
+                print("no Muertos")
+
+
+
             # Protocolo alarmas off---------------------------------------------------------------------------------------------
             if codigo[4] and codigo[5]:                             # si ambos estan dormidos
                 asleep2 = 1
                 asleep1 = 0
-                print("2dormidos")
+                print("2Dormidos")
             elif codigo[4] or codigo[5]:                              # si solo 1 esta dormido
                 asleep1 = 1
                 asleep2 = 0
-                print("1dormido")
+                print("1Dormido")
+            else:
+                asleep1 = 0
+                asleep2 = 0
+                print("no Dormidos")
+                
 
                 #hipoxia______________      #bpms_____________________________________________     #dormidos____________
             if (codigo[6] or codigo[7]) or (codigo[0] or codigo[1] or codigo[2] or codigo[3]) or (codigo[4] and codigo[5]):  # Si alguno tiene spo o bpms o estan dormidos ambos
@@ -427,25 +450,31 @@ def activar_SAE():
                 if codigo[6] and codigo[7]:                         # Si ambos tienen  hipoxia 
                     hipoxia2 = 1 
                     hipoxia1 = 0
-                    print("2spo")
+                    print("2Spo")
                 elif codigo[6] or codigo[7]:                        # Si solo 1 tiene
                     hipoxia1 = 1
                     hipoxia2 = 0
-                    print("1spo") 
-                
+                    print("1Spo") 
+                else:
+                    hipoxia1 = 0
+                    hipoxia2 = 0
+                    print("no Spo")
 
                 if (codigo[0] and codigo[1]) or (codigo[2] and codigo[3]) or (codigo[0] and codigo[3]) or (codigo[1] and codigo[2]):
                     bpm2 = 1
                     bpm1 = 0
-                    print("2bpm")
+                    print("2Bpm")
                 elif codigo[0] or codigo[1] or codigo[2] or codigo[3]:  
                     bpm1 = 1
                     bpm2 = 0
-                    print("1bpm")
+                    print("1Bpm")
+                else:
+                    bpm1 = 0
+                    bpm2 = 0
+                    print("no Bpm")
 
 
-
-
+                #------------------------------------------------------------------------------------------
                 if alarmas_off == 0:                                    # Si las alarmas no estan desactivadas
                     # Si el piloto toca el boton de reaccion desactiva las alarmas
                     if pin_boton_reaccion == 1:                         # Si el boton de reaccion fue presionado
@@ -463,99 +492,161 @@ def activar_SAE():
                         contador_iniciado_30 = 0                        # Pone en 0 la variable de cont_init_30spo
                         no_reaccion = 1
                         pasaron_30segs = 0
+                        print("no reacciono")
+
 
                 elif alarmas_off == 1:                                  # Sino si estan desactivadas las alarmas spo
                     print("alarmas off")
-
-                    
-                    pin_luz_roja.value(0)                               # Apaga luz alarma
-                    pin_luz_ambar.value(0)
-
                     #
                     # enviar UART para apagar alarmas sonoras
                     #
-                                               
+            else:
+                hipoxia1 = hipoxia2 = bpm1 = bpm2 = asleep1 = asleep2 = 0                                     
+        
 
 
 
-            elif not codigo[6] and not codigo[7]:                   # Si ninguno tiene spo2 en 1
-                print("no spo")
-
-                if enviado_hypoxia == 1:                  #UART------
-                    print("alarma_sonora_hypoxia = 0")    #UART------
-                    enviado_hypoxia = 0                   #UART------
-
-                #si pasan 30 segs se prende "aes activation" y se apaga esta
-                #tambien manda una "emergencia" a ctrt
-
-                if not codigo[12] or not codigo[13]:                # Si uno no esta muerto
-                    roja_fija = 0
-
-
-            pin_luz_roja.value(1)                           # Activa luz alarma (hipoxia?
-                            
-                    
-                    
-        if alarmas_off_spo == 0 and enviado_hypoxia == 0 :      #UART------
-            print("alarma_sonora_hypoxia = 1")                  #UART------
-            enviado_hypoxia = 1                                 #UART------
-        elif alarmas_off_spo == 1 and enviado_hypoxia == 1:     #UART------
-            print("alarma_sonora_hypoxia = 0")                  #UART------
-            enviado_hypoxia = 0                                 #UART------
+      
             #---------------------------------------------------------------------------------------------
 
-            #------------------------------------------
+            # 1 o 2 spo                 Roja Fija                       alarma sonora hipoxiaa          -
+            #                                                           
+            #   
+            # 2 muertos                 Roja Fija                       alarma_sonora_aes_alert         -
+            # 1 muerto                  Ambar Fija                      alarma_sonora_aes_alert
+            #                                                           
+            #
+            # 1 o 2 bpm                 Ambar Titilar                   alarma_sonora_aes_alert         -
+            #                                                           
+            # 
+            # 1 o 2 dormidos            Ambar Fija                      alarma_sonora_dormidos
+            #
+            #                                                   
+            # pulsera_conectada = 0     Ambar Fija
+            #
+            #                                                           
+            # intentional loss          Roja Titilando                  alarma_sonora_aes_activation 
+            # activacion manual         Roja Titilando                  alarma_sonora_manual_activation
+            # 
+            # 
+            # test fail                                                 alarma_sonora_test_failed
+            # test pass                                                 alarma_sonora_test_passed
+            # 
+            # 
+            #-------------------------------------------------------------------------------
+            if hipoxia1 or hipoxia2:                    #si uno o 2 tienen
+                roja_fija = 1
+                alarma_hipoxia = 1
+            else:
+                alarma_hipoxia = 0
+
+                
+            if muertos1 or muertos2:
+                alarma_aes= 1
+                if muertos2:
+                    roja_fija = 1
+
+                elif muertos1:
+                    ambar_fija = 1
+
+            if not hipoxia1 and not hipoxia2 and not muertos2:
+                roja_fija = 0
+
+
+
+            if bpm1 or bpm2:
+                ambar_titilando = 1
+                alarma_aes = 1
+            else:
+                ambar_titilando = 0
             
-            #protocolo pulsaciones raras
+            if not muertos1 and not muertos2 and not bpm1 and not bpm2:
+                alarma_aes = 0
+
+            if asleep1 or asleep2: 
+                ambar_fija = 1
+                alarma_dormidos = 1
+            else:
+                alarma_dormidos = 0
+
+            if not pulsera_conectada:
+                ambar_fija = 1
+
+            elif not muertos1 and not asleep1 and not asleep2:
+                ambar_fija = 0
+
+
+            if codigo[14] or intentional_loss:
+                roja_titilando = 1
+                aterrizar = 1                           #aterrizar
+                
+
+                
+ 
+            if not codigo[14] and not intentional_loss:
+                roja_titilando = 0
+                alarma_manual_activation = 0
+            elif codigo[14] or intentional_loss:
+                roja_titilando = 1
+                if codigo[14]:
+                    alarma_manual_activation = 1
+                else:
+                    alarma_manual_activation = 0
+
+            if intentional_loss or no_reaccion:
+                alarma_aes_activation = 1
+            elif not intentional_loss and not no_reaccion:
+                alarma_aes_activation = 0
+
+            #------------------------------------------------------------
+
+
+            if roja_fija:
+                pin_luz_roja.value(1)
+                prendido_roja = 1
+            else:
+                if roja_titilando:
+                    if prendido_roja:
+                        pin_luz_roja.value(0)
+                        prendido_roja = 0
+                    else:
+                        pin_luz_roja.value(1)
+                        prendido_roja = 1
+                else:
+                    pin_luz_roja.value(0)
+                    prendido_roja = 0
             
-            if codigo[0] or codigo[1] or codigo[2] or codigo[3]:   
-                # Si cualquiera tiene bpm
+            if ambar_fija:
+                pin_luz_ambar.value(1)
+                prendido_ambar = 1
+            else:
+                if ambar_titilando:
+                    if prendido_ambar:
+                        pin_luz_ambar.value(0)
+                        prendido_ambar = 0
+                    else:
+                        pin_luz_ambar.value(1)
+                        prendido_ambar = 1
+                else:
+                    pin_luz_ambar.value(0)
+                    prendido_ambar = 0
+            #-----------------------------------------------------------
 
-                if codigo[0] and codigo[1] or codigo[2] and codigo[3] or codigo[0] and codigo[3] or codigo[1] and codigo[2]:
-                    print("2 bpm")
-                elif codigo[0] or codigo[1] or codigo[2] or codigo[3]:  
-                    print("1 bpm")
 
-                if alarmas_off_bpm == 0:                          # Si las alarmas no estan desactivadas
-                    ambar_titilando = 1         # DEBERIA TITILAR
 
-                    if enviado_aes_alert == 0:                  #UART------
-                        print("1 alarma_sonora_aes_alert = 1")    #UART------
-                        enviado_aes_alert = 1                   #UART------
-
-                    if pin_boton_reaccion == 1:                   # Si el boton esta presionado
-                        alarmas_off_bpm = 1                       # DESACTIVA las alarmas                          
-                        t60bpm.init(mode=Timer.ONE_SHOT, period=6000, callback=contador60bpm)
-                        # luego de 60 segs pone alarmas off bpm en 0
-                        # desactiva el apagado de las alarmas
-
-                    elif contador_iniciado_30_bpm != 1:           # Sino, si no esta iniciado contador de 30s          
-                        t30bpm.init(mode=Timer.ONE_SHOT, period=3000, callback=contador30bpm)
-                        # INICIAtemporizador, luego apagara la variable del contador 30s
-                        contador_iniciado_30_bpm = 1              # PRENDE variable del contador 30s
-        
-                    elif pasaron_30segs_bpm == 1:                 # Sino, si pasaron 30s
-                        contador_iniciado_30_bpm = 0              # APAGA variable del contador iniciado 30s, porque ya paso
-                        no_reaccion = 1                       # Deja que tomen el control
-        
-                elif alarmas_off_bpm == 1:                        # Sino, si estan apagadas las alarmas
-                    ambar_titilando = 0 # DEBE DEJAR DE TITILAR
-                    contador_iniciado_30_bpm = 0    
-                    
                     if enviado_aes_alert == 1:                  #UART------
                         print("2 alarma_sonora_aes_alert = 0")    #UART------
                         enviado_aes_alert = 0                   #UART------
-                    
-                #alarma = 0
-            elif not codigo[0] and not codigo[1] and not codigo[2] and not codigo[3]:   # Si ninguno tiene pulsaciones raras
-                print("no bpm")
-                ambar_titilando = 0
-                
-                if not codigo[12] and not codigo[13]:           #si ninguno esta muerto
-                    if enviado_aes_alert == 1:                  #UART------
-                        print("3 alarma_sonora_aes_alert = 0")    #UART------
-                        enviado_aes_alert = 0                   #UART------
+                if alarmas_off_spo == 0 and enviado_hypoxia == 0 :      #UART------
+                            print("alarma_sonora_hypoxia = 1")                  #UART------
+                            enviado_hypoxia = 1                                 #UART------
+                        elif alarmas_off_spo == 1 and enviado_hypoxia == 1:     #UART------
+                            print("alarma_sonora_hypoxia = 0")                  #UART------
+                            enviado_hypoxia = 0                                 #UART------
             
+
+
+
 
             #-----------------------------------------
 
@@ -572,7 +663,7 @@ def activar_SAE():
                     #   2dormidos hacer coso de 30 segs
 
             else:
-                    
+
                 if enviado_sleep == 1:                  #UART------
                     print("alarma_sonora_sleep = 0")    #UART------
                     enviado_sleep = 0                   #UART------
@@ -586,6 +677,13 @@ def activar_SAE():
                 print("pulsera bien")
 
             #-------------------------------------------------
+
+
+
+
+
+
+            
             if codigo[12] or codigo[13]:                    # si uno esta muerto
                 if not codigo[0] and not codigo[1] and not codigo[2] and not codigo[3]:    #si no tienen bpms
                     if enviado_aes_alert == 0:                  #UART------
