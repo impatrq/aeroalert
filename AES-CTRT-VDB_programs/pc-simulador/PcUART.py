@@ -5,7 +5,7 @@ import time
 import _thread
 
 ser = serial.Serial(
-    port='/dev/ttyACM0',
+    port='COM4',
     baudrate=115200,
     timeout=0
     )
