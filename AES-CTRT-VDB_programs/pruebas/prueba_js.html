@@ -9,49 +9,17 @@
     
 
     <script>
-        function printear(currentValue) {
-            //console.log(currentValue)
+        function owo (){
+            console.log("caca")
         }
-        info_aeropuertos = [{"aeropuerto":"ezeiza", "coordenadas": [23,43]},
-                    {"aeropuerto":"aeroparque", "coordenadas": [54,22]}]
-        info_aeropuertos.forEach(function callback(currentValue, index, array) {
-        printear(currentValue)
-        //add to list of airports
-        });
-
+        setInterval(() => {
+            owo()
+        }, 1500);
 
         
-        jsonData = {'12323': {
-                        'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
-                        'datos con hora': [
-                                      ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-                                      ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-                                      ], 
-                        'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}},
-                   
-                    '434545': {
-                        'variables': ['Hora', 'bpm_altos1', 'bpm_altos2', 'bpm_bajos1', 'bpm_bajos2', 'dormido1', 'dormido2', 'spo_bajos1', 'spo_bajos2', 'temp_alta1', 'temp_alta2', 'temp_baja1', 'temp_baja2', 'muerte1', 'muerte2', 'manual', 'pulsera_conectada', 'no_reaccion', 'pin_off'], 
-                        'datos con hora': [
-                                      ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-                                      ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-                                      ], 
-                        'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}}}
 
-        vuelos = jsonData
-        for (const vuelo in vuelos) {
-            if (jsonData.hasOwnProperty(vuelo)) {
-                console.log(vuelos[vuelo])    // poner en lista de vuelos con alertas y eso
-                console.log(vuelos[vuelo]['alertas'])
-
-
-
-                
-                
-                console.log(vuelos[vuelo]['alertas'])
-                const value = vuelos[vuelo];
-                console.log(vuelo + ": " + value);
-            }
-        }
+        
+        console.log("owowowoowowowoowowowoowowowoowowowoowo")
 
     
 

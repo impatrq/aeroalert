@@ -151,6 +151,7 @@ function createFlights() {
 }
 createFlights()
 
+
 function updateFlights() {
     fetch('/update/flights')
     .then(response => response.json())
@@ -180,9 +181,8 @@ function cambiarVueloSeleccionado(indiceVuelo){
         }
     }
 }
-console.log("por cambiar vuelo seleccionado")
 cambiarVueloSeleccionado(0)
-console.log("cambiado vuelo seleccionado")
+
 //----------------------------------------------
 
 
@@ -285,9 +285,6 @@ function getAirports() {
 
 function crearTablaAirports() {
     const response = getAirports()
-        .then(response => console.log(response))
-    console.log(response)
-    console.log(response["airports"])
     aeropuertos = response["airports"]
     // [ {"nombre":"Ezeiza", "coordenadas": ["34°49'25″, 58°31'44″"]},
     //   {"nombre":"Aeroparque", "coordenadas": ["34°33'27″ 58°24'43″"]} ]
@@ -317,9 +314,8 @@ function crearTablaAirports() {
     });
 
 }
-console.log("por crear tabla airports")
 crearTablaAirports()
-console.log("tabla airports hecha")
+
 //---------------------------------------------------------------------------------
 
 
@@ -369,7 +365,7 @@ var index_flights = 0
 
 const max_vuelos = length(updateFlights())
 const max_airport = length((getAirports())[airports])
-console.log("updateFlights y getAirports")
+
 //constantemente se ejecuta
 function getKey() {
     fetch('/get/key')
@@ -448,29 +444,29 @@ function getKey() {
                 }
             })
 }
-console.log("por hacer getKey")
-setInterval(getKey, 300);
 
 
 
 
-//            
-//function refreshDate() {
-//    var Dia = new Date();
-//    var m = Dia.getMonth() + 1;
-//    var mes = (m < 10) ? '0' + m : m;
-//    var mi = Dia.getMinutes();
-//    var min = (mi < 10) ? '0' + mi : mi;
-//    var s = Dia.getSeconds();
-//    var seg = (s < 10) ? '0' + s : s; 
-//    var h = Dia.getHours();
-//    var hour = (h < 10) ? '0' + h : h;
-//            
-//    document.getElementById('fecha').textContent = Dia.getDate() +"/"+ mes +"/"+ Dia.getFullYear(); 
-//    document.getElementById('hora').textContent = hour +":"+ min +":"+ seg;
-//};
+
+            
+function refreshDate() {
+    var Dia = new Date();
+    var m = Dia.getMonth() + 1;
+    var mes = (m < 10) ? '0' + m : m;
+    var mi = Dia.getMinutes();
+    var min = (mi < 10) ? '0' + mi : mi;
+    var s = Dia.getSeconds();
+    var seg = (s < 10) ? '0' + s : s; 
+    var h = Dia.getHours();
+    var hour = (h < 10) ? '0' + h : h;
+            
+    document.getElementById('fecha').textContent = Dia.getDate() +"/"+ mes +"/"+ Dia.getFullYear(); 
+    document.getElementById('hora').textContent = hour +":"+ min +":"+ seg;
+};
 
 //refreshValues();
-//refreshDate();
+refreshDate();
 //setInterval(refreshValues, 1000000);
+setInterval(getKey, 300);
 
