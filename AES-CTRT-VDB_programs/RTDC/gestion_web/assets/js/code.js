@@ -158,7 +158,7 @@ function updateFlights() {
     .then(response => response.json())
         .then(jsonObject => {
             actualizarTablaVuelos(jsonObject)
-            flightsQuantity = length(jsonObject)
+            flightsQuantity = jsonObject.length;
             return jsonObject
         })      
 }
@@ -303,7 +303,7 @@ function crearTablaAirports() {
                 console.log(response)
                 console.log(response["airports"])
                 aeropuertos = response["airports"]
-                airportsQuantity = length(aeropuertos)
+                airportsQuantity = aeropuertos.length;
                 // [ {"nombre":"Ezeiza", "coordenadas": ["34°49'25″, 58°31'44″"]},
                 //   {"nombre":"Aeroparque", "coordenadas": ["34°33'27″ 58°24'43″"]} ]
                 const tableAeropuertos= document.getElementById("tablaAeropuertos")
