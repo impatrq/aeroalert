@@ -32,11 +32,12 @@ pines_Columnas = [Pin(pin_nombre, mode=Pin.IN, pull=Pin.PULL_DOWN) for pin_nombr
 alert = emergency = solicitud = sae_desactivado = 0
 
 #informacion de aeropuertos
-info_aeropuertos = [{"nombre":"Ezeiza", "coordenadas": ["34°49′25″, 58°31′44″"]},
+info_aeropuertos = {'airports':[{"nombre":"Ezeiza", "coordenadas": ["34°49′25″, 58°31′44″"]},
                     {"nombre":"Aeroparque", "coordenadas": ["34°33'27″ 58°24'43″"]},
                     {"nombre":"Ambrosio Taravella", "coordenadas": ["31°19'03″ 64°12'36″"]},
                     {"nombre":"Moron", "coordenadas": ["33°29'13″ 54°52'26″"]},
                     {"nombre":"Quilmes", "coordenadas": ["35°34'17″ 57°54'45″"]}]
+                    }
 
 nombres_variables = {"variables":
                      ["Hour","BpmH1","BpmH2","BpmL1","BpmL2","Sle1","Sle2",
@@ -324,7 +325,7 @@ def conectar_microdot():
     #en caso de solicitud
     @app.route('/send/<nro_vuelo>/info_airport/<index>')
     def index(request, nro_vuelo, index):
-        aeropuerto = {'info aeropuerto': info_aeropuertos[index]}
+        aeropuerto = {'info aeropuerto': info_aeropuertos['airports'][index]}
         print("send to:", nro_vuelo, "info_aeropuerto:",index)
         #stationrtdc.send_message(client_socket, aeropuerto)
         return
