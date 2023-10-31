@@ -9,6 +9,7 @@ hora = time.localtime()
 
 global client_socket, sta_if
 client_socket, sta_if = clientWifi.conectar_wifi()
+print(client_socket, sta_if)
 # client_socket, sta_if = stationrtdc.do_connect()
 #stationrtdc.send_type(client_socket, "soy_rtdc")
 
@@ -41,7 +42,20 @@ nombres_variables = {"variables":
                      ["Hour","BpmH1","BpmH2","BpmL1","BpmL2","Sle1","Sle2",
                     "Oxi1","Oxi2","C°H1","C°H2","C°L1","C°L2",
                     "Death1","Death2","Manual","BandCable","NoReact", "Off"]}
-historial_de_vuelos = {}
+global historial_de_vuelos
+historial_de_vuelos = {'12323': {'datos con hora': [
+                                                      ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                                      ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                                   ], 
+                                   'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}
+                                   },
+                        '5643': {'datos con hora': [
+                                                      ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                                      ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                                      ], 
+                                   'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}
+                                 }
+                         }
 
 
 def notification(cual, nro_vuelo, data):
@@ -189,7 +203,7 @@ def teclas():
     #softreset()
 
     global last_key_press
-    last_key_press = ""
+    last_key_press = "z"
     while True:
         for fila in range(4):
             for columna in range(4):
@@ -198,10 +212,12 @@ def teclas():
                     print("Es el numero: ", teclas[fila][columna])
                     last_key_press = teclas[fila][columna]
                     sleep(0.5)
+                    last_key_press = "z"
 
 
-
+print("importando")
 from microdot_asyncio import Microdot, send_file
+print("importado microdot")
 import ujson
 import _thread
 
@@ -210,7 +226,7 @@ def conectar_microdot():
 
     @app.route('/')
     def index(request):
-        return send_file("index.html")
+        return send_file("/assets/html/index.html")
 
     @app.route("/assets/<dir>/<file>")
     def assets(request, dir, file):
@@ -233,25 +249,32 @@ def conectar_microdot():
 
     #done ----------------------
     #para mandar las teclas presionadas a la pagina
-    @app.route('/update/keys')
+    @app.route('/get/key')
     def index(request):
         global last_key_press
-        print("Key to page")
-        response = {"key":last_key_press}
-        last_key_press = ""
+        print("tecla:",last_key_press)
+        response = {"key":last_key_press,"owo":123}
+        print("respuesta: ",response)
+        last_key_press = "z"
         json_data = ujson.dumps(response)
-        return json_data, 202, {'Content-Type': 'json'}
+        print("json: ", json_data)
+        return response, 202, {'Content-Type': 'json'}
 
+    
     #done ----------------
     #se repite constantemente
     vuelos = {}
     @app.route('/update/flights')
     def index(request):
+        global historial_de_vuelos
+        print(historial_de_vuelos)
+        
         for vuelo in historial_de_vuelos:
             vuelos[vuelo] = {"alertas":{}}
             vuelos[vuelo]["alertas"] = historial_de_vuelos[vuelo]["alertas"]
         json_data = ujson.dumps(vuelos)
-        print("update flights")
+        
+        print("update flights: ", json_data)
         return json_data, 202, {'Content-Type': 'json'}
     # vuelos = {'123':{"alertas":{'alert':1, 'emergency':0}},
     #           '324':{"alertas":{'alert':1, 'emergency':0}}
@@ -310,21 +333,16 @@ def conectar_microdot():
     app.run(port=80)
 
 
-if __name__ == "__main__":
-    try:
-        # Inicio la medicion del sensor        
-        _thread.start_new_thread(teclas, ())
+# Inicio la medicion del sensor
+print("iniciar keypad")
+_thread.start_new_thread(teclas, ())
+
+print("conectar microdot")
+print("Microdot corriendo en IP/Puerto: ",sta_if, ":80")
+conectar_microdot()
 
 
-        conectar_microdot()
-        print("Microdot corriendo en IP/Puerto: " + sta_if + ":80")
-        
 
-        # Inicio la aplicacion
-        
-    
-    except KeyboardInterrupt:
-        # Termina el programa con Ctrl + C
-        print("Aplicacion terminada")
+# Inicio la aplicacion
 
 
