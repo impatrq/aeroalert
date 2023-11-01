@@ -254,12 +254,12 @@ def conectar_microdot():
     def index(request):
         global last_key_press
         print("tecla:",last_key_press)
-        response = {"key":last_key_press,"owo":123}
+        response = {"key":last_key_press}
         print("respuesta: ",response)
         last_key_press = "z"
         json_data = ujson.dumps(response)
         print("json: ", json_data)
-        return response, 202, {'Content-Type': 'json'}
+        return json_data, 202, {'Content-Type': 'json'}
 
     
     #done ----------------

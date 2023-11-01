@@ -170,6 +170,7 @@ setInterval(() => {
 
 
 function cambiarVueloSeleccionado(indiceVuelo){
+    console.log("cambiando vuelo seleccionado lel")
     const tableFlights = document.getElementById("listaVuelos");
     var rows = tableFlights.getElementsByTagName("tr");
 
@@ -189,28 +190,6 @@ console.log("cambiado vuelo seleccionado")
 //----------------------------------------------
 
 
-
-//function getVariables() {
-//    fetch('/get/names/variables')
-//        .then(response => response.json())
-//            .then(jsonObject => {
-//                var variables = jsonObject["variables"]
-//                return variables
-//            })
-//}
-
-//function getHistory(nro_vuelo) {
-//    fetch('/get/history/',nro_vuelo)
-//    .then(response => response.json())
-//        .then(jsonObject => {
-//            //vuelo = {'datos con hora': [
-//            //                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-//            //                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
-//            //                            ], 
-//            //         'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}}
-//            return jsonObject
-//        });
-//}
 
 
 function crearTablaDatosHora(nro_vuelo){
@@ -235,7 +214,7 @@ function crearTablaDatosHora(nro_vuelo){
                 // pone los valores con cada color en la tabla
                 // despues de poner los nombres de las variables agrega los datos
                 fetch('/get/history/'+ String(nro_vuelo))
-                    .then(response => response.json())
+                    .then(respuesta => respuesta.json())
                         .then(respuestaJson => {
                             //vuelo = {'datos con hora': [
                             //                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
@@ -369,13 +348,13 @@ function cambiarInterfaz(nuevaInterfaz,nro_vuelo){
 
 //done
 function sendInstruction(nro_vuelo, instruccion) {
-    fetch('/send/',nro_vuelo,'/',instruccion)
+    fetch('/send/'+nro_vuelo+'/'+instruccion)
     console.log("enviado:", nro_vuelo, "instruccion:", instruccion)
     return
 }
 
 function sendInfoAirport(nro_vuelo, index) {
-    fetch('/send/',nro_vuelo,'info_airport/',index)
+    fetch('/send/'+nro_vuelo+'/info_airport/'+index)
     console.log("enviado:", nro_vuelo, "indice:", index)
     return
 }
@@ -386,87 +365,103 @@ var index_flights = 0
 
 
 console.log("updateFlights y getAirports")
+
+
 //constantemente se ejecuta
 function getKey() {
     fetch('/get/key')
-        .then(response => {
-            console.log("respuesta directa: ", response)
-            jsonObject = response.json()
-            console.log("como json: ",jsonObject)
-            llave = jsonObject[3]
-            console.log("llave: ",llave)
-            key = jsonObject["key"]
-            console.log("key: ",key)
-//se declara nro vuelo  
-            const nro_vuelo = vuelos[index_flights]
-//se declara nro vuelo
+        .then(response => response.json())
+            .then(jsonObject => {
+                console.log('\n\n')
+                key = jsonObject["key"]
+                console.log("key: ",key)
+            
+                console.log("index flights: ", index_flights)
+                const nros_vuelo = Object.keys(vuelos) 
+                console.log("nros_vuelo: ", nros_vuelo)
+                const nro_vuelo = nros_vuelo[index_flights]
+                console.log("nro_vuelo: ", nro_vuelo)
+                //no tienee que ser esto sino el nro del vuelo tipo keyname o algo asi
+                //{'datos con hora': [
+                //                    ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                //                   ], 
+                //        'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}}
+    
+                
+                console.log("flightsQuantity: ", flightsQuantity)
 
-            if (interfaz == "flights"){
-                if (key == "2") {       //flecha para arriba
-                    if (index_flights > 0){
-                        index_flights = index_flights - 1
-                        cambiarVueloSeleccionado(index_flights)    
+                if (interfaz == "flights"){
+                    if (key == "2") {       //flecha para arriba
+                        console.log("un 2 omg")
+                        if (index_flights > 0){
+                            index_flights = index_flights - 1
+                            cambiarVueloSeleccionado(index_flights)    
+                        }
+                    }
+                    else if (key == "8"){         //flecha para abajo
+                        console.log("un ocho")
+                                            // en vez de 2 deberia ser flightsQuantity
+                        if (index_flights <  2){
+                            index_flights = index_flights+1
+                            console.log("y el index es menor a 2")
+                            cambiarVueloSeleccionado(index_flights)
+                        }
+                    }  
+
+                    else if (key == "6"){         //enter o derecha 
+                        cambiarInterfaz("flight", nro_vuelo)
+                        console.log("cambiar interfaz lol")
+                        interfaz = "flight"
                     }
                 }
-                else if (key == "8"){         //flecha para abajo
-                    if (index_flights <  flightsQuantity){
-                        index_flights = index_flights+1
-                        cambiarVueloSeleccionado(index_flights)
-                    }
-                }  
 
-                else if (key == "6"){         //enter o derecha 
-                    cambiarInterfaz("flight", nro_vuelo)
-                    interfaz = "flight"
-                }
-            }
+                else if (interfaz == "flight") {
 
-            else if (interfaz == "flight") {
-
-                if (key == "4"){                 //para atras o izquierda
-                    cambiarInterfaz("flights")
-                    interfaz = "flights"
-                }
-                else if (key == "6"){        //enter o derecha 
-                    cambiarInterfaz("airports")
-                    interfaz = "airports"
-                }
-
-                else if (key == "A"){
-                    sendInstruccion("aterriza",nro_vuelo)
-                    cambiarInterfaz("airports")
-                    interfaz = "airports"
-                }
-                else if (inpt == "B"){
-                    sendInstruction("no aterrizes",nro_vuelo)
-                }
-            }
-
-            else if (interfaz == "airports"){
-                if (!isNaN(key)){               //cualquier numero para seleccionar airport
-                    if (key <= airportsQuantity){
-                        sendInfoAirport(nro_vuelo, key-1)   //en la tabla se muestran con un indice mayor
+                    if (key == "4"){                 //para atras o izquierda
                         cambiarInterfaz("flights")
                         interfaz = "flights"
-                    }   
-                }
-                else if (key == "A"){
-                    sendInstruction(nro_vuelo, "aterriza")
-                }
-                else if (key == "B"){
-                    sendInstruction(nro_vuelo,"no aterrizes")
+                    }
+                    else if (key == "6"){        //enter o derecha 
+                        cambiarInterfaz("airports")
+                        interfaz = "airports"
+                    }
+
+                    else if (key == "A"){
+                        sendInstruction(nro_vuelo, "aterriza")
+                        cambiarInterfaz("airports")
+                        interfaz = "airports"
+                    }
+                    else if (key == "B"){
+                        sendInstruction(nro_vuelo, "no aterrizes")
+                    }
                 }
 
-                else if (key== "C"){                   //para cancelar
-                    cambiarInterfaz("flight", nro_vuelo)
-                    interfaz = "flight"            
-                }
-            }
+                else if (interfaz == "airports"){
+                    if (!isNaN(key)){               //cualquier numero para seleccionar airport
+                        if (key <= airportsQuantity){
+                            sendInfoAirport(nro_vuelo, key-1)   //en la tabla se muestran con un indice mayor
+                            cambiarInterfaz("flights")
+                            interfaz = "flights"
+                        }   
+                    }
+                    else if (key == "A"){
+                        sendInstruction(nro_vuelo, "aterriza")
+                    }
+                    else if (key == "B"){
+                        sendInstruction(nro_vuelo,"no aterrizes")
+                    }
 
-            if (key == "D"){
-                refreshPage()               //recargar la pagina
-            }
-        });
+                    else if (key== "C"){                   //para cancelar
+                        cambiarInterfaz("flight", nro_vuelo)
+                        interfaz = "flight"            
+                    }
+                }
+
+                if (key == "D"){
+                    location.reload()               //recargar la pagina
+                }
+            });
+
 }
 console.log("por hacer getKey")
 setInterval(getKey, 1500);
