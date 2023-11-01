@@ -234,15 +234,15 @@ function crearTablaDatosHora(nro_vuelo){
 
                 // pone los valores con cada color en la tabla
                 // despues de poner los nombres de las variables agrega los datos
-                fetch('/get/history/',nro_vuelo)
+                fetch('/get/history/'+ String(nro_vuelo))
                     .then(response => response.json())
-                        .then(jsonObject => {
+                        .then(respuestaJson => {
                             //vuelo = {'datos con hora': [
                             //                            ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
                             //                            ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
                             //                            ], 
                             //         'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}}
-                            datos = jsonObject
+                            datos = respuestaJson
                             const dataTiempo = datos['datos con hora']
                             const datosYHora = dataTiempo.reverse()
 
@@ -250,46 +250,46 @@ function crearTablaDatosHora(nro_vuelo){
                             tablaDatosHora.innerHTML = ""
 
                             datosYHora.forEach(filaDatos => {
-                            console.log(filaDatos)
+                                console.log(filaDatos)
 
-                            const rowTablaDatos = document.createElement("tr")
-                            var indice = 0
+                                const rowTablaDatos = document.createElement("tr")
+                                var indice = 0
 
-                            filaDatos.forEach(dato => {
-                                indice += 1
+                                filaDatos.forEach(dato => {
+                                    indice += 1
 
-                                const celdaDatos = document.createElement("td")
-                                
-                                celdaDatos.textContent = dato
-                                if (indice == 1){
-                                    celdaDatos.style.backgroundColor = "orange"
-                                }
-                                else if (indice == 17){      // si es el de pulsera conectada
-                                    if (dato == 0){
+                                    const celdaDatos = document.createElement("td")
+                                    
+                                    celdaDatos.textContent = dato
+                                    if (indice == 1){
+                                        celdaDatos.style.backgroundColor = "orange"
+                                    }
+                                    else if (indice == 17){      // si es el de pulsera conectada
+                                        if (dato == 0){
+                                            celdaDatos.style.backgroundColor = "red"
+                                        }
+                                        else {
+                                            celdaDatos.style.backgroundColor = "green"
+                                        }
+                                    }
+                                    else if (dato == 1){
                                         celdaDatos.style.backgroundColor = "red"
                                     }
-                                    else {
+                                    else{
                                         celdaDatos.style.backgroundColor = "green"
                                     }
-                                }
-                                else if (dato == 1){
-                                    celdaDatos.style.backgroundColor = "red"
-                                }
-                                else{
-                                    celdaDatos.style.backgroundColor = "green"
-                                }
 
-                                rowTablaDatos.appendChild(celdaDatos)
-                            })
+                                    rowTablaDatos.appendChild(celdaDatos)
+                                });
 
                             tablaDatosHora.appendChild(rowTablaDatos)
-                            }) 
+                            }); 
                         });
             });
 }
 
 //------------------------------------------
-const airportsQuantity = 0
+var airportsQuantity = 0
 function crearTablaAirports() {
     fetch('/get/airports')
         .then(response => response.json())
