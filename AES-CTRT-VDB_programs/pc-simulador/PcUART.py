@@ -42,7 +42,7 @@ while True:
     read = leer.decode('utf-8')
     if read:
         print(read)
-        
+        """
         if read == "aterrizar":
             xplane.instruccion("aterrizar")
         elif read == "no aterrizar":
@@ -50,7 +50,7 @@ while True:
         elif type(read) == list:
             if read[0] == "info aeropuerto:":
                 xplane.instruccion(read[1])
-
+        """
         #----
         if read == "alarma_sonora_aes_activation = 1":
             alarma_sonora_aes_activation = 1
