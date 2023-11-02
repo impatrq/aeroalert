@@ -10,7 +10,6 @@ class WebSocket:
     CLOSE = 8
     PING = 9
     PONG = 10
-
     def __init__(self, request):
         self.request = request
         self.closed = False

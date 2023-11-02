@@ -9,6 +9,7 @@ hora = time.localtime()
 
 global client_socket, sta_if
 client_socket, sta_if = clientWifi.conectar_wifi()
+print(client_socket, sta_if)
 # client_socket, sta_if = stationrtdc.do_connect()
 #stationrtdc.send_type(client_socket, "soy_rtdc")
 
@@ -31,17 +32,44 @@ pines_Columnas = [Pin(pin_nombre, mode=Pin.IN, pull=Pin.PULL_DOWN) for pin_nombr
 alert = emergency = solicitud = sae_desactivado = 0
 
 #informacion de aeropuertos
-info_aeropuertos = [{"nombre":"Ezeiza", "coordenadas": ["34°49′25″, 58°31′44″"]},
-                    {"nombre":"Aeroparque", "coordenadas": ["34°33'27″ 58°24'43″"]},
-                    {"nombre":"Ambrosio Taravella", "coordenadas": ["31°19'03″ 64°12'36″"]},
-                    {"nombre":"Moron", "coordenadas": ["33°29'13″ 54°52'26″"]},
-                    {"nombre":"Quilmes", "coordenadas": ["35°34'17″ 57°54'45″"]}]
+info_aeropuertos = {'airports':
+                               [
+                                {"nombre":"Ezeiza", "coordenadas": ["34°49′25″, 58°31′44″"]},
+                                {"nombre":"Aeroparque", "coordenadas": ["34°33'27″ 58°24'43″"]},
+                                {"nombre":"Ambrosio Taravella", "coordenadas": ["31°19'03″ 64°12'36″"]},
+                                {"nombre":"Moron", "coordenadas": ["33°29'13″ 54°52'26″"]},
+                                {"nombre":"Quilmes", "coordenadas": ["35°34'17″ 57°54'45″"]}
+                               ]
+                   }
 
 nombres_variables = {"variables":
                      ["Hour","BpmH1","BpmH2","BpmL1","BpmL2","Sle1","Sle2",
                     "Oxi1","Oxi2","C°H1","C°H2","C°L1","C°L2",
                     "Death1","Death2","Manual","BandCable","NoReact", "Off"]}
-historial_de_vuelos = {}
+global historial_de_vuelos
+historial_de_vuelos = {'12323': {'datos con hora': [
+                                                      ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                                      ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                                   ], 
+                                   'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 0}
+                                   },
+                        '5643': {'datos con hora': [
+                                                      ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                                      ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                                      ], 
+                                   'alertas': {'alert': 1, 'emergency': 1, 'solicitud': 1, 'sae_desactivado': 0}
+                                 },
+                       '4321': {'datos con hora': [
+                                                      ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+                                                      ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                                                      ['10:18:36', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                                                      ['10:18:37', 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                                                      ['10:18:38', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                                      ], 
+                                   'alertas': {'alert': 0, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 1}
+                                 }
+                         
+                         }
 
 
 def notification(cual, nro_vuelo, data):
@@ -114,7 +142,7 @@ def manage_AES():
     while True:
         #recibido = stationrtdc.receive_data(client_socket)
         recibido = {"msg":"solicito: aterrizaje", "nro_vuelo": 4334, "list": (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0)}
-        print("recibido sae: ", recibido)
+        print("recibido aes: ", recibido)
 
         msg = recibido("msg")                   #puede ser ""
         nro_vuelo = recibido("nro_vuelo")
@@ -138,11 +166,11 @@ def manage_AES():
             "manual": data[14], "pulsera_conectada": data[15],
             "no_reaccion": data[16],        "pin_on_off": data[17]}
         
-        if I["no_reaccion"] or I["manual"] or I["muerte1"] and I["muerte2"]:
+        if I["no_reaccion"] or I["manual"] or (I["muerte1"] and I["muerte2"]):
             notification("emergency",nro_vuelo, data)
         
         elif I["muerte1"] or I["muerte2"] or I["spo_bajos1"] or I["spo_bajos2"] or I["dormido1"] or I["dormido2"] or not I["pulsera_conectada"] or I["pin_on_off"]:
-                notification("alert",nro_vuelo,  data)
+            notification("alert",nro_vuelo,  data)
 
         elif sae_desactivado == 1:
             notification("alert",nro_vuelo, data)
@@ -186,7 +214,7 @@ def teclas():
     
     #       * # A B C D
     # enter, arriba, abajo, deseleccionar
-    #softreset()
+    #  D = softreset() 
 
     global last_key_press
     last_key_press = ""
@@ -197,11 +225,13 @@ def teclas():
                 if tecla == Tecla_Abajo:
                     print("Es el numero: ", teclas[fila][columna])
                     last_key_press = teclas[fila][columna]
-                    sleep(0.5)
+                    sleep(1)
+                    last_key_press = ""
 
 
-
+print("importando")
 from microdot_asyncio import Microdot, send_file
+print("importado microdot")
 import ujson
 import _thread
 
@@ -210,7 +240,7 @@ def conectar_microdot():
 
     @app.route('/')
     def index(request):
-        return send_file("index.html")
+        return send_file("/assets/html/index.html")
 
     @app.route("/assets/<dir>/<file>")
     def assets(request, dir, file):
@@ -232,26 +262,31 @@ def conectar_microdot():
     global historial_de_vuelos
 
     #done ----------------------
-    #para mandar las teclas presionadas a la pagina
-    @app.route('/update/keys')
+    #para mandar la tecla presionada a la pagina
+    @app.route('/get/key')
     def index(request):
         global last_key_press
-        print("Key to page")
         response = {"key":last_key_press}
+        print("respuesta: ",response)
         last_key_press = ""
         json_data = ujson.dumps(response)
         return json_data, 202, {'Content-Type': 'json'}
 
+    
     #done ----------------
     #se repite constantemente
     vuelos = {}
     @app.route('/update/flights')
     def index(request):
+        global historial_de_vuelos
+        print(historial_de_vuelos)
+        
         for vuelo in historial_de_vuelos:
             vuelos[vuelo] = {"alertas":{}}
             vuelos[vuelo]["alertas"] = historial_de_vuelos[vuelo]["alertas"]
         json_data = ujson.dumps(vuelos)
-        print("update flights")
+        
+        print("update flights: ", json_data)
         return json_data, 202, {'Content-Type': 'json'}
     # vuelos = {'123':{"alertas":{'alert':1, 'emergency':0}},
     #           '324':{"alertas":{'alert':1, 'emergency':0}}
@@ -277,7 +312,7 @@ def conectar_microdot():
     @app.route('/get/history/<nro_vuelo>')
     def index(request, nro_vuelo):
         json_data = ujson.dumps(historial_de_vuelos[nro_vuelo])
-        print("get histyory nrovuelo")
+        print("get history nrovuelo", nro_vuelo)
         return json_data, 202, {'Content-Type': 'json'}
         
 
@@ -293,38 +328,43 @@ def conectar_microdot():
     #en caso de que se perciba peligro o intentional loss
     @app.route('/send/<nrovuelo>/<instruccion>')
     def index(request, nrovuelo, instruccion):
-        print("send ", nrovuelo, " instruccion")
+        print("send ", nrovuelo, "instruccion: ", instruccion)
         #stationrtdc.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
         return
     
     #done ------------------------    
     #en caso de solicitud
-    @app.route('/send/<nro_vuelo>/info_airport/<index>')
-    def index(request, nro_vuelo, index):
-        aeropuerto = {'info aeropuerto': info_aeropuertos[index]}
-        print("send to:", nro_vuelo, "info_aeropuerto:",index)
+    @app.route('/send/<nro_vuelo>/info_airport/<indice>')
+    def index(request, nro_vuelo, indice):
+        
+        aeropuerto = {'info aeropuerto': info_aeropuertos['airports'][int(indice)]}
+        print("send to:", nro_vuelo, aeropuerto)
         #stationrtdc.send_message(client_socket, aeropuerto)
-        return
+        return {"enviado":1}, 202, {'Content-Type': 'json'}
 
     
     app.run(port=80)
 
 
-if __name__ == "__main__":
-    try:
-        # Inicio la medicion del sensor        
-        _thread.start_new_thread(teclas, ())
+# Inicio la medicion del sensor
+print("iniciar keypad")
+_thread.start_new_thread(teclas, ())
 
 
-        conectar_microdot()
-        print("Microdot corriendo en IP/Puerto: " + sta_if + ":80")
-        
 
-        # Inicio la aplicacion
-        
-    
-    except KeyboardInterrupt:
-        # Termina el programa con Ctrl + C
-        print("Aplicacion terminada")
+
+# agregar inicio de thread para manage aes
+# _thread.start_new_thread(manage_AES, ())
+
+
+
+
+print("conectar microdot")
+print("Microdot corriendo en IP/Puerto: ",sta_if, ":80")
+conectar_microdot()
+
+
+
+# Inicio la aplicacion
 
 
