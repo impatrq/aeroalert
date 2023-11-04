@@ -8,6 +8,7 @@ firedILS = false
 firedRNWY = false
 fireACT = false
 counter = 0
+counter1 = 0
 autolandone = load_WAV_file("Resources/plugins/FlyWithLua/Scripts/autoland1.wav")
 set_sound_gain(autolandone, 1.0)
 let_sound_loop(autolandone, false)
@@ -211,18 +212,21 @@ function land()
     ln_alt = dataref_table("sim/cockpit/autopilot/altitude", "writable")
     ln_alt[0] = 1200
     ln_vs = dataref_table("sim/cockpit/autopilot/vertical_velocity", "writable")
+    if counter1 == 0 then
+        command_once("sim/GPS/g1000n1_apr")
+        counter1 = counter1 + 1
+    end
     if dist >= 5.5 then
         SPEEDSET = 110
     elseif dist < 5.5 then
         if dist > 2 then
             SPEEDSET = 100
             if counter == 0 then
-                command_once("sim/GPS/g1000n1_apr")
                 GSSTAT = 2
                 GSAR = 0
                 counter = counter + 1
             end
-        elseif dist < 1.7 then
+        elseif dist < 2 then
             SPEEDSET = 85
         end
     end
@@ -291,10 +295,12 @@ function rollout()
     -- engines OFF
     altland = XPLMGetDataf(XPLMFindDataRef("sim/flightmodel/position/y_agl"))
     groundland = altland * 3.2808399
-    if groundland < 30 then
-        command_once("sim/flight_controls/pitch_trim_up")
+    if groundland < 75 then
         dataref("fuelSelector", "sim/cockpit2/fuel/fuel_tank_selector", "writable")
         fuelSelector = 0
+        if groundland < 15 then
+            command_once("sim/flight_controls/pitch_trim_up")
+        end
     end
     -- brakes full
     dataref("PARKBRAKES", "sim/flightmodel/controls/parkbrake", "writable")
