@@ -47,6 +47,6 @@ AeroAlert es un proyecto actualmente en proceso, realizado por alumnos del 7mo A
 Ante cualquier duda acerca de nuestro proyecto, podés ponerte en contacto con nosotros a través de:
 
     📧 Email: proyectoaeroalert@gmail.com
-    🌐 Página Web: en proceso...
+    🌐 Página Web: www.aeroalert.com.ar
     📷 Instagram: @aeroalert.impa
-    🗞️ LinkedIn: https://www.linkedin.com/company/aeroalert/
+    🗞️ LinkedIn: www.linkedin.com/company/aeroalert/
