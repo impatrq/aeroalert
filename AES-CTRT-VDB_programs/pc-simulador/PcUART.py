@@ -1,6 +1,5 @@
 import serial
 from playsound import playsound
-import time
 #import xplane
 import _thread
 
