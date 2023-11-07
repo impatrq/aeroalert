@@ -301,11 +301,21 @@ def activar_SAE():
     global solicitar, info_aeropuerto
     global no_reaccion, intentional_loss
     global pin_boton_test
+    global alarmas_off
+
+
+    contador_iniciado_30 = 0
+    global pasaron_30segs
+
+    aterrizaje_enviado = 0
+
 
     pin_boton_reaccion = 0
 
     hipoxia1 = hipoxia2 = bpm1 = bpm2 = asleep1 = asleep2 = muertos1 = muertos2 = 0 
 
+
+    global pin_luz_roja, pin_luz_ambar, pin_flag
     roja_fija = roja_titilando = prendido_roja = 0
     ambar_fija = ambar_titilando = prendido_ambar = 0
 
@@ -382,38 +392,38 @@ def activar_SAE():
                 asleep1 = 0
                 asleep2 = 0
                 print("no Dormidos")
-                
 
+
+            if (codigo[0] and codigo[1]) or (codigo[2] and codigo[3]) or (codigo[0] and codigo[3]) or (codigo[1] and codigo[2]):
+                bpm2 = 1
+                bpm1 = 0
+                print("2Bpm")
+            elif codigo[0] or codigo[1] or codigo[2] or codigo[3]:  
+                bpm1 = 1
+                bpm2 = 0
+                print("1Bpm")
+            else:
+                bpm1 = 0
+                bpm2 = 0
+                print("no Bpm")
+
+
+            if codigo[6] and codigo[7]:                         # Si ambos tienen  hipoxia 
+                hipoxia2 = 1 
+                hipoxia1 = 0
+                print("2Spo")
+            elif codigo[6] or codigo[7]:                        # Si solo 1 tiene
+                hipoxia1 = 1
+                hipoxia2 = 0
+                print("1Spo") 
+            else:
+                hipoxia1 = 0
+                hipoxia2 = 0
+                print("no Spo")
+        
+            
             # Protocolo alarmas off---------------------------------------------------------------------------------------------
-                #hipoxia______________      #bpms_____________________________________________     #dormidos____________
-            if (codigo[6] or codigo[7]) or (codigo[0] or codigo[1] or codigo[2] or codigo[3]) or (codigo[4] and codigo[5]):  # Si alguno tiene spo o bpms o estan dormidos ambos
-                 
-                if codigo[6] and codigo[7]:                         # Si ambos tienen  hipoxia 
-                    hipoxia2 = 1 
-                    hipoxia1 = 0
-                    print("2Spo")
-                elif codigo[6] or codigo[7]:                        # Si solo 1 tiene
-                    hipoxia1 = 1
-                    hipoxia2 = 0
-                    print("1Spo") 
-                else:
-                    hipoxia1 = 0
-                    hipoxia2 = 0
-                    print("no Spo")
-
-                if (codigo[0] and codigo[1]) or (codigo[2] and codigo[3]) or (codigo[0] and codigo[3]) or (codigo[1] and codigo[2]):
-                    bpm2 = 1
-                    bpm1 = 0
-                    print("2Bpm")
-                elif codigo[0] or codigo[1] or codigo[2] or codigo[3]:  
-                    bpm1 = 1
-                    bpm2 = 0
-                    print("1Bpm")
-                else:
-                    bpm1 = 0
-                    bpm2 = 0
-                    print("no Bpm")
-
+            if (hipoxia1 or hipoxia2) or (bpm1 or bpm2) or (asleep2):  # Si alguno tiene spo o bpms o estan dormidos ambos
 
                 #------------------------------------------------------------------------------------------
                 if alarmas_off == 0:                                    # Si las alarmas no estan desactivadas
@@ -436,7 +446,6 @@ def activar_SAE():
                         pasaron_30segs = 0
                         print("no reacciono")
 
-
                 elif alarmas_off == 1:                                  # Sino si estan desactivadas las alarmas spo
                     print("alarmas off")
                     pasaron_30segs = 0
@@ -444,7 +453,7 @@ def activar_SAE():
                     # enviar UART para apagar alarmas sonoras
                     #
             else:
-                hipoxia1 = hipoxia2 = bpm1 = bpm2 = asleep1 = asleep2 = 0                                     
+                no_reaccion = 0                              
         
 
             #---------------------------------------------------------------------------------------------
@@ -513,7 +522,7 @@ def activar_SAE():
                 print("pulsera desconectada")
                 ambar_fija = 1
             else:
-                print("pulserac conectada")
+                print("pulsera conectada")
 
             if not muertos1 and not asleep1 and not asleep2 and pulsera_conectada:
                 ambar_fija = 0
@@ -535,6 +544,7 @@ def activar_SAE():
                 alarma_aes_activation = 1
             else:
                 alarma_aes_activation = 0
+
 
             #------------------------------------------------------------
 
@@ -577,40 +587,49 @@ def activar_SAE():
                 if alarma_hipoxia and not enviado_alarma_hipoxia:
                     print("alarma_hipoxia=1")
                     enviado_alarma_hipoxia = 1            
-                elif enviado_alarma_hipoxia:
+                elif not alarma_hipoxia and enviado_alarma_hipoxia:
                     print("alarma_hipoxia=0")
                     enviado_alarma_hipoxia = 0
                 
                 if alarma_aes and not enviado_alarma_aes:
                     print("alarma_aes_alert=1")
                     enviado_alarma_aes = 1
-                elif enviado_alarma_aes:
+                elif not alarma_aes and enviado_alarma_aes:
                     print("alarma_aes_alert=0")
                     enviado_alarma_aes = 0
 
                 if alarma_dormidos and not enviado_alarma_dormidos:
                     print("alarma_dormidos=1")
                     enviado_alarma_dormidos = 1
-                elif enviado_alarma_dormidos:
+                elif not alarma_dormidos and enviado_alarma_dormidos:
                     print("alarma_dormidos=0")
                     enviado_alarma_dormidos = 0
 
                 if alarma_manual_activation and not enviado_manual_activation:
                     print("alarma_manual_activation=1")
                     enviado_manual_activation = 1
-                elif enviado_manual_activation:
+                elif not alarma_manual_activation and enviado_manual_activation:
                     print("alarma_manual_activation=0")
                     enviado_manual_activation = 0
 
+                """
+                print("antes no_reaccion: ", no_reaccion)
+                print("antes alarma_aes_activation: ", alarma_aes_activation)
+                print("antes enviada?: ", enviado_aes_activation)
+                """
                 if alarma_aes_activation and not enviado_aes_activation:
                     print("alarma_aes_activation=1")
                     enviado_aes_activation = 1
-                elif enviado_aes_activation:
+                elif not alarma_aes_activation and enviado_aes_activation:
                     print("alarma_aes_activation=0")
                     enviado_aes_activation = 0
 
                 # faltan los 2 de test, pass y fail
-
+                """
+                print("no_reaccion: ", no_reaccion)
+                print("alarma_aes_activation: ", alarma_aes_activation)
+                print("enviada?: ", enviado_aes_activation)
+                """
             else:                                       #si estan apagadas las alarmas
                 pin_luz_ambar.value(0)
                 pin_luz_roja.value(0)
