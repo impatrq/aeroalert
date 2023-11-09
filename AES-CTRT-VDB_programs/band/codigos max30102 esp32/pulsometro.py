@@ -9,8 +9,9 @@ class Pulso():
         from utime import ticks_diff, ticks_us
         from max30102 import MAX30102, MAX30105_PULSE_AMP_MEDIUM
         import utime
+        from time import sleep
 
-        utime.sleep(1)
+        utime.sleep(0.5)
         i2c = SoftI2C(sda=Pin(21),  
                       scl=Pin(22),  
                       freq=400000)  
@@ -53,6 +54,7 @@ class Pulso():
         
 
         while True:
+            utime.sleep(0.02)
             try:
                 #while pin_prendido.value():
                 # The check() method has to be continuously polled, to check if
@@ -68,7 +70,9 @@ class Pulso():
                      
                     
                     Spo2 = valueir * 100/13000                                                     # valueir * 105/16500 para mediciones en el dedo, Spo2 = valueir * 105/11500 para la muñeca por arriba
-                    self.datos2 = Spo2
+                    
+                    if Spo2 >= 93 and Spo2 <= 100:
+                        self.datos2 = Spo2
                     if valuered < 30000:
                         history.append(valuered)
                         # Get the tail, up to MAX_HISTORY length
@@ -100,12 +104,12 @@ class Pulso():
                             beat = False
 
                     else:
-                        print('Not finger',beats_history)
+                        print('Not finger')
                         beats_history.append(0)
                         beats_history = beats_history[-MAX_HISTORY:]
                         beats = round(sum(beats_history)/len(beats_history) )
                         self.datos = beats
-                        utime.sleep(2)
-            except:
-                print("ERROR")
-                time.sleep(1)
+                        sleep(2)
+            except Exception as error:
+                print("ERROR: ", error)
+                utime.sleep(1)

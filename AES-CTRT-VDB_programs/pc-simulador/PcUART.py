@@ -41,44 +41,46 @@ while True:
     read = leer.decode('utf-8')
     if read:
         print(read)
-        """
+        
         if read == "aterrizar":
-            xplane.instruccion("aterrizar")
+            #xplane.instruccion("aterrizar")
+            print("enviar 'aterrizar'")
         elif read == "no aterrizar":
-            xplane.instruccion("no aterrizar")
+            #xplane.instruccion("no aterrizar")
+            print("enviar 'no aterrizar'")
         elif type(read) == list:
             if read[0] == "info aeropuerto:":
-                xplane.instruccion(read[1])
-        """
+                #xplane.instruccion(read[1])
+                print("enviar info de aeropuerto")
         #----
-        if read == "alarma_sonora_aes_activation = 1":
+        if read == "alarma_aes_activation=1":
             alarma_sonora_aes_activation = 1
-        elif read == "alarma_sonora_aes_activation = 0":
+        elif read == "alarma_aes_activation=0":
             alarma_sonora_aes_activation = 0
         #----
-        elif read == "alarma_sonora_hypoxia = 1":
+        elif read == "alarma_hipoxia=1":
             alarma_sonora_hypoxia = 1
-        elif read == "alarma_sonora_hypoxia = 0"   :
+        elif read == "alarma_hipoxia=0"   :
             alarma_sonora_hypoxia = 0
         #----
-        elif read == "alarma_sonora_aes_alert = 1":
+        elif read == "alarma_aes_alert=1":
             alarma_sonora_aes_alert = 1
-        elif read == "alarma_sonora_aes_alert = 0":
+        elif read == "alarma_aes_alert = 0":
             alarma_sonora_aes_alert = 0
         #-----
-        elif read == "alarma_sonora_sleep = 1":
+        elif read == "alarma_dormidos=1":
             alarma_sonora_sleep = 1
-        elif read == "alarma_sonora_sleep = 0":
+        elif read == "alarma_dormidos=0":
             alarma_sonora_sleep = 0
         #----
-        elif read == "alarma_sonora_manual_activation = 1":
+        elif read == "alarma_manual_activation=1":
             alarma_sonora_manual_activation = 1
-        elif read == "alarma_sonora_manual_activation = 0":
+        elif read == "alarma_manual_activation=0":
             alarma_sonora_manual_activation = 0
         #----
-        elif read == "alarma_sonora_test_failed":
+        elif read == "alarma_test_failed":
             alarma_sonora_test_failed = 1
         #----
-        elif read == "alarma_sonora_test_pass":
+        elif read == "alarma__test_pass":
             alarma_sonora_test_pass = 1
         #----

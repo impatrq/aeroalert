@@ -23,6 +23,7 @@ def do_connect():
 def send_type(client_socket, tipo):
     message = json.dumps(tipo).encode('utf-8')
     client_socket.send(message)
+    print("tipo enviado")
 
 def send_message(client_socket,msg):
     data = {'mensaje': msg}

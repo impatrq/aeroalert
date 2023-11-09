@@ -8,10 +8,11 @@ hora = time.localtime()
 
 
 global client_socket, sta_if
-client_socket, sta_if = clientWifi.conectar_wifi()
+#client_socket, sta_if = clientWifi.conectar_wifi()
+
+client_socket, sta_if = stationrtdc.do_connect()
 print(client_socket, sta_if)
-# client_socket, sta_if = stationrtdc.do_connect()
-#stationrtdc.send_type(client_socket, "soy_rtdc")
+stationrtdc.send_type(client_socket, "soy_rtdc")
 
 
 pin_luz_roja = Pin(12, Pin.OUT)
@@ -51,22 +52,18 @@ historial_de_vuelos = {'12323': {'datos con hora': [
                                                       ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
                                                       ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
                                                    ], 
-                                   'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 0}
+                                   'alertas': {'alert': 0, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 0}
                                    },
                         '5643': {'datos con hora': [
                                                       ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
                                                       ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
                                                       ], 
-                                   'alertas': {'alert': 1, 'emergency': 1, 'solicitud': 1, 'sae_desactivado': 0}
+                                   'alertas': {'alert': 0, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 0}
                                  },
                        '4321': {'datos con hora': [
-                                                      ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
-                                                      ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-                                                      ['10:18:36', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-                                                      ['10:18:37', 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-                                                      ['10:18:38', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+                                                      ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
                                                       ], 
-                                   'alertas': {'alert': 0, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 1}
+                                   'alertas': {'alert': 0, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 0}
                                  }
                          
                          }
@@ -140,13 +137,13 @@ def notification(cual, nro_vuelo, data):
 def manage_AES():
     global solicitud, sae_desactivado
     while True:
-        #recibido = stationrtdc.receive_data(client_socket)
-        recibido = {"msg":"solicito: aterrizaje", "nro_vuelo": 4334, "list": (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0)}
+        recibido = stationrtdc.receive_data(client_socket)
+        #recibido = {"msg":"solicito: aterrizaje", "nro_vuelo": 4334, "list": (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0)}
         print("recibido aes: ", recibido)
 
-        msg = recibido("msg")                   #puede ser ""
-        nro_vuelo = recibido("nro_vuelo")
-        data = recibido("list")                         #recibido = {"msg":"solicito: aterrizaje", "nro_vuelo": 4334, "list": (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0)}
+        msg = recibido["msg"]                   #puede ser ""
+        nro_vuelo = recibido["nro_vuelo"]
+        data = recibido["list"]                         #recibido = {"msg":"solicito: aterrizaje", "nro_vuelo": 4334, "list": (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0)}
 
         if msg == "solicito_aterrizaje":
             solicitud = 1        
@@ -279,7 +276,6 @@ def conectar_microdot():
     @app.route('/update/flights')
     def index(request):
         global historial_de_vuelos
-        print(historial_de_vuelos)
         
         for vuelo in historial_de_vuelos:
             vuelos[vuelo] = {"alertas":{}}
@@ -313,6 +309,7 @@ def conectar_microdot():
     def index(request, nro_vuelo):
         json_data = ujson.dumps(historial_de_vuelos[nro_vuelo])
         print("get history nrovuelo", nro_vuelo)
+        print(json_data, "\n")
         return json_data, 202, {'Content-Type': 'json'}
         
 
@@ -329,7 +326,7 @@ def conectar_microdot():
     @app.route('/send/<nrovuelo>/<instruccion>')
     def index(request, nrovuelo, instruccion):
         print("send ", nrovuelo, "instruccion: ", instruccion)
-        #stationrtdc.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
+        stationrtdc.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
         return
     
     #done ------------------------    
@@ -339,7 +336,7 @@ def conectar_microdot():
         
         aeropuerto = {'info aeropuerto': info_aeropuertos['airports'][int(indice)]}
         print("send to:", nro_vuelo, aeropuerto)
-        #stationrtdc.send_message(client_socket, aeropuerto)
+        stationrtdc.send_message(client_socket, aeropuerto)
         return {"enviado":1}, 202, {'Content-Type': 'json'}
 
     
@@ -350,13 +347,8 @@ def conectar_microdot():
 print("iniciar keypad")
 _thread.start_new_thread(teclas, ())
 
-
-
-
-# agregar inicio de thread para manage aes
-# _thread.start_new_thread(manage_AES, ())
-
-
+print("iniciar manage aes")
+_thread.start_new_thread(manage_AES, ())
 
 
 print("conectar microdot")

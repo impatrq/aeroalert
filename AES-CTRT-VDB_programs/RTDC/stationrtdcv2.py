@@ -33,6 +33,5 @@ def send_message(client_socket,msg):
 def receive_data(client_socket):
     data = client_socket.recv(1024)
     info = json.loads(data.decode('utf-8'))
-    print('respuesta: ', info)
     return info
 

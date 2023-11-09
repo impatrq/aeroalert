@@ -1,6 +1,23 @@
 
+//var vuelos = {
+//            '12323': {
+//                'datos con hora': [
+//                                    ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+//                                    ], 
+//                'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}},
+//            
+//            '434545': {
+//                'datos con hora': [
+//                                    ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+//                                    ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+//                                    ], 
+//                'alertas': {'alert': 0, 'emergency': 1, 'solicitud': 1, 'sae_desactivado': 1}}}
+
+
+// Supongamos que tienes un JSON llamado 'vuelos' con la información de los vuelos
+
+// Obtén una referencia a la tabla HTML
 //------------------------------------------------------------------
-// Funcion para que si no se completan las requests se cancelen en el tiempo indicado (timeout)
 AbortSignal.timeout ??= function timeout(ms) {
     const ctrl = new AbortController()
     setTimeout(() => ctrl.abort(), ms)
