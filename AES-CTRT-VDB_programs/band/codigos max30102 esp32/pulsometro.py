@@ -71,7 +71,7 @@ class Pulso():
                     
                     Spo2 = valueir * 100/13000                                                     # valueir * 105/16500 para mediciones en el dedo, Spo2 = valueir * 105/11500 para la muñeca por arriba
                     
-                    if Spo2 >= 93 and Spo2 <= 100:
+                    if Spo2 >= 90 and Spo2 <= 100:
                         self.datos2 = Spo2
                     if valuered < 30000:
                         history.append(valuered)
@@ -98,7 +98,8 @@ class Pulso():
                                 beats_history.append(bpm)                    
                                 beats_history = beats_history[-MAX_HISTORY:]
                                 beats = round(sum(beats_history)/len(beats_history) )
-                                self.datos = beats
+                                if beats >= 60 and beats <= 130:
+                                    self.datos = beats
 
                         if beat and valuered< threshold_off:
                             beat = False
@@ -108,6 +109,7 @@ class Pulso():
                         beats_history.append(0)
                         beats_history = beats_history[-MAX_HISTORY:]
                         beats = round(sum(beats_history)/len(beats_history) )
+                        
                         self.datos = beats
                         sleep(2)
             except Exception as error:
