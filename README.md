@@ -1,7 +1,7 @@
 
 # **AeroAlert**
 <p align="center">
-  <img href="logoaeroalert.jpg" />
+  <img href=logoaeroalert.jpg />
 </p>
 
 # ¿Qué es AeroAlert?
