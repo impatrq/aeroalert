@@ -27,12 +27,11 @@ def send_type(client_socket, tipo):
 def send_message(client_socket,msg):
     data = {'mensaje': msg}
     message = json.dumps(data).encode('utf-8') 
-    client_socket.send(message) 
-    print('Mensaje enviado:', message)
+    client_socket.send(message)
 
 def receive_data(client_socket):
     data = client_socket.recv(1024)
+    print(data)
     info = json.loads(data.decode('utf-8'))
-    print('respuesta: ', info)
     return info
 

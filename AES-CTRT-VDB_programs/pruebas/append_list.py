@@ -1,8 +1,12 @@
-import _thread
-import random
-import time
 
 
+
+a = 95
+
+if a > 93 and a < 100:
+    print("a")
+
+"""
 r = 0
 
 def cambiar_valor_random(a,b):
@@ -20,4 +24,4 @@ def escribir():
     time.sleep(2)
     print(r,"valor en escribir")
 
-escribir()
+escribir()"""

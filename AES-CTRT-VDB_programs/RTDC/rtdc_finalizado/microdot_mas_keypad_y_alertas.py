@@ -1,4 +1,3 @@
-import clientWifi as clientWifi
 import stationrtdcv2 as stationrtdc
 from machine import Pin
 from time import sleep
@@ -8,20 +7,20 @@ hora = time.localtime()
 
 
 global client_socket, sta_if
-client_socket, sta_if = clientWifi.conectar_wifi()
+
+client_socket, sta_if = stationrtdc.do_connect()
 print(client_socket, sta_if)
-# client_socket, sta_if = stationrtdc.do_connect()
-#stationrtdc.send_type(client_socket, "soy_rtdc")
+stationrtdc.send_type(client_socket, "soy_rtdc")
 
 
-pin_luz_roja = Pin(12, Pin.OUT)
-pin_luz_ambar = Pin(13, Pin.OUT)
+pin_luz_roja = Pin(21, Pin.OUT)
+pin_luz_ambar = Pin(19, Pin.OUT)
 
 
 
 # Defininicón de Pines keypad
-filas = [16, 4, 0, 2]
-columnas = [19, 18, 5, 17]
+filas = [33, 32, 12, 13]
+columnas = [14, 27, 26, 25]
 # Definimos los pines de las filas como salida
 pines_Filas = [Pin(pin_nombre, mode=Pin.OUT) for pin_nombre in filas]
 # Definimos los pines de las columnas de salida
@@ -46,18 +45,18 @@ nombres_variables = {"variables":
                      ["Hour","BpmH1","BpmH2","BpmL1","BpmL2","Sle1","Sle2",
                     "Oxi1","Oxi2","C°H1","C°H2","C°L1","C°L2",
                     "Death1","Death2","Manual","BandCable","NoReact", "Off"]}
-global historial_de_vuelos
+
 historial_de_vuelos = {'12323': {'datos con hora': [
                                                       ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
                                                       ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
                                                    ], 
-                                   'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 0}
+                                   'alertas': {'alert': 0, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 0}
                                    },
                         '5643': {'datos con hora': [
                                                       ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
                                                       ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
                                                       ], 
-                                   'alertas': {'alert': 1, 'emergency': 1, 'solicitud': 1, 'sae_desactivado': 0}
+                                   'alertas': {'alert': 0, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 0}
                                  },
                        '4321': {'datos con hora': [
                                                       ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
@@ -66,9 +65,8 @@ historial_de_vuelos = {'12323': {'datos con hora': [
                                                       ['10:18:37', 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
                                                       ['10:18:38', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
                                                       ], 
-                                   'alertas': {'alert': 0, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 1}
+                                   'alertas': {'alert': 0, 'emergency': 0, 'solicitud': 0, 'sae_desactivado': 0}
                                  }
-                         
                          }
 
 
@@ -100,7 +98,7 @@ def notification(cual, nro_vuelo, data):
     vuelo_nro = str(nro_vuelo)
 
     hora = time.localtime()
-    hora_string = str(f"{hora[3]}:{hora[4]}:{hora[5]}")
+    hora_string = str("%02.0f:%02.0f:%02.0f" %(hora[3],hora[4],hora[5]))
 
     info_hora = [hora_string]
     for i in data:  
@@ -126,7 +124,7 @@ def notification(cual, nro_vuelo, data):
         #                              ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
         #                              ], 
         #           'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}
-        #           }
+        #           },
         #'5643': {'datos con hora': [
         #                              ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
         #                              ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
@@ -140,13 +138,13 @@ def notification(cual, nro_vuelo, data):
 def manage_AES():
     global solicitud, sae_desactivado
     while True:
-        #recibido = stationrtdc.receive_data(client_socket)
-        recibido = {"msg":"solicito: aterrizaje", "nro_vuelo": 4334, "list": (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0)}
-        print("recibido aes: ", recibido)
+        recibido = stationrtdc.receive_data(client_socket)
+        #recibido = {"msg":"solicito: aterrizaje", "nro_vuelo": 4334, "list": (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0)}
+        print("\nrecibido aes: ", recibido)
 
-        msg = recibido("msg")                   #puede ser ""
-        nro_vuelo = recibido("nro_vuelo")
-        data = recibido("list")                         #recibido = {"msg":"solicito: aterrizaje", "nro_vuelo": 4334, "list": (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0)}
+        msg = recibido["msg"]                   #puede ser ""
+        nro_vuelo = recibido["nro_vuelo"]
+        data = recibido["list"]                     
 
         if msg == "solicito_aterrizaje":
             solicitud = 1        
@@ -174,6 +172,7 @@ def manage_AES():
 
         elif sae_desactivado == 1:
             notification("alert",nro_vuelo, data)
+            
         if sum(data) == 1 and I["pulsera_conectada"] == 1:
             notification("clean",nro_vuelo, data)
 
@@ -212,7 +211,7 @@ def teclas():
 
     teclas = [['1', '4', '7', '*'], ['2', '5', '8', '0'], ['3', '6', '9', '#'], ['A', 'B', 'C', 'D']]
     
-    #       * # A B C D
+    #  * # A B C D
     # enter, arriba, abajo, deseleccionar
     #  D = softreset() 
 
@@ -223,15 +222,15 @@ def teclas():
             for columna in range(4):
                 tecla = escanear(fila, columna)
                 if tecla == Tecla_Abajo:
-                    print("Es el numero: ", teclas[fila][columna])
+                    #print("Es el numero: ", teclas[fila][columna])
                     last_key_press = teclas[fila][columna]
                     sleep(1)
                     last_key_press = ""
 
 
-print("importando")
+print("Importando microdot...")
 from microdot_asyncio import Microdot, send_file
-print("importado microdot")
+print("Done")
 import ujson
 import _thread
 
@@ -240,6 +239,7 @@ def conectar_microdot():
 
     @app.route('/')
     def index(request):
+        print("\nEnviando index.html")
         return send_file("/assets/html/index.html")
 
     @app.route("/assets/<dir>/<file>")
@@ -253,6 +253,7 @@ def conectar_microdot():
         file (str): Nombre del archivo solicitado
         returns (File): Retorna un archivo CSS o JS
         """
+        print("enviando: ", file)
         return send_file("/assets/" + dir + "/" + file)
 
 
@@ -267,7 +268,7 @@ def conectar_microdot():
     def index(request):
         global last_key_press
         response = {"key":last_key_press}
-        print("respuesta: ",response)
+        print("get/key: ",response)
         last_key_press = ""
         json_data = ujson.dumps(response)
         return json_data, 202, {'Content-Type': 'json'}
@@ -279,14 +280,13 @@ def conectar_microdot():
     @app.route('/update/flights')
     def index(request):
         global historial_de_vuelos
-        print(historial_de_vuelos)
         
         for vuelo in historial_de_vuelos:
             vuelos[vuelo] = {"alertas":{}}
             vuelos[vuelo]["alertas"] = historial_de_vuelos[vuelo]["alertas"]
         json_data = ujson.dumps(vuelos)
         
-        print("update flights: ", json_data)
+        print("update flights: ", json_data, "\n")
         return json_data, 202, {'Content-Type': 'json'}
     # vuelos = {'123':{"alertas":{'alert':1, 'emergency':0}},
     #           '324':{"alertas":{'alert':1, 'emergency':0}}
@@ -301,7 +301,7 @@ def conectar_microdot():
     def index(request): 
         json_data = ujson.dumps(nombres_variables)
         #lista con nombres de variables
-        print("get names variables")
+        print("get names variables", "\n")
         #{"variables":["hora","spo1","spo2"]}
         return json_data, 202, {'Content-Type': 'json'}
     
@@ -313,6 +313,7 @@ def conectar_microdot():
     def index(request, nro_vuelo):
         json_data = ujson.dumps(historial_de_vuelos[nro_vuelo])
         print("get history nrovuelo", nro_vuelo)
+        print(json_data, "\n")
         return json_data, 202, {'Content-Type': 'json'}
         
 
@@ -321,27 +322,25 @@ def conectar_microdot():
     @app.route('/get/airports')
     def index(request):
         json_data = ujson.dumps(info_aeropuertos)
-        print("get airports")
+        print("get airports", "\n")
         return json_data, 202, {'Content-Type': 'json'}
 
 
     #en caso de que se perciba peligro o intentional loss
     @app.route('/send/<nrovuelo>/<instruccion>')
     def index(request, nrovuelo, instruccion):
-        print("send ", nrovuelo, "instruccion: ", instruccion)
-        #stationrtdc.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
+        print("send to ", nrovuelo, " instruccion: ", instruccion, "\n")
+        stationrtdc.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
         return
     
     #done ------------------------    
     #en caso de solicitud
     @app.route('/send/<nro_vuelo>/info_airport/<indice>')
     def index(request, nro_vuelo, indice):
-        
         aeropuerto = {'info aeropuerto': info_aeropuertos['airports'][int(indice)]}
-        print("send to:", nro_vuelo, aeropuerto)
-        #stationrtdc.send_message(client_socket, aeropuerto)
+        print("send to: ", nro_vuelo, " airport: ", aeropuerto, "\n")
+        stationrtdc.send_message(client_socket, aeropuerto)
         return {"enviado":1}, 202, {'Content-Type': 'json'}
-
     
     app.run(port=80)
 
@@ -350,13 +349,8 @@ def conectar_microdot():
 print("iniciar keypad")
 _thread.start_new_thread(teclas, ())
 
-
-
-
-# agregar inicio de thread para manage aes
-# _thread.start_new_thread(manage_AES, ())
-
-
+print("iniciar manage aes")
+_thread.start_new_thread(manage_AES, ())
 
 
 print("conectar microdot")

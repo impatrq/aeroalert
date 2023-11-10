@@ -1,6 +1,23 @@
 
+//var vuelos = {
+//            '12323': {
+//                'datos con hora': [
+//                                    ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+//                                    ], 
+//                'alertas': {'alert': 1, 'emergency': 0, 'solicitud': 1, 'sae_desactivado': 0}},
+//            
+//            '434545': {
+//                'datos con hora': [
+//                                    ['10:18:34', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 
+//                                    ['10:18:35', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+//                                    ], 
+//                'alertas': {'alert': 0, 'emergency': 1, 'solicitud': 1, 'sae_desactivado': 1}}}
+
+
+// Supongamos que tienes un JSON llamado 'vuelos' con la información de los vuelos
+
+// Obtén una referencia a la tabla HTML
 //------------------------------------------------------------------
-// Funcion para que si no se completan las requests se cancelen en el tiempo indicado (timeout)
 AbortSignal.timeout ??= function timeout(ms) {
     const ctrl = new AbortController()
     setTimeout(() => ctrl.abort(), ms)
@@ -163,7 +180,7 @@ function updateFlights() {
 
 setInterval(() => {
     updateFlights()
-}, 4500);
+}, 5000);
 //--------------------------------------------------------------------------
 
 
@@ -174,7 +191,7 @@ function cambiarVueloSeleccionado(indiceVuelo){
 
     for (var i = 0; i < rows.length; i++){
         if (rows[indiceVuelo] == rows[i]){
-            rows[indiceVuelo].style = "border: 4px solid black;"
+            rows[indiceVuelo].style = "border: 3px solid black;"
             continue
         }
         else{
@@ -452,28 +469,8 @@ function getKey() {
 
 }
 console.log("por hacer getKey")
-setInterval(getKey, 1500);
+setInterval(getKey, 2000);
 
 
 
-
-//            
-//function refreshDate() {
-//    var Dia = new Date();
-//    var m = Dia.getMonth() + 1;
-//    var mes = (m < 10) ? '0' + m : m;
-//    var mi = Dia.getMinutes();
-//    var min = (mi < 10) ? '0' + mi : mi;
-//    var s = Dia.getSeconds();
-//    var seg = (s < 10) ? '0' + s : s; 
-//    var h = Dia.getHours();
-//    var hour = (h < 10) ? '0' + h : h;
-//            
-//    document.getElementById('fecha').textContent = Dia.getDate() +"/"+ mes +"/"+ Dia.getFullYear(); 
-//    document.getElementById('hora').textContent = hour +":"+ min +":"+ seg;
-//};
-
-//refreshValues();
-//refreshDate();
-//setInterval(refreshValues, 1000000);
 

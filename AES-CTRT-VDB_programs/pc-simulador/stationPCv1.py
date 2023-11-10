@@ -17,7 +17,7 @@ def do_connect():
     client_socket.connect((server_ip, server_port))
     print("conectado al aes")
     return client_socket
-    
+
 def send_type(tipo, client_socket):
     message = json.dumps(tipo).encode('utf-8')
     client_socket.send(message)
@@ -34,5 +34,4 @@ def receive_data(client_socket):
     data = client_socket.recv(1024)
     print('recibido: ', data)
     return data 
-
 """
