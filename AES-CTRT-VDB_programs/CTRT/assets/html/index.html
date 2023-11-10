@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <title>Interfaz CTRT</title>
+    <link rel="shortcut icon" href="/assets/img/icon_weblogo.png" type="image/x-icon">
+
+</head>
+
+<body>
+    <header>
+        <h1>Flights</h1>
+    </header>
+
+    <div class="container">
+        <table id="VUELOS" style="display:;">
+            <thead>
+                <tr>
+                    <th>Flight Number</th>
+                    <th>Status</th>
+                    <th>Landing Request</th>
+                    <th>Aes Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="listaVuelos">
+                
+            </tbody>
+        </table>
+    </div>
+    <div class="container">
+        <table id="HISTORY" style="display:none;">
+            <thead>
+                <tr id="variables">
+                    
+                </tr>
+            </thead>
+            <tbody id="datosHora">
+
+            </tbody>
+        </table>
+    </div>
+    <div class="container">
+        <table id="AIRPORTS" style="display:none;">
+            <thead>
+                <tr>
+                    <th>indice</th>
+                    <th>Nombre</th>
+                    <th>Coordenadas</th>
+                </tr>
+            </thead>
+            <tbody id="tablaAeropuertos">
+                
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Vuelos. Todos los derechos reservados.</p>
+    </footer>
+
+    <audio src="/assets/sound_alerts/sonido-alert.mp3" type="audio/mpeg" id="audioAlert"></audio>
+    <audio src="/assets/sound_alerts/sonido-emergency.mp3" type="audio/mpeg" id="audioEmergency"></audio>
+    
+    <script src="/assets/js/code.js"></script>
+
+  </body>
+  
+</html>
