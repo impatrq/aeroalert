@@ -159,7 +159,7 @@ def enviar_rtdc(conn, addr):
                 codigo_enviar = json.dumps(dicc).encode('utf-8')
                 conn.send(codigo_enviar)      
             
-            time.sleep(5)
+            time.sleep(6)
     except:
         print("rtdc perdida")
 

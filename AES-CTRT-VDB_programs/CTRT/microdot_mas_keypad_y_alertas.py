@@ -137,45 +137,50 @@ def notification(cual, nro_vuelo, data):
 
 def manage_AES():
     global solicitud, sae_desactivado
+    errores = 0
     while True:
-        recibido = stationrtdc.receive_data(client_socket)
-        #recibido = {"msg":"solicito: aterrizaje", "nro_vuelo": 4334, "list": (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0)}
-        print("\nrecibido aes: ", recibido)
+        try:
+            recibido = stationrtdc.receive_data(client_socket)
+            #recibido = {"msg":"solicito: aterrizaje", "nro_vuelo": 4334, "list": (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0)}
+            print("\nrecibido aes: ", recibido)
 
-        msg = recibido["msg"]                   #puede ser ""
-        nro_vuelo = recibido["nro_vuelo"]
-        data = recibido["list"]                     
+            msg = recibido["msg"]                   #puede ser ""
+            nro_vuelo = recibido["nro_vuelo"]
+            data = recibido["list"]                     
 
-        if msg == "solicito_aterrizaje":
-            solicitud = 1        
-        elif msg == "alerta_desactivacion_sae":
-            sae_desactivado = 1
-        elif msg == "sae_activado":
-            sae_desactivado = 0
+            if msg == "solicito_aterrizaje":
+                solicitud = 1        
+            elif msg == "alerta_desactivacion_sae":
+                sae_desactivado = 1
+            elif msg == "sae_activado":
+                sae_desactivado = 0
 
-        #Info
-        I={"bpm_altos1": data[0],         "bpm_altos2": data[1], 
-            "bpm_bajos1": data[2],         "bpm_bajos2": data[3], 
-            "dormido1": data[4],           "dormido2": data[5],
-            "spo_bajos1": data[6],         "spo_bajos2": data[7], 
-            "temp_alta1": data[8],         "temp_alta2": data[9], 
-            "temp_baja1": data[10],        "temp_baja2": data[11],
-            "muerte1": data[12],           "muerte2": data[13], 
-            "manual": data[14], "pulsera_conectada": data[15],
-            "no_reaccion": data[16],        "pin_on_off": data[17]}
-        
-        if I["no_reaccion"] or I["manual"] or (I["muerte1"] and I["muerte2"]):
-            notification("emergency",nro_vuelo, data)
-        
-        elif I["muerte1"] or I["muerte2"] or I["spo_bajos1"] or I["spo_bajos2"] or I["dormido1"] or I["dormido2"] or not I["pulsera_conectada"] or I["pin_on_off"]:
-            notification("alert",nro_vuelo,  data)
-
-        elif sae_desactivado == 1:
-            notification("alert",nro_vuelo, data)
+            #Info
+            I={"bpm_altos1": data[0],         "bpm_altos2": data[1], 
+                "bpm_bajos1": data[2],         "bpm_bajos2": data[3], 
+                "dormido1": data[4],           "dormido2": data[5],
+                "spo_bajos1": data[6],         "spo_bajos2": data[7], 
+                "temp_alta1": data[8],         "temp_alta2": data[9], 
+                "temp_baja1": data[10],        "temp_baja2": data[11],
+                "muerte1": data[12],           "muerte2": data[13], 
+                "manual": data[14], "pulsera_conectada": data[15],
+                "no_reaccion": data[16],        "pin_on_off": data[17]}
             
-        if sum(data) == 1 and I["pulsera_conectada"] == 1:
-            notification("clean",nro_vuelo, data)
+            if I["no_reaccion"] or I["manual"] or (I["muerte1"] and I["muerte2"]):
+                notification("emergency",nro_vuelo, data)
+            
+            elif I["muerte1"] or I["muerte2"] or I["spo_bajos1"] or I["spo_bajos2"] or I["dormido1"] or I["dormido2"] or not I["pulsera_conectada"] or I["pin_on_off"]:
+                notification("alert",nro_vuelo,  data)
 
+            elif sae_desactivado == 1:
+                notification("alert",nro_vuelo, data)
+                
+            if sum(data) == 1 and I["pulsera_conectada"] == 1:
+                notification("clean",nro_vuelo, data)
+        except Exception as error:
+            errores +=1
+            print("fallo:", error)
+            time.sleep(1)
 
 
 
@@ -286,7 +291,7 @@ def conectar_microdot():
             vuelos[vuelo]["alertas"] = historial_de_vuelos[vuelo]["alertas"]
         json_data = ujson.dumps(vuelos)
         
-        print("update flights: ", json_data, "\n")
+        print("update flights: ","\n")
         return json_data, 202, {'Content-Type': 'json'}
     # vuelos = {'123':{"alertas":{'alert':1, 'emergency':0}},
     #           '324':{"alertas":{'alert':1, 'emergency':0}}
@@ -352,7 +357,7 @@ _thread.start_new_thread(teclas, ())
 print("iniciar manage aes")
 _thread.start_new_thread(manage_AES, ())
 
-
+    
 print("conectar microdot")
 print("Microdot corriendo en IP/Puerto: ",sta_if, ":80")
 conectar_microdot()

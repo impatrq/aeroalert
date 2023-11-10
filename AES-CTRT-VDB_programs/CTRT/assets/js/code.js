@@ -226,7 +226,7 @@ function crearTablaDatosHora(nro_vuelo){
 
                 // pone los valores con cada color en la tabla
                 // despues de poner los nombres de las variables agrega los datos
-                fetch('/get/history/'+ String(nro_vuelo), { signal: AbortSignal.timeout(5000) })
+                fetch('/get/history/'+ String(nro_vuelo), { signal: AbortSignal.timeout(4000) })
                     .then(respuesta => respuesta.json())
                         .then(respuestaJson => {
                             //vuelo = {'datos con hora': [
@@ -469,7 +469,7 @@ function getKey() {
 
 }
 console.log("por hacer getKey")
-setInterval(getKey, 2000);
+setInterval(getKey, 3000);
 
 
 
