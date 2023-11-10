@@ -1,6 +1,10 @@
+<div align="center">
 
 # **AeroAlert**
-![Logo proyecto](logoaeroalert.jpg)
+
+<img src="logoaeroalert.jpg" alt="Logo proyecto" width="70%"/>
+
+</div>
 
 # ¿Qué es AeroAlert?
 
@@ -10,7 +14,9 @@ El sistema cuenta con una pulsera dotada de los sensores necesarios. Si se detec
 ### ¿Quiénes lo desarrollan?
 AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Educación Secundaria Técnica N°7 "Taller Regional Quilmes"**, especialidad Aviónica.
 
-![Imagen grupal](imagengrupal.jpg)
+<p align="center">
+  <img href="imagengrupal.jpg" />
+</p>
 
 # Integrantes
 
