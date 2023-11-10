@@ -1,8 +1,10 @@
+<div align="center">
 
 # **AeroAlert**
-<p align="center">
-  <img href=logoaeroalert.jpg />
-</p>
+
+<img src="logoaeroalert.jpg" alt="Logo proyecto" />
+
+</div>
 
 # ¿Qué es AeroAlert?
 
