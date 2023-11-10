@@ -4,8 +4,6 @@
   <img href="logoaeroalert.jpg" />
 </p>
 
-![Logo proyecto](logoaeroalert.jpg)
-
 # ¿Qué es AeroAlert?
 
 Aeroalert es un prototipo de sistema de emergencia para aeronaves basado en el monitoreo constante de parámetros de salud de los pilotos para prevenir accidentes aeronauticos.
@@ -15,9 +13,8 @@ El sistema cuenta con una pulsera dotada de los sensores necesarios. Si se detec
 AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Educación Secundaria Técnica N°7 "Taller Regional Quilmes"**, especialidad Aviónica.
 
 <p align="center">
-  <img src="imagengrupal.jpg" />
+  <img href="imagengrupal.jpg" />
 </p>
-![Imagen grupal](imagengrupal.jpg)
 
 # Integrantes
 
