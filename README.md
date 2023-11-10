@@ -1,7 +1,7 @@
 
 # **AeroAlert**
 <p align="center">
-  <img src="logoaeroalert.jpg" />
+  <img href="logoaeroalert.jpg" />
 </p>
 
 ![Logo proyecto](logoaeroalert.jpg)
