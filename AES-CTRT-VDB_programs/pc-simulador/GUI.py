@@ -35,8 +35,8 @@ global Dicc
 class Boton(arcade.gui.UITextureButton):
     def __init__(self, mensa_Al:str, mensa_BA:str):
         super().__init__(
-           texture = arcade.load_texture("imgs_alerts_GUI/llave.png"),
-           texture_pressed=arcade.load_texture("imgs_alerts_GUI/llave.png"))
+           texture = arcade.load_texture("imagenes_GUI/llave.png"),
+           texture_pressed=arcade.load_texture("imagenes_GUI/llave.png"))
         self.variable = True
 
         self.mensajeA = mensa_Al
@@ -44,17 +44,17 @@ class Boton(arcade.gui.UITextureButton):
         self.mensaje = self.mensajeA
 
         self.on_click = self.button_clicked
-        self.scale(0.17)
+        self.scale(0.23) #0.17
 
     def On_button_on(self):
         if self.variable == True:
             self.texture = \
-                arcade.load_texture("imgs_alerts_GUI/llave2.png")
+                arcade.load_texture("imagenes_GUI/llave2.png")
             self.variable = False
             self.mensaje = self.mensajeB
         elif self.variable == False:
             self.texture = \
-                arcade.load_texture("imgs_alerts_GUI/llave.png")
+                arcade.load_texture("imagenes_GUI/llave.png")
             self.variable = True
             self.mensaje = self.mensajeA
 
@@ -106,7 +106,7 @@ class Diccionario():
         self.Muerte_valor = Muerte
         self.Somnolencia_valor = Somnolencia
         self.Pulso_valor = int(Pulso)
-        self.Pulso_estado = Pulso2  
+        self.Pulso_estado = Pulso2
         self.Saturacion_valor = int(Saturacion)
         self.Dic = {
             'Piloto' : self.Piloto_valor,
@@ -136,18 +136,18 @@ class MyView(arcade.View):
         self.manager = UIManager()
         self.manager.enable()
 
-        box = arcade.gui.UIBoxLayout(vertical = False, space_between=30)
-        box2 = arcade.gui.UIBoxLayout(vertical = True, space_between= 30)
+        box = arcade.gui.UIBoxLayout(vertical = False, space_between=70)
+        box2 = arcade.gui.UIBoxLayout(vertical = True, space_between= 45)
 
 
-        normal_texture1 = arcade.load_texture("imgs_alerts_GUI/boton2.png")
+        normal_texture1 = arcade.load_texture("imagenes_GUI/boton2.png")
 
         self.button3 = arcade.gui.UITextureButton(
             texture=normal_texture1
         )
 
         self.button3.on_click = self.button3_clicked
-        self.button3.scale(1)
+        self.button3.scale(1.08)
 
         box2.add(self.button3)
 
@@ -158,7 +158,7 @@ class MyView(arcade.View):
         )
 
         self.button4.on_click = self.button4_clicked
-        self.button4.scale(1)
+        self.button4.scale(1.08)
 
         box2.add(self.button4)
 
@@ -193,10 +193,23 @@ class MyView(arcade.View):
         box2.add(self.boton5)
         self.boton5.on_click = self.boton_clicked4
 
+        self.barra1 = Barra(50, 100, 0, 300, 70,0)
+        self.Label1 = self.barra1.Label()
+        
+        self.barra2 = Barra(75, 150, 0, 300, 70,0)
+        self.Label2 = self.barra2.Label()
+
                 
 
-        self.ui_manager.add(arcade.gui.UIAnchorWidget(child=box, anchor_y= "top", align_y=-150, align_x= -10))
-        self.ui_manager3.add(arcade.gui.UIAnchorWidget(child=box2, anchor_y= "bottom", align_y= 20, align_x= 250))
+        self.ui_manager.add(arcade.gui.UIAnchorWidget(child=box, anchor_y= "top", align_y=-170))
+        self.ui_manager3.add(arcade.gui.UIAnchorWidget(child=box2, anchor_y= "bottom", align_y= 50, align_x= 250))
+
+        self.manager.add(UIAnchorWidget(child=self.barra1, align_y= -30))
+        self.manager.add(UIAnchorWidget(child=self.Label1, align_y = 0))
+
+        self.manager.add(UIAnchorWidget(child=self.barra2, align_y= -160))
+        self.manager.add(UIAnchorWidget(child=self.Label2, align_y= -130))
+
 
 
         self.valor1 = int
@@ -209,7 +222,7 @@ class MyView(arcade.View):
             pass
         elif self.variable3 == False:
             self.window.show_view(MenuView())
-            self.Dicc = Diccionario("2", self.boton3.On_button_on(), self.boton2.On_button_on(), self.boton4.On_button_on(), self.boton1.valor_boton(),0,0)
+            self.Dicc = Diccionario("2", self.boton3.On_button_on(), self.boton2.On_button_on(), self.boton4.On_button_on(), self.boton1.valor_boton(),self.valor2, self.valor1)
 
     def button4_on(self):
         if self.variable4 == True:
@@ -232,35 +245,55 @@ class MyView(arcade.View):
 
     def boton_clicked(self, *_):
         self.boton4.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), 0,0)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
 
     def boton_clicked1(self, *_):
         self.boton1.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), 0,0)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
 
     def boton_clicked2(self, *_):
         self.boton2.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), 0,0)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
 
     def boton_clicked3(self, *_):
         self.boton3.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), 0,0)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
 
     def boton_clicked4(self, *_):
         self.boton5.On_button_on()
-        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), 0,0)
+        self.Dicc = Diccionario("2", self.boton3.valor_boton(), self.boton2.valor_boton(), self.boton4.valor_boton(), self.boton1.valor_boton(), self.valor2, self.valor1)
         
         station.send_message(client_socket, "1")        # Envia un 1 para que use la informacion anterior
 
     def on_draw(self):
         self.clear()
+        self.valor1= self.barra1.valor()
+        self.valor2 = self.barra2.valor()
         
         #Arriba
-        arcade.draw_text("Somnolencia", 465 , 240, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
-        arcade.draw_text("Hipoxia", 345 , 240, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
-        arcade.draw_text("Muerte", 230 , 240, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
-        arcade.draw_text("Pulso", 112 , 240, arcade.color.WHITE, font_size=19, font_name= "calibri" ,anchor_x="center")
-        arcade.draw_text("Piloto 2", 300 , 320, arcade.color.WHITE, font_size=26, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Hipoxia", 775 , 620, arcade.color.WHITE, font_size=25, font_name= "calibri" ,anchor_x="center")
+        
+        arcade.draw_text("Muerte", 590 , 620, arcade.color.WHITE, font_size=25, font_name= "calibri" ,anchor_x="center")
+
+        arcade.draw_text("Pulso", 405 , 620, arcade.color.WHITE, font_size=25, font_name= "calibri" ,anchor_x="center")
+
+        arcade.draw_text("Somnolencia", 960 , 620, arcade.color.WHITE, font_size=22, font_name= "calibri" ,anchor_x="center")
+
+        arcade.draw_text("Pulsaciones", 680 , 290, arcade.color.WHITE, font_size=17.5, font_name= "calibri" ,anchor_x="center")
+
+        arcade.draw_text("Saturacion de oxigeno", 680 , 420, arcade.color.WHITE, font_size=17.5, font_name= "calibri" ,anchor_x="center")
+
+
+        arcade.draw_text("Enviar", 935 , 300, arcade.color.WHITE, font_size=22, font_name= "calibri" ,anchor_x="center")
+
+        arcade.draw_text("Siguiente", 935 , 440, arcade.color.WHITE, font_size=21.5, font_name= "calibri" ,anchor_x="center")                                   
+        arcade.draw_text("Activación", 935 , 170, arcade.color.WHITE, font_size=21.5, font_name= "calibri" ,anchor_x="center")
+
+
+
+
+
+        arcade.draw_text("Piloto 2", 670 , 700, arcade.color.WHITE, font_size=29, font_name= "calibri" ,anchor_x="center")
 
 
         self.ui_manager.draw()
@@ -292,18 +325,18 @@ class MenuView(arcade.View):
         self.manager = UIManager()
         self.manager.enable()
 
-        box = arcade.gui.UIBoxLayout(vertical = False, space_between=30)
+        box = arcade.gui.UIBoxLayout(vertical = False, space_between=70)
         box1 = arcade.gui.UIBoxLayout(vertical = False, space_between= 30)
         box2 = arcade.gui.UIBoxLayout(vertical = True, space_between= 30)
 
-        normal_texture1 = arcade.load_texture("imgs_alerts_GUI/boton2.png")
+        normal_texture1 = arcade.load_texture("imagenes_GUI/boton2.png")
 
         self.button3 = arcade.gui.UITextureButton(
             texture=normal_texture1
         )
 
         self.button3.on_click = self.button3_clicked
-        self.button3.scale(1)
+        self.button3.scale(1.08)
 
         box2.add(self.button3)
 
@@ -313,7 +346,7 @@ class MenuView(arcade.View):
         )
 
         self.button4.on_click = self.button4_clicked
-        self.button4.scale(1)
+        self.button4.scale(1.08)
 
         box2.add(self.button4)
 
@@ -345,21 +378,21 @@ class MenuView(arcade.View):
         self.boton5.on_click = self.boton_clicked4
         
 
-        self.barra1 = Barra(50, 100, 0, 300, 50,0)
+        self.barra1 = Barra(50, 100, 0, 300, 70,0)
         self.Label1 = self.barra1.Label()
         
-        self.barra2 = Barra(75, 150, 0, 300, 50,0)
+        self.barra2 = Barra(75, 150, 0, 300, 70,0)
         self.Label2 = self.barra2.Label()
 
 
-        self.ui_manager.add(arcade.gui.UIAnchorWidget(child=box, anchor_y= "top", align_y=-70))
-        self.ui_manager2.add(arcade.gui.UIAnchorWidget(child=box1, anchor_y= "bottom", align_y= 20, align_x= -220))
+        self.ui_manager.add(arcade.gui.UIAnchorWidget(child=box, anchor_y= "top", align_y=-170))
+        self.ui_manager2.add(arcade.gui.UIAnchorWidget(child=box1, anchor_y= "bottom", align_y= 70, align_x= -250))
         self.ui_manager3.add(arcade.gui.UIAnchorWidget(child=box2, anchor_y= "bottom", align_y= 20, align_x= 250))
-        self.manager.add(UIAnchorWidget(child=self.barra1, align_y= -60))
-        self.manager.add(UIAnchorWidget(child=self.Label1, align_y=-30))
+        self.manager.add(UIAnchorWidget(child=self.barra1, align_y= -30))
+        self.manager.add(UIAnchorWidget(child=self.Label1, align_y = 0))
 
-        self.manager.add(UIAnchorWidget(child=self.barra2, anchor_y="bottom"))
-        self.manager.add(UIAnchorWidget(child=self.Label2, align_y=-130))
+        self.manager.add(UIAnchorWidget(child=self.barra2, align_y= -160))
+        self.manager.add(UIAnchorWidget(child=self.Label2, align_y= -130))
 
 
     def button3_on(self):
@@ -423,20 +456,27 @@ class MenuView(arcade.View):
         #print(f"{self.valor2:02.0f}", f"{self.valor1:02.0f}")
 
         #Arriba
-        arcade.draw_text("Hipoxia", 470 , 310, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Hipoxia", 960 , 620, arcade.color.WHITE, font_size=25, font_name= "calibri" ,anchor_x="center")
         
-        arcade.draw_text("Muerte", 355 , 310, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Muerte", 775 , 620, arcade.color.WHITE, font_size=25, font_name= "calibri" ,anchor_x="center")
 
-        arcade.draw_text("Pulso", 240 , 310, arcade.color.WHITE, font_size=20, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Pulso", 590 , 620, arcade.color.WHITE, font_size=25, font_name= "calibri" ,anchor_x="center")
 
-        arcade.draw_text("Somnolencia", 112 , 310, arcade.color.WHITE, font_size=19, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Somnolencia", 405 , 620, arcade.color.WHITE, font_size=22, font_name= "calibri" ,anchor_x="center")
 
-        arcade.draw_text("Pulsaciones", 300 , 80, arcade.color.WHITE, font_size=15, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Pulsaciones", 680 , 290, arcade.color.WHITE, font_size=17.5, font_name= "calibri" ,anchor_x="center")
 
-        arcade.draw_text("Saturacion de oxigeno", 300 , 180, arcade.color.WHITE, font_size=15, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Saturacion de oxigeno", 680 , 420, arcade.color.WHITE, font_size=17.5, font_name= "calibri" ,anchor_x="center")
 
 
-        arcade.draw_text("Piloto 1", 300 , 340, arcade.color.WHITE, font_size=26, font_name= "calibri" ,anchor_x="center")
+        arcade.draw_text("Enviar", 935 , 110, arcade.color.WHITE, font_size=22, font_name= "calibri" ,anchor_x="center")
+
+        arcade.draw_text("Siguiente", 935 , 230, arcade.color.WHITE, font_size=21.5, font_name= "calibri" ,anchor_x="center")
+
+        arcade.draw_text("Activación", 430 , 200, arcade.color.WHITE, font_size=21.5, font_name= "calibri" ,anchor_x="center")
+
+
+        arcade.draw_text("Piloto 1", 670 , 700, arcade.color.WHITE, font_size=29, font_name= "calibri" ,anchor_x="center")
 
 
         self.ui_manager.draw()
@@ -460,7 +500,7 @@ class MenuView(arcade.View):
 
 if __name__ == "__main__":
 
-    window = arcade.Window(width = 600, height=370, title="A")
+    window = arcade.Window(fullscreen=True, resizable=True, title="A")
     view2 = MenuView()
     window.show_view(MenuView())
     arcade.run()
