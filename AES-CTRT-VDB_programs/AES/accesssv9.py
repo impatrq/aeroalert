@@ -106,7 +106,7 @@ def escuchar_rtdc(conn_rtdc,addr):
                 aterrizar_rtdc = 0
 
             elif message['mensaje'] == type(dict):
-                info_aeropuerto = message['mensaje']['info aeropuerto'] #msg = {'mensaje':{'info aeropuerto':{'nombre':ezeiza, 'coordenadas':"213123131231"}}
+                info_aeropuerto = message['mensaje']['info aeropuerto']             #msg = {'mensaje':{'info aeropuerto':{'nombre':ezeiza, 'coordenadas':"213123131231"}}
 
             elif message['mensaje'] == "intentional loss":
                 intentional_loss = 1
@@ -123,47 +123,51 @@ def enviar_rtdc(conn, addr):
     global solicitar, pin_on_off
     alerta_sae_enviada = 0
     nro_vuelo = 4321
-    try:
-        while True:
-            print("enviando a RTDC: ", addr)
-            msg = ""
+    fallos = 0
+    while True:
+        try:
+            while True:
+                print("enviando a RTDC: ", addr)
+                msg = ""
+                
+                if pin_on_off.value() == 1 and alerta_sae_enviada == 0:
+                    msg = "alerta_desactivacion_sae"
+                    alerta_sae_enviada = 1
+                    codigo = actualizar_codigo()
+                    dicc = {"msg":msg, "list":codigo, "nro_vuelo":nro_vuelo}
+                    codigo_enviar = json.dumps(dicc).encode('utf-8')
+                    conn.send(codigo_enviar)
 
-            if pin_on_off.value() == 1 and alerta_sae_enviada == 0:
-                msg = "alerta_desactivacion_sae"
-                alerta_sae_enviada = 1
-                codigo = actualizar_codigo()
-                dicc = {"msg":msg, "list":codigo, "nro_vuelo":nro_vuelo}
-                codigo_enviar = json.dumps(dicc).encode('utf-8')
-                conn.send(codigo_enviar)
+                elif pin_on_off.value() == 0 and alerta_sae_enviada == 1:
+                    msg = "sae_activado"                
+                    alerta_sae_enviada = 0
 
-            elif pin_on_off.value() == 0 and alerta_sae_enviada == 1:
-                msg = "sae_activado"                
-                alerta_sae_enviada = 0
+                    codigo = actualizar_codigo()
+                    dicc = {"msg":msg, "list":codigo, "nro_vuelo":nro_vuelo}
+                    codigo_enviar = json.dumps(dicc).encode('utf-8')
+                    conn.send(codigo_enviar)
 
-                codigo = actualizar_codigo()
-                dicc = {"msg":msg, "list":codigo, "nro_vuelo":nro_vuelo}
-                codigo_enviar = json.dumps(dicc).encode('utf-8')
-                conn.send(codigo_enviar)
+                elif solicitar == 1:
+                    msg = "solicito_aterrizaje"
+                    codigo = actualizar_codigo()
+                    dicc = {"msg":msg, "list":codigo, "nro_vuelo":nro_vuelo}
+                    codigo_enviar = json.dumps(dicc).encode('utf-8')
+                    conn.send(codigo_enviar)
+                    solicitar = 0
 
-            elif solicitar == 1:
-                msg = "solicito_aterrizaje"
-                codigo = actualizar_codigo()
-                dicc = {"msg":msg, "list":codigo, "nro_vuelo":nro_vuelo}
-                codigo_enviar = json.dumps(dicc).encode('utf-8')
-                conn.send(codigo_enviar)
-                solicitar = 0
-
-            if msg == "":
-                codigo = actualizar_codigo()
-                dicc = {"msg":msg, "list":codigo, "nro_vuelo":nro_vuelo}
-                codigo_enviar = json.dumps(dicc).encode('utf-8')
-                conn.send(codigo_enviar)      
-            
-            time.sleep(6)
-    except:
-        print("rtdc perdida")
-
-
+                if msg == "":
+                    codigo = actualizar_codigo()
+                    dicc = {"msg":msg, "list":codigo, "nro_vuelo":nro_vuelo}
+                    codigo_enviar = json.dumps(dicc).encode('utf-8')
+                    conn.send(codigo_enviar)      
+                fallos = 0
+                time.sleep(5)
+        except:
+            fallos += 1
+            print("rtdc perdida, fallos: ",fallos)
+        if fallos >= 5:
+            break
+   
 bloqueo_PC = 0
 def escuchar_PC(conn_PC, addr):
     global bloqueo_PC
@@ -304,6 +308,8 @@ def contador30(self):
     global pasaron_30segs
     pasaron_30segs = 1
     
+    
+aterrizar = 0
 def activar_SAE():
     time.sleep(1)
     global pulsera_conectada
@@ -337,7 +343,7 @@ def activar_SAE():
     #--------------
 
     while True:
-        time.sleep(5)
+        time.sleep(4)
         print()
         
         if pin_reaccion.value():
