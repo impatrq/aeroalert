@@ -7,7 +7,7 @@ from playsound import playsound
 from socket import *
 global i
 
-
+# Se crea la clase UDPsocket, el cual se encarga de preparar y enviar los comandos al X-plane
 class UDPSocket ():
 
     def _init_(self):
@@ -24,11 +24,15 @@ class UDPSocket ():
 
         messages = bytesAddressPair[0]
         return messages
-
+    
+    #Se establece una funcion para el evio de datos 
     def udp_cliente(self, IP, port, message):
 
         sock = socket(AF_INET, SOCK_DGRAM)
         sock.sendto(message, (IP, port))
+
+
+    # Se establece funciones para la creacion de los distintos comandos para comunicarse con el X-Plane
 
     def DREF (self, message, value):
         buf = bytearray(507)
@@ -59,9 +63,11 @@ global alarma_sonora_aes_activation, alarma_sonora_aes_alert, alarma_sonora_slee
 
 alarma_sonora_aes_activation = alarma_sonora_aes_alert = alarma_sonora_sleep = alarma_sonora_hypoxia = alarma_sonora_manual_activation = alarma_sonora_test_failed = alarma_sonora_test_pass = 0
 
+
 def thread_sonidos():
     global alarma_sonora_aes_activation, alarma_sonora_aes_alert, alarma_sonora_sleep, alarma_sonora_hypoxia, alarma_sonora_manual_activation, alarma_sonora_test_failed, alarma_sonora_test_pass
     while True:
+        #Comprobamos caules alertas estan activadas
         if alarma_sonora_aes_activation:
             playsound("./imgs_alerts_GUI/alerta_aes_act.mp3")     
         if alarma_sonora_aes_alert:
@@ -78,10 +84,12 @@ def thread_sonidos():
         if alarma_sonora_test_pass:
             playsound("./imgs_alerts_GUI/alerta_test_pass.mp3")
             alarma_sonora_test_pass = 0
+
+#Establecemos un Thread para la realizacion de las alertas mientras se lee la infomacion de UART
 _thread.start_new_thread(thread_sonidos, ())
 
 
-
+#se conecta al puerto serial
 ser = serial.Serial(
     port='COM3',
     baudrate=115200,
@@ -115,12 +123,14 @@ b = 1
 i = 0
 
 while True:
+    #leemos la informacion enviada por la ESP32 
     leer = ser.readline()
     read = leer.decode('utf-8')
     if read:
         b = b+1
         print(read)
-    
+
+        #comprobamos que mensaje es
         if "aterrizar" in read:
             print("aterrizando")
             if i == 0:
@@ -130,15 +140,13 @@ while True:
             lua_xplane = 0
             print("desaterrizando")
 
-
-
         elif "[" in read and "]" in read:
             datos = list(read)
             if datos[0] == "info aeropuerto:":
                 #xplane.instruccion(read[1])
                 print("enviar info de aeropuerto", datos[0])
 
-
+        #comprobamos si el mensaje es el que deberia ser 
         #----
         if "alarma_aes_activation=1" in read:
             alarma_sonora_aes_activation = 1
