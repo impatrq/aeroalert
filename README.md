@@ -12,7 +12,7 @@ Aeroalert es un prototipo de sistema de emergencia para aeronaves basado en el m
 El sistema cuenta con una pulsera dotada de los sensores necesarios. Si se detecta un estado de salud urgente que implique que el piloto este inconsciente, se otorga el control de la aeronave al piloto automático nativo, el cual, a través de dos equipos de procesamiento diseñados por nosotros, entabla una comunicación con la CTRT correspondiente para llevar la aeronave a una situación que permita evitar el riesgo de accidente.
 
 ### ¿Quiénes lo desarrollan?
-AeroAlert es un proyecto realizado por alumnos de 7mo Año la **Escuela de Educación Secundaria Técnica N°7 "Taller Regional Quilmes"**, especialidad Aviónica.
+AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Educación Secundaria Técnica N°7 "Taller Regional Quilmes"**, especialidad Aviónica.
 
 <p align="center">
   <img src="/Imagenes/imagengrupal.jpg" alt="Imagen Grupal" width="90%"/>
