@@ -190,7 +190,6 @@ def escuchar_PC(conn_PC, addr):
             print(info_PC)
 
             if info_PC == "1":                
-                                    
                 if estados["Piloto1"]["Bpm"] > 0.5 and estados['Piloto1']["Spo2"] > 0.5:
                     bloqueo_PC = 1                                      
                     evaluar_info(estados["Piloto1"]["Bpm"],
@@ -219,7 +218,7 @@ def evaluar_info_piloto2(info):
         bpm_altos2 = 1
     else:
         bpm_altos2 = 0
-    
+
     if info["Hipoxia"] == '1':
         spo_bajos2 = 1
     else:
@@ -233,6 +232,25 @@ def evaluar_info_piloto2(info):
         muerte2 = 1
     else:
         muerte2 = 0
+
+    if info["bpm"] >= 1 and info["Spo2"] >= 1:
+        if info["bpm"] < 60:
+            bpm_altos2 = 1
+        elif info["bpm"] > 130:
+            bpm_altos2 = 1
+        else:
+            bpm_altos2 = 0
+
+        if info["bpm"] >= 3 < 10 :
+            muerte2 = 1
+        elif info["bpm"] >= 30:
+            muerte2 = 0
+        
+        #spo
+        if info["Spo2"] <= 90:
+            spo_bajos2 = 1
+        elif info["Spo2"] > 90:
+            spo_bajos2 = 0
 
 def evaluar_info_piloto1(info):
     global bpm_altos1, spo_bajos1, muerte1
@@ -534,7 +552,7 @@ def activar_SAE():
                 alarma_dormidos = 0
 
             if not pulsera_conectada:
-            #    print("pulsera desconectada")
+                print("pulsera desconectada")
                 ambar_fija = 1
             else:
                 print("pulsera conectada")
