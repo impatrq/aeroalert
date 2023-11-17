@@ -20,21 +20,21 @@ AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Ed
 
 # Integrantes
 
-* ###  <img src="/Imagenes/altinier.jpg" alt="Imagen Grupal" width="8%" style="max-width:100%; border-radius:50%;"/> *Altinier Mauro*
+* ###  <img src="/Imagenes/altinier.jpg" alt="Imagen Grupal" width="8%" border-radius:50% /> *Altinier Mauro*
 
     *    📷 Instagram: [@agustin_altinier](https://www.instagram.com/agustin_altinier/)
     *    📧 Email: [mauro.altinier@gmail.com](mailto:mauro.altinier@gmail.com)         
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [](https://www.linkedin.com/)
 
 
-* ### <img src="/Imagenes/cuccaro.jpg" alt="Imagen Grupal" width="8%" style="max-width:100%; border-radius:50%;"/>  *Cuccaro Juan*
+* ### <div> <img src="/Imagenes/cuccaro.jpg" alt="Imagen Grupal" width="8%"  border-radius:"50%" /></div> *Cuccaro Juan*
 
     *    📷 Instagram: [@cuccaro_juan](https://www.instagram.com/cuccaro_juan/)
     *    📧 Email: [manucucca10@gmail.com](mailto:manucucca10@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [juan-cuccaro](https://www.linkedin.com/juan-cuccaro/)
     
 
-* ### <img src="/Imagenes/husulak.jpg" alt="Imagen Grupal" width="8%" style="max-width:100%; border-radius:50%;"/> *Husulak Mateo*
+* ### <img src="/Imagenes/husulak.jpg" alt="Imagen Grupal" width="8%" border-radius:"50%"/> *Husulak Mateo*
 
     *    📷 Instagram: [@matehusu_2](https://www.instagram.com/matehusu_2/)
     *    📧 Email: [matehusu@gmail.com](mailto:matehusu@gmail.com)
