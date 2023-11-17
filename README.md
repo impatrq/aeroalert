@@ -20,48 +20,49 @@ AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Ed
 
 # Integrantes
 
-* ###  <img src="/Imagenes/altinier.jpg" alt="Imagen Grupal" width="30%"/> *Altinier Mauro*
+* ###  <img src="/Imagenes/altinier.jpg" alt="Imagen Grupal" width="8%" style="max-width:100%; border-radius:50%;"/> *Altinier Mauro*
+
     *    📷 Instagram: [@agustin_altinier](https://www.instagram.com/agustin_altinier/)
     *    📧 Email: [mauro.altinier@gmail.com](mailto:mauro.altinier@gmail.com)         
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [](https://www.linkedin.com/)
 
 
-* ### <img src="/Imagenes/cuccaro.jpg" alt="Imagen Grupal" width="20%"/>  *Cuccaro Juan*
+* ### <img src="/Imagenes/cuccaro.jpg" alt="Imagen Grupal" width="8%" style="max-width:100%; border-radius:50%;"/>  *Cuccaro Juan*
 
     *    📷 Instagram: [@cuccaro_juan](https://www.instagram.com/cuccaro_juan/)
     *    📧 Email: [manucucca10@gmail.com](mailto:manucucca10@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [juan-cuccaro](https://www.linkedin.com/juan-cuccaro/)
     
 
-* ### <img src="/Imagenes/husulak.jpg" alt="Imagen Grupal" width="10%"/> *Husulak Mateo*
+* ### <img src="/Imagenes/husulak.jpg" alt="Imagen Grupal" width="8%" style="max-width:100%; border-radius:50%;"/> *Husulak Mateo*
 
     *    📷 Instagram: [@matehusu_2](https://www.instagram.com/matehusu_2/)
     *    📧 Email: [matehusu@gmail.com](mailto:matehusu@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [mateo-gaston-husulak-ledo](https://www.linkedin.com/mateo-gaston-husulak-ledo-52b742270/)
 
 
-* ### <img src="/Imagenes/.lopezjpg" alt="Imagen Grupal" width="30%"/> *Lopez Teo*
+* ### <img src="/Imagenes/.lopezjpg" alt="Imagen Grupal" width="8%" style="max-width:100%; border-radius:50%;"/> *Lopez Teo*
 
     *    📷 Instagram: [@nico67676](https://www.instagram.com/nico67676/)
     *    📧 Email: [teonicolaslopez7@gmail.com](mailto:teonicolaslopez7@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [teo-lópez](https://www.linkedin.com/teo-lópez/)
 
 
-* ### <img src="/Imagenes/pagano.jpg" alt="Imagen Grupal" width="30%"/> *Pagano Jonás*
+* ### <img src="/Imagenes/pagano.jpg" alt="Imagen Grupal" width="8%" style="max-width:100%; border-radius:50%;"/> *Pagano Jonás*
 
     *    📷 Instagram: [@jonaspagano](https://www.instagram.com/jonaspagano/)
     *    📧 Email: [paganojonas@gmail.com](mailto:paganojonas@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [jonaspagano](https://www.linkedin.com/jonaspagano/)
 
 
-* ### <img src="/Imagenes/roca.jpg" alt="Imagen Grupal" width="40%"/> *Roca Leandro*
+* ### <img src="/Imagenes/roca.jpg" alt="Imagen Grupal" width="8%" style="max-width:100%; border-radius:50%;"/> *Roca Leandro*
 
     *    📷 Instagram: [@lean_ro64](https://www.instagram.com/lean_ro64/)
     *    📧 Email: [leandroroca49@gmail.com](mailto:leandroroca49@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [leandro-roca](https://www.linkedin.com/in/leandro-roca/)
 
 
-* ### <img src="/Imagenes/ruiz.jpg" alt="Imagen Grupal" width="50%"/> *Ruíz Nicolás*
+* ### <img src="/Imagenes/ruiz.jpg" alt="Imagen Grupal" width="8%" style="max-width:100%; border-radius:50%;"/> *Ruíz Nicolás*
     *    📷 Instagram: [@nicoo__ruiz](https://www.instagram.com/nicoo__ruiz/)
     *    📧 Email: [ruizagustinnicolas20@gmail.com](mailto:ruizagustinnicolas20@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [](https://www.linkedin.com/)
