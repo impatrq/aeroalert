@@ -2,7 +2,7 @@
 
 # **AeroAlert**
 
-<img src="logoaeroalert.jpg" alt="Logo proyecto" width="90%"/>
+<img src="/Imagenes/logoaeroalert.jpg" alt="Logo proyecto" width="90%"/>
 
 </div>
 
