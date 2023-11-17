@@ -66,18 +66,6 @@ AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Ed
     *    📷 Instagram: [@nicoo__ruiz](https://www.instagram.com/nicoo__ruiz/)
     *    📧 Email: [ruizagustinnicolas20@gmail.com](mailto:ruizagustinnicolas20@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [](https://www.linkedin.com/)
-## Requerimientos
-
-```shell
-# Recepcion UART para reproduccion de alertas
-$ pip install pyserial
-
-# Reproducción alertas
-$ pip install playsound==1.3
-
-# Interfaz protocolos
-$ pip install arcade
-```
 
 # **Contactos** 
 
