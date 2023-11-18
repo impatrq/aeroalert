@@ -2,7 +2,7 @@
 
 # **AeroAlert**
 
-<img src="/Imagenes/logoaeroalert.jpg" alt="Logo proyecto" width="90%"/>
+<img src="Diseños de marca/Logos Alternativos/AeroAlert Logotipo Transparente.png" alt="Logo proyecto" width="70%"/>
 
 </div>
 
