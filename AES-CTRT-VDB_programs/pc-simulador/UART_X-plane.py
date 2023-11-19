@@ -69,20 +69,20 @@ def thread_sonidos():
     while True:
         #Comprobamos caules alertas estan activadas
         if alarma_sonora_aes_activation:
-            playsound("./imgs_alerts_GUI/alerta_aes_act.mp3")     
+            playsound("./Sonidos/alerta_aes_act.mp3")     
         if alarma_sonora_aes_alert:
-            playsound("./imgs_alerts_GUI/alerta_aes_alert.mp3")
+            playsound("./Sonidos/alerta_aes_alert.mp3")
         if alarma_sonora_sleep:
-            playsound("./imgs_alerts_GUI/alerta_get_up.mp3")
+            playsound("./Sonidos/alerta_get_up.mp3")
         if alarma_sonora_hypoxia:
-            playsound("./imgs_alerts_GUI/alerta_hypoxia.mp3")
+            playsound("./Sonidos/alerta_hypoxia.mp3")
         if alarma_sonora_manual_activation:
-            playsound("./imgs_alerts_GUI/alerta_manual_act.mp3")
+            playsound("./Sonidos/alerta_manual_act.mp3")
         if alarma_sonora_test_failed:
-            playsound("./imgs_alerts_GUI/alerta_test_failed.mp3")
+            playsound("./Sonidos/alerta_test_failed.mp3")
             alarma_sonora_test_failed = 0
         if alarma_sonora_test_pass:
-            playsound("./imgs_alerts_GUI/alerta_test_pass.mp3")
+            playsound("./Sonidos/alerta_test_pass.mp3")
             alarma_sonora_test_pass = 0
 
 #Establecemos un Thread para la realizacion de las alertas mientras se lee la infomacion de UART
