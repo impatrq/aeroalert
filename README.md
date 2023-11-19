@@ -43,6 +43,7 @@ AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Ed
 
 * ### <img src="/Imagenes/lopez.jpg" alt="Lopez" width="6%"/> *Lopez Teo*
 
+    *    Curriculum vitae: [CV López Teo Nicolas]([https://www.instagram.com/nico67676/](https://drive.google.com/file/d/1_G5UPTjoewlIe7h19vwuFQ2f_dssRR7e/view?usp=sharing))
     *    📷 Instagram: [@nico67676](https://www.instagram.com/nico67676/)
     *    📧 Email: [teonicolaslopez8@gmail.com](mailto:teonicolaslopez8@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [teo-lópez](https://www.linkedin.com/teo-lópez/)
