@@ -15,7 +15,7 @@ def definir_pines():
     pin_luz_roja = Pin(4, Pin.OUT)              
     pin_luz_ambar = Pin(17, Pin.OUT)                         
     pin_flag = Pin(26, Pin.OUT)               
-    pin_activacion_manual = Pin(22, Pin.IN)
+    pin_activacion_manual = Pin(22, Pin.IN) # lele
 
 
     pin_test = Pin(18, Pin.IN)                   
