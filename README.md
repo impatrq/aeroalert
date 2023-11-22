@@ -31,21 +31,21 @@ AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Ed
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [](https://www.linkedin.com/)
 
 
- ### <img src="/Imagenes/cuccaro.jpg" alt="Cuccaro" width="6%"/> *Cuccaro, Juan*
+ * ### <img src="/Imagenes/cuccaro.jpg" alt="Cuccaro" width="6%"/> *Cuccaro, Juan*
 
     *    📷 Instagram: [@cuccaro_juan](https://www.instagram.com/cuccaro_juan/)
     *    📧 Email: [manucucca10@gmail.com](mailto:manucucca10@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [juan-cuccaro](https://www.linkedin.com/juan-cuccaro/)
     
 
- ### <img src="/Imagenes/husulak.jpg" alt="Husulak" width="6%"/> *Husulak, Mateo*
+ * ### <img src="/Imagenes/husulak.jpg" alt="Husulak" width="6%"/> *Husulak, Mateo*
 
     *    📷 Instagram: [@matehusu_2](https://www.instagram.com/matehusu_2/)
     *    📧 Email: [matehusu@gmail.com](mailto:matehusu@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [mateo-gaston-husulak-ledo](https://www.linkedin.com/mateo-gaston-husulak-ledo-52b742270/)
 
 
- ### <img src="/Imagenes/lopez.jpg" alt="Lopez" width="6%"/> *López, Teo*
+ * ### <img src="/Imagenes/lopez.jpg" alt="Lopez" width="6%"/> *López, Teo*
 
     *    🧾​ Curriculum vitae: [CVLópezTeoNicolas](https://drive.google.com/file/d/1_G5UPTjoewlIe7h19vwuFQ2f_dssRR7e/view?usp=sharing)
     *    📷 Instagram: [@nico67676](https://www.instagram.com/nico67676/)
@@ -53,21 +53,21 @@ AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Ed
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [teo-lópez](https://www.linkedin.com/teo-lópez/)
 
 
- ### <img src="/Imagenes/pagano.jpg" alt="Pagano" width="6%"/> *Pagano, Jonás*
+ * ### <img src="/Imagenes/pagano.jpg" alt="Pagano" width="6%"/> *Pagano, Jonás*
 
     *    📷 Instagram: [@jonaspagano](https://www.instagram.com/jonaspagano/)
     *    📧 Email: [paganojonas@gmail.com](mailto:paganojonas@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [jonaspagano](https://www.linkedin.com/jonaspagano/)
 
 
- ### <img src="/Imagenes/roca.jpg" alt="Roca" width="6%"/> *Roca, Leandro*
+ * ### <img src="/Imagenes/roca.jpg" alt="Roca" width="6%"/> *Roca, Leandro*
 
     *    📷 Instagram: [@lean_ro64](https://www.instagram.com/lean_ro64/)
     *    📧 Email: [leandroroca49@gmail.com](mailto:leandroroca49@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [leandro-roca](https://www.linkedin.com/in/leandro-roca/)
 
 
- ### <img src="/Imagenes/ruiz.jpg" alt="Ruiz" width="6%"/> *Ruíz, Nicolás*
+ * ### <img src="/Imagenes/ruiz.jpg" alt="Ruiz" width="6%"/> *Ruíz, Nicolás*
     *    📷 Instagram: [@nicoo__ruiz](https://www.instagram.com/nicoo__ruiz/)
     *    📧 Email: [ruizagustinnicolas20@gmail.com](mailto:ruizagustinnicolas20@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [](https://www.linkedin.com/)
