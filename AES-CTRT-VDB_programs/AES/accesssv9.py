@@ -6,12 +6,13 @@ import network
 from machine import Pin, Timer, UART
 
 
-
 def definir_pines():
+    #Hace que sea globales para usarlos en otras funciones
     global pin_luz_ambar, pin_luz_roja, pin_flag
     global pin_activacion_manual, pin_test, pin_reaccion, pin_on_off
     global pin_boton_test, pin_boton_reaccion
-
+    
+    #Se declara cada pin para cada boton y led.
     pin_luz_roja = Pin(4, Pin.OUT)              
     pin_luz_ambar = Pin(17, Pin.OUT)                         
     pin_flag = Pin(26, Pin.OUT)               
