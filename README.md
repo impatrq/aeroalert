@@ -35,14 +35,14 @@ AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Ed
 
     *    📷 Instagram: [@cuccaro_juan](https://www.instagram.com/cuccaro_juan/)
     *    📧 Email: [manucucca10@gmail.com](mailto:manucucca10@gmail.com)
-    *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [juan-cuccaro](https://www.linkedin.com/juan-cuccaro/)
+    *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [juan-cuccaro](https://www.linkedin.com/in/juan-cuccaro/)
     
 
  * ### <img src="/Imagenes/husulak.jpg" alt="Husulak" width="6%"/> *Husulak, Mateo*
 
     *    📷 Instagram: [@matehusu_2](https://www.instagram.com/matehusu_2/)
     *    📧 Email: [matehusu@gmail.com](mailto:matehusu@gmail.com)
-    *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [mateo-gaston-husulak-ledo](https://www.linkedin.com/mateo-gaston-husulak-ledo-52b742270/)
+    *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [mateo-gaston-husulak-ledo](https://www.linkedin.com/in/mateo-gaston-husulak-ledo-52b742270/)
 
 
  * ### <img src="/Imagenes/lopez.jpg" alt="Lopez" width="6%"/> *López, Teo*
@@ -50,14 +50,14 @@ AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Ed
     *    🧾​ Curriculum vitae: [CVLópezTeoNicolas](https://drive.google.com/file/d/1_G5UPTjoewlIe7h19vwuFQ2f_dssRR7e/view?usp=sharing)
     *    📷 Instagram: [@nico67676](https://www.instagram.com/nico67676/)
     *    📧 Email: [teonicolaslopez8@gmail.com](mailto:teonicolaslopez8@gmail.com)
-    *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [teo-lópez](https://www.linkedin.com/teo-lópez/)
+    *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [teo-lópez](https://www.linkedin.com/in/teo-lópez/)
 
 
  * ### <img src="/Imagenes/pagano.jpg" alt="Pagano" width="6%"/> *Pagano, Jonás*
 
     *    📷 Instagram: [@jonaspagano](https://www.instagram.com/jonaspagano/)
     *    📧 Email: [paganojonas@gmail.com](mailto:paganojonas@gmail.com)
-    *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [jonaspagano](https://www.linkedin.com/jonaspagano/)
+    *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [jonaspagano](https://www.linkedin.com/in/jonaspagano/)
 
 
  * ### <img src="/Imagenes/roca.jpg" alt="Roca" width="6%"/> *Roca, Leandro*
