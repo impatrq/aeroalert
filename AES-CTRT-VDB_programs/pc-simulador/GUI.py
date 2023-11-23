@@ -228,7 +228,10 @@ class MyView(arcade.View):
         if self.variable3 == True:
             pass
         elif self.variable3 == False:
+            #se cmabia la pestaña del programa
             self.window.show_view(MenuView())
+
+            #se crea el mensaje con los datos
             self.Dicc = Diccionario("2", self.boton3.On_button_on(), self.boton2.On_button_on(), self.boton4.On_button_on(), self.boton1.valor_boton(),self.valor2, self.valor1)
 
     def button4_on(self):
@@ -238,8 +241,11 @@ class MyView(arcade.View):
             self.variable4 = True
 
             dic = self.Dicc.Dic
+            #se envia el mensaje por wifi 
             station.send_message(client_socket, dic)
 
+    '''Las siguentes funciones deteminan cambios y procedimientos
+        cuando son presionados los botones '''
     def button3_clicked(self, *_):
         self.button3_on()
         if self.variable3 == True:
@@ -277,6 +283,8 @@ class MyView(arcade.View):
         self.valor1= self.barra1.valor()
         self.valor2 = self.barra2.valor()
         
+        # se dibujan en pantalla las palabras
+
         #Arriba
         arcade.draw_text("Hipoxia", 775 , 620, arcade.color.WHITE, font_size=25, font_name= "calibri" ,anchor_x="center")
         
@@ -309,6 +317,7 @@ class MyView(arcade.View):
 
 
     def on_show_view(self):
+        #se establece el color del fondo 
         arcade.set_background_color(arcade.color.GRAY)
 
         self.ui_manager.enable()
@@ -318,7 +327,7 @@ class MyView(arcade.View):
         self.ui_manager.disable()
         self.ui_manager3.disable()
     
-
+#se crea la siguente pestaña para el piloto 2
 class MenuView(arcade.View):
     def __init__(self):
         super().__init__()
