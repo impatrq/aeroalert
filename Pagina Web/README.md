@@ -15,3 +15,5 @@ El sistema cuenta con una pulsera dotada de los sensores necesarios. Si se detec
 
  * Tambien contamos con nuestro LinkedIn [Aeroalert](https://www.linkedin.com/company/aeroalert/)
 
+ * Nuestro Mail de Contacto: [proyectoaeroalert@gmail.com]
+
