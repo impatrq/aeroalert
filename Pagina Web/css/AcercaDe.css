@@ -1,0 +1,180 @@
+@import url("https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilos del encabezado */
+header {
+  width: 100%;
+  height: 600px; /* Ajusta la altura del encabezado según tus necesidades */
+  background: #E0FBFC;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, hsla(275, 66%, 13%, 0.623), #c31431ab), url(../img/descarga.jpg);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, hsla(275, 66%, 13%, 0.623), #c31431b6), url(../img/descarga.jpg);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-size: cover;
+  background-attachment: fixed;
+  position: relative;
+}
+
+header nav {
+  text-align: right;
+  padding: 30px 50px 0 0;
+}
+
+header nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+header nav ul li {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+header nav ul li:last-child {
+  margin-right: 0;
+}
+
+header nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+header nav ul li a:hover {
+  text-decoration: underline;
+}
+
+.wave {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 150px;
+}
+
+.logo {
+  width: 150px; /* Ajusta el tamaño del logo según tus necesidades */
+  height: auto;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.contenedor-sobre-nosotros {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  padding: 20px;
+}
+
+.contenido-textos {
+  width: 30%; /* Ajusta el ancho de la columna de texto */
+}
+
+.doc_1,
+.doc_2,
+.doc_4,
+.doc_5,
+.doc_6,
+.doc_7,
+.doc_8,
+.doc_9 {
+  background-color: #0e325e;
+  border-radius: 1em;
+  border: none;
+  padding: 1rem;
+  width: 25%; /* Ajusta el ancho de los documentos */
+  margin: 20px;
+  height: 475px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  display: inline-flex;
+  display: center;
+  margin-left: 200px  ;
+}
+
+.img_docs {
+  width: 10em;
+  height: 10em;
+  border-radius: 50%;
+  margin-bottom: 1em;
+}
+
+.doc_text {
+  text-align: center;
+  color: white;
+  font-weight: lighter;
+  width: 80%;
+}
+
+.custom-button,
+.custom-button1 {
+  display: inline-flex;
+  background-image: linear-gradient(147deg, #fe8a39 0%, #fd3838 74%);
+  padding: 15px 35px;
+  border-radius: 50px;
+  color: #fff;
+  box-shadow: 0px 14px 80px rgba(252, 56, 56, 0.4);
+  text-decoration: none;
+  font-weight: 500;
+  justify-content: center;
+  text-align: center;
+  letter-spacing: 1px;
+  margin-top: 1em;
+}
+
+.custom-button1 {
+  margin-top: 2em;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilos del pie de página */
+.footer {
+  background-color: #333;
+  padding: 1rem 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer li {
+  margin-left: 10px;
+}
+
+.footer a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: #0056b3;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #333;
+}
+
+.text-body-secondary2{
+  margin-left: 800px;
+  display: flex;
+}
