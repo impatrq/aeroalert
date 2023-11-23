@@ -13,8 +13,7 @@ El sistema cuenta con una pulsera dotada de los sensores necesarios. Si se detec
 
  * Explore más sobre AeroAlert en nuestro sitio web para obtener información detallada sobre características, casos de uso y cómo estamos transformando la seguridad aérea: [Aeroalert](https://aeroalert.com.ar/)
 
- * Conéctese con nosotros en [LinkedIn](https://www.linkedin.com/company/aeroalert/) para estar al tanto de las últimas novedades y actualizaciones: [![LinkedIn](linkedin_icono.png)](https://www.linkedin.com/company/aeroalert/)
-
+ * Tambien contamos con nuestro LinkedIn [Aeroalert](https://www.linkedin.com/company/aeroalert/)
 
  * Nuestro Mail de Contacto: [proyectoaeroalert@gmail.com]
 
