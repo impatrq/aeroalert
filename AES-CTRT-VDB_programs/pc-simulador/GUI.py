@@ -32,9 +32,12 @@ thread.start()
 
 
 global Dicc 
+
+#creamos la clase boton 
 class Boton(arcade.gui.UITextureButton):
     def __init__(self, mensa_Al:str, mensa_BA:str):
         super().__init__(
+            # definimos las imagenes a utilizar
            texture = arcade.load_texture("imagenes_GUI/llave.png"),
            texture_pressed=arcade.load_texture("imagenes_GUI/llave.png"))
         self.variable = True
@@ -46,6 +49,7 @@ class Boton(arcade.gui.UITextureButton):
         self.on_click = self.button_clicked
         self.scale(0.23) #0.17
 
+    #creamos la funcion On_button_on para el cambio de imagen al presionar sobre el boton
     def On_button_on(self):
         if self.variable == True:
             self.texture = \
@@ -64,7 +68,7 @@ class Boton(arcade.gui.UITextureButton):
     def button_clicked(self, *_):
         self.On_button_on()
 
-
+#creamos la clase barra
 class Barra(UISlider):
     def __init__(self, valor:int, ValorM:int, 
                  ValorMin:int, Width:int, Height:int, X:int):
@@ -95,7 +99,7 @@ class Barra(UISlider):
     def valor(self):
         return self.a
 
-
+#creamos la clase diccionario para el armado de los datos a enviar 
 class Diccionario():
     def __init__(self, Piloto:"0", Hipoxia:"0", Muerte:"0", 
         Somnolencia:"0",Pulso2:"0", Pulso:int, Saturacion:int
@@ -119,13 +123,15 @@ class Diccionario():
         }
         self.dicc = self.Dic
         print(self.Dic)
-
+    # la funcion valor para que devuelva el mensaje armado 
     def valor (self):
         return self.dicc
 
 
-
+#definimos la clase MyView, que es hija de la clase arcade.View
 class MyView(arcade.View):
+
+    # se declaran todos los elemtnos a utilizar 
     def __init__(self):
         super().__init__()
 
@@ -172,7 +178,7 @@ class MyView(arcade.View):
         self.variable4 = True
 
 
-
+        # se crean los botones a utilizar, com los mensajes a enviar en cada caso 
         self.boton1 = Boton("0","1")          #pulsaciones
         self.boton1.on_click = self.boton_clicked1
         box.add(self.boton1)
@@ -193,6 +199,7 @@ class MyView(arcade.View):
         box2.add(self.boton5)
         self.boton5.on_click = self.boton_clicked4
 
+        #Tambien se crean las barras 
         self.barra1 = Barra(50, 100, 0, 300, 70,0)
         self.Label1 = self.barra1.Label()
         
@@ -200,7 +207,7 @@ class MyView(arcade.View):
         self.Label2 = self.barra2.Label()
 
                 
-
+        #se establecen los layout para los botones, como para las barras 
         self.ui_manager.add(arcade.gui.UIAnchorWidget(child=box, anchor_y= "top", align_y=-170))
         self.ui_manager3.add(arcade.gui.UIAnchorWidget(child=box2, anchor_y= "bottom", align_y= 50, align_x= 250))
 
