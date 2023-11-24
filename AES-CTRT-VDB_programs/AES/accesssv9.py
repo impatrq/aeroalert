@@ -29,7 +29,7 @@ definir_pines()
 
 def conectar_wifi():
     global s, ap
-    # Configuracion
+    # Configuracion y creación de la red wifi
     addr = socket.getaddrinfo('192.168.4.1', 8000)[0][-1]
     ssid = 'ESP32'
     password = 'aeroalert'
@@ -50,6 +50,7 @@ def conectar_wifi():
     return s
 
 def escuchar_tipos():
+    #Confirmación en las conecciones de los programas
     time.sleep(1)
     global s, ap, addr
     print("Escuchando tipos")
@@ -76,6 +77,7 @@ def escuchar_tipos():
 def escuchar_band(conn_band, addr):
     time.sleep(1)
     while True:
+        #Medición de los datos de la VDB y lo evalua
         message = conn_band.recv(1024)
         print('From Band %s' % str(addr))
     
@@ -90,6 +92,7 @@ def escuchar_band(conn_band, addr):
 aterrizar_rtdc = 0
 info_aeropuerto = 0
 def escuchar_rtdc(conn_rtdc,addr):
+    #Confirmación de la conección con el simulador xplane y de las cosas que haga
     global aterrizar_rtdc, intentional_loss, info_aeropuerto
     pin_flag.value(0)
     try:
@@ -121,6 +124,7 @@ def escuchar_rtdc(conn_rtdc,addr):
 
 
 def enviar_rtdc(conn, addr):
+    #Envio de datos a la CTRT
     global solicitar, pin_on_off
     alerta_sae_enviada = 0
     nro_vuelo = 4321
@@ -171,8 +175,8 @@ def enviar_rtdc(conn, addr):
    
 bloqueo_PC = 0
 def escuchar_PC(conn_PC, addr):
-    global bloqueo_PC
-    global dormido1
+    #Evaluar datos del piloto 
+    global bloqueo_PC, dormido1
     estados = {"Piloto1":{"Somnolencia":0, "Pulso":0, "Hipoxia": 0,
                            "Muerte": 0, "Spo2": 0, "Bpm":0},
                "Piloto2":{"Somnolencia":0, "Pulso":0, "Hipoxia": 0,
@@ -214,6 +218,7 @@ def escuchar_PC(conn_PC, addr):
                 estados["Piloto2"] = info_PC
 
 def evaluar_info_piloto2(info):
+    #Evaluar datos piloto 2
     global bpm_altos2, spo_bajos2, dormido2, muerte2
     if info["Pulso"] == '1':
         bpm_altos2 = 1
@@ -803,5 +808,3 @@ time.sleep(1)
 
 _thread.start_new_thread(escuchar_tipos, ())
 print("Comunicación activada")
-
-    
