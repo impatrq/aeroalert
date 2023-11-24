@@ -53,21 +53,21 @@ AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Ed
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [teo-lópez](https://www.linkedin.com/in/teo-lópez/)
 
 
- * ### <img src="/Imagenes/pagano.jpg" alt="Pagano" width="6%"/> *Pagano, Jonás*
+ * ### <img src="Diseños de marca/Imagenes/pagano.jpg" alt="Pagano" width="6%"/> *Pagano, Jonás*
 
     *    📷 Instagram: [@jonaspagano](https://www.instagram.com/jonaspagano/)
     *    📧 Email: [paganojonas@gmail.com](mailto:paganojonas@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [jonaspagano](https://www.linkedin.com/in/jonaspagano/)
 
 
- * ### <img src="/Imagenes/roca.jpg" alt="Roca" width="6%"/> *Roca, Leandro*
+ * ### <img src="Diseños de marca/Imagenes/roca.jpg" alt="Roca" width="6%"/> *Roca, Leandro*
 
     *    📷 Instagram: [@lean_ro64](https://www.instagram.com/lean_ro64/)
     *    📧 Email: [leandroroca49@gmail.com](mailto:leandroroca49@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [leandro-roca](https://www.linkedin.com/in/leandro-roca/)
 
 
- * ### <img src="/Imagenes/ruiz.jpg" alt="Ruiz" width="6%"/> *Ruíz, Nicolás*
+ * ### <img src="Diseños de marca/Imagenes/ruiz.jpg" alt="Ruiz" width="6%"/> *Ruíz, Nicolás*
     *    📷 Instagram: [@nicoo__ruiz](https://www.instagram.com/nicoo__ruiz/)
     *    📧 Email: [ruizagustinnicolas20@gmail.com](mailto:ruizagustinnicolas20@gmail.com)
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [](https://www.linkedin.com/)
