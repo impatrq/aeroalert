@@ -284,6 +284,7 @@ def conectar_microdot():
     #se repite constantemente
     vuelos = {}
     @app.route('/update/flights')
+    #Ruta para la pagina de la CTRT
     def index(request):
         global historial_de_vuelos
         
