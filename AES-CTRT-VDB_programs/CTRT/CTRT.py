@@ -71,6 +71,7 @@ historial_de_vuelos = {'12323': {'datos con hora': [
 
 
 def notification(cual, nro_vuelo, data):
+    #Protocolos dentro de la pestaña de la CTRT
     global pin_luz_ambar, pin_luz_roja
     global alert, emergency, solicitud, sae_desactivado
     global historial_de_vuelos
@@ -184,8 +185,8 @@ def manage_AES():
 
 
 
-#Función para inicializar el teclado
 def inicio():
+    #Función para inicializar el teclado
     for fila in range(0,4):
         for col in range(0,4):
             pines_Filas[fila].value(0)
@@ -238,7 +239,7 @@ from microdot_asyncio import Microdot, send_file
 print("Done")
 import ujson
 import _thread
-
+#Programación de microdot para subir los datos a la pagina
 def conectar_microdot():
     app = Microdot()
 
