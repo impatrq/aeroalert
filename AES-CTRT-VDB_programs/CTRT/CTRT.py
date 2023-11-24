@@ -1,4 +1,4 @@
-import stationrtdcv2 as stationrtdc
+import stationrtdc as stationrtdc
 from machine import Pin
 from time import sleep
 import time
