@@ -31,7 +31,7 @@ AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Ed
     *    ![LinkedIn](https://i.stack.imgur.com/gVE0j.png) LinkedIn: [Mauro-Agustin-Altinier](https://www.linkedin.com/in/Mauro-Agustín-Altinier)
 
 
- * ### <img src="/Imagenes/cuccaro.jpg" alt="Cuccaro" width="6%"/> *Cuccaro, Juan*
+ * ### <img src="Diseños de marca/Imagenes/cuccaro.jpg" alt="Cuccaro" width="6%"/> *Cuccaro, Juan*
 
     *    📷 Instagram: [@cuccaro_juan](https://www.instagram.com/cuccaro_juan/)
     *    📧 Email: [manucucca10@gmail.com](mailto:manucucca10@gmail.com)
