@@ -498,14 +498,15 @@ def activar_SAE():
             #si uno o 2 tienen
             else:
                 no_reaccion = 0                              
-        
+
+            #Pilotos con hipoxia
             if hipoxia1 or hipoxia2:                    
                 roja_fija = 1
                 alarma_hipoxia = 1
             else:
                 alarma_hipoxia = 0
 
-                
+            #Pilotos muertos
             if muertos1 or muertos2:
                 alarma_aes= 1
                 if muertos2:
@@ -514,6 +515,7 @@ def activar_SAE():
                 elif muertos1:
                     ambar_fija = 1
 
+            #Pilotos en buenas condiciones nuevamente
             if not hipoxia1 and not hipoxia2 and not muertos2:
                 roja_fija = 0
 
@@ -525,9 +527,11 @@ def activar_SAE():
             else:
                 ambar_titilando = 0
             
+            #Casos de muerte
             if not muertos1 and not muertos2 and not bpm1 and not bpm2:
                 alarma_aes = 0
 
+            #Casos de somnolencia
             if asleep1 or asleep2: 
                 ambar_fija = 1
                 alarma_dormidos = 1
@@ -685,7 +689,7 @@ def activar_SAE():
 
         pin_boton_reaccion = 0
 
-        
+
         if pin_test.value() != pin_boton_test:
             pin_boton_test = pin_test.value()
 
@@ -703,9 +707,7 @@ listabpm = []
 listaspo = []
 def evaluar_info(bpm, spo, temp, conectado, de):
     global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1, muerte1
-    global listabpm, listaspo           #se usa en distintos threads por eso global
-    global bloqueo_PC
-    global pulsera_conectada
+    global listabpm, listaspo, bloqueo_PC, pulsera_conectada           
 
     if bloqueo_PC == 0:          # se evalua la info si es de band /sin bloqueo
         #Listas de pulsaciones y oxigeno
@@ -727,13 +729,15 @@ def evaluar_info(bpm, spo, temp, conectado, de):
         spo_prom_actual = sum(listabpm[:-8:-1])
         spo_dif = spo_prom_actual - spo_prom_inicial
 
+        #Las pulsaciones bajaron casos de nsomnio
         if spo_dif >= 3 and spo_dif <= 8:
             if bpm_dif >= 15 and bpm_dif <= 35:
-                print("tiene menos pulsaciones y oxigeno que hace un ratito, suponemos que esta dormido")
+                print("Tiene menos pulsaciones y oxigeno que hace un rato, suponemos que esta dormido")
                 dormido1 = 1
                 bpm_dormido = bpm
                 spo_dormido = spo
-
+        
+        #Casos en los que se depierta el piloto
         if dormido1 == 1:
             bpm_dormido_dif = bpm - bpm_dormido
             spo_dormido_dif = spo - spo_dormido
@@ -741,8 +745,8 @@ def evaluar_info(bpm, spo, temp, conectado, de):
                 if spo_dormido_dif >= 3:
                     print("esta despierto ahora")
                     dormido1 = 0
-        #--------------------------------------------------------------------------
-        #bpms
+
+    #Protocolos en los casos relacionados a pulsaciones
     if bloqueo_PC == 0 or de == "PC":      
         if bpm < 60:
             bpm_bajos1 = 1
@@ -759,7 +763,7 @@ def evaluar_info(bpm, spo, temp, conectado, de):
         elif bpm != 0:
             muerte1 = 0
         
-        #spo
+        #Oxigeno en sangre bajo
         if spo <= 90:
             spo_bajos1 = 1
         elif spo > 90:
@@ -776,10 +780,11 @@ def evaluar_info(bpm, spo, temp, conectado, de):
             temp_baja1 = 0
             temp_alta1 = 0  
     
-
+#Confirmacion de las conecciones
 s = conectar_wifi()
 print("wifi conectado")
 
+#Creaciones de procesos en paralelo para las comunicaciones y protocolos
 _thread.start_new_thread(activar_SAE, ())
 print("protocolos activados")
 time.sleep(1)
