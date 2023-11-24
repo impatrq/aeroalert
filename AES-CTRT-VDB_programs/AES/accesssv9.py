@@ -64,9 +64,9 @@ def escuchar_tipos():
             _thread.start_new_thread(escuchar_band, (conn, addr))
             print("VDB conectada")
         
-        elif tipo == "soy_rtdc":
-            _thread.start_new_thread(escuchar_rtdc, (conn, addr))
-            _thread.start_new_thread(enviar_rtdc, (conn, addr))
+        elif tipo == "soy_ctrt":
+            _thread.start_new_thread(escuchar_ctrt, (conn, addr))
+            _thread.start_new_thread(enviar_ctrt, (conn, addr))
             print("CTRT conectada")
 
         elif tipo == "soy_PC":
@@ -89,25 +89,25 @@ def escuchar_band(conn_band, addr):
         print("bpm={:02} spo={:02}% Temp={:02}°C puesta={:1}".format(bpm, spo, temp, conectado))
         evaluar_info(bpm, spo, temp, conectado, "band")
 
-aterrizar_rtdc = 0
+aterrizar_ctrt = 0
 info_aeropuerto = 0
-def escuchar_rtdc(conn_rtdc,addr):
+def escuchar_ctrt(conn_ctrt,addr):
     # Recibir informacion CTRT
-    global aterrizar_rtdc, intentional_loss, info_aeropuerto
+    global aterrizar_ctrt, intentional_loss, info_aeropuerto
     pin_flag.value(0)
     try:
         while True:
-            data = conn_rtdc.recv(1024)
+            data = conn_ctrt.recv(1024)
             message = json.loads(data.decode('utf-8'))
             print('From RTDC %s' % str(addr))
             print(message)
 
             if message['mensaje'] == "aterriza":
                 print("tiene que aterrizar")                        
-                aterrizar_rtdc = 1                                                
+                aterrizar_ctrt = 1                                                
             elif message['mensaje'] == "no aterrizes":
                 print("no tiene que aterriz")
-                aterrizar_rtdc = 0
+                aterrizar_ctrt = 0
 
             elif message['mensaje'] == type(dict):
                 info_aeropuerto = message['mensaje']['info aeropuerto']             #msg = {'mensaje':{'info aeropuerto':{'nombre':ezeiza, 'coordenadas':"213123131231"}}
@@ -119,11 +119,11 @@ def escuchar_rtdc(conn_rtdc,addr):
                 
     except:
         pin_flag.value(1)
-        #si no se conecta la rtdc flag prendido
-        # Recibe los comandos de vuelo enviados por la rtdc 
+        #si no se conecta la ctrt flag prendido
+        # Recibe los comandos de vuelo enviados por la ctrt 
 
 
-def enviar_rtdc(conn, addr):
+def enviar_ctrt(conn, addr):
     #Envio de datos a la CTRT
     global solicitar, pin_on_off
     alerta_sae_enviada = 0
@@ -169,7 +169,7 @@ def enviar_rtdc(conn, addr):
                 time.sleep(5)
         except:
             fallos += 1
-            print("rtdc perdida, fallos: ",fallos)
+            print("ctrt perdida, fallos: ",fallos)
         if fallos >= 5:
             break
    
@@ -343,7 +343,7 @@ def activar_SAE():
     global no_reaccion, intentional_loss
     global pin_boton_test
     global alarmas_off
-    global aterrizar_rtdc
+    global aterrizar_ctrt
 
     contador_iniciado_30 = 0
     global pasaron_30segs
@@ -673,7 +673,7 @@ def activar_SAE():
             
         #-----------------------------------------------------
         # sin depender de alarmas off nidel pin on-off
-        if ((aterrizar and pin_on_off == 0) or intentional_loss) or aterrizar_rtdc: #and not aterrizaje_enviado
+        if ((aterrizar and pin_on_off == 0) or intentional_loss) or aterrizar_ctrt: #and not aterrizaje_enviado
             solicitar = 1
             print("aterrizar")
             #aterrizaje_enviado = 1
