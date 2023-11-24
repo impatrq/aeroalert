@@ -1,0 +1,596 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'open sans';
+    font-size: 17px;
+    background-color: #f8f9fa;
+}
+
+.contenedor {
+    padding: 60px 0;
+    width: 90%;
+    max-width: 1000px;
+    margin: auto;
+    overflow: hidden;
+}
+
+main{
+    background-color: #f8f9fa;
+}
+
+.titulo {
+    color: #642a73;
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* Header */
+
+header {
+    width: 100%;
+    height: 600px;
+    background: #ffffff;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, hsla(275, 66%, 13%, 0.623), #c31431ab), url(../img/descarga.jpg);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, hsla(275, 66%, 13%, 0.623), #c31431b6), url(../img/descarga.jpg);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+}
+
+header nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  header nav ul li {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  header nav ul li:last-child {
+    margin-right: 0;
+  }
+
+  header nav ul li a {
+    color: white;
+    text-decoration: none;
+  }
+
+  header nav ul li a:hover {
+    text-decoration: underline;
+}
+
+nav{
+    text-align: right;
+    padding: 30px 50px 0 0;
+}
+
+nav > a{
+    color:#fff;
+    font-weight: 300;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+nav > a:hover{
+    text-decoration: underline;
+}
+
+header .textos-header{
+    display: flex;
+    height: 430px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.textos-header h1{
+    font-size: 50px;
+    color:#fff;
+}
+
+.textos-header h2{
+    font-size: 30px;
+    font-weight: 300;
+    color:#fff;
+}
+
+.wave{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.logo {
+    width: 200px; /* ajusta el tamaño de la imagen */
+    height: auto;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+
+/* About us */
+
+
+main .sobre-nosotros{
+    padding: 30px 0 60px 0;
+}
+.contenedor-sobre-nosotros{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.imagen-about-us{
+    width: 48%;
+}
+
+.sobre-nosotros .contenido-textos{
+    width: 48%;
+}
+
+.contenido-textos h3{
+    margin-bottom: 15px;
+    color: black;
+}
+
+.contenido-textos h3 span{
+    background: #4d0686;
+    color: #fff;
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, .5);
+    margin-right: 5px;
+}
+
+.contenido-textos p{
+    padding: 0px 0px 30px 15px;
+    font-weight: 300;
+    color: black;
+}
+
+.foto-de-los-pi{
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.imagen-foto-de-los-pi {
+    width: 50%; /* Cambia el ancho al 50% */
+    margin: 0 auto; /* Agrega margen automático para centrar horizontalmente */
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, .5);
+  }
+  
+  .imagen-foto-de-los-pi > img {
+    width: 100%;
+    height: 80%;
+    object-fit: cover;
+    display: block;
+  }
+  
+.hover-nosotros{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    transform: scale(0);
+    background: hsla(273,91%,27%, 0.7);
+    transition: transform .5s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.hover-nosotros img{
+    width: 50px;
+}
+
+.hover-nosotros p{
+    color: #fff;
+}
+
+.imagen-foto-de-los-pi:hover .hover-nosotros{
+    transform: scale(1);
+}
+
+/* Acerca De */
+
+
+.AcercaDe{
+    background: #f2f2f2;
+}
+
+.pdfs-acerca-de{
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.imagen-pdfs-acerca-de{
+    width: 24%;
+    margin-bottom: 10px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, .5);
+}
+
+.imagen-pdfs-acerca-de > img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hover-acercade{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    transform: scale(0);
+    background: hsla(273,91%,27%, 0.7);
+    transition: transform .5s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.hover-acercade img{
+    width: 50px;
+}
+
+.hover-acercade p{
+    color: #fff;
+}
+
+
+.hover-acercade h1{
+    color: #fff;
+    font-size: 15px;
+}
+
+.imagen-pdfs-acerca-de:hover .hover-acercade{
+    transform: scale(1);
+}
+
+
+/*  Contactanos */
+
+.contactanos{
+    background: #f2f2f2;
+    padding-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.contactanos p {
+    margin-bottom: 50px;
+    color: black;
+}    
+
+
+
+.contenedor {
+    text-align: center;
+  }
+
+.contacto-cont{
+    display:flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.contacto-ind{
+    width: 28%;
+    text-align: center;
+}
+
+.contacto-ind img{
+    width: 90%;
+}
+
+.contacto-ind h3{
+    margin: 10px 0;
+}
+
+.contacto-ind p{
+    font-weight: 300;
+    text-align: center;
+}
+
+.contacto-ind2{
+    width: 80%;
+    margin: auto;
+    text-align: center;
+}
+
+.contacto-ind2 img{
+    width: 90%;
+}
+
+.contacto-ind2 h3{
+    width: 80%;
+    margin: auto;
+    text-align: center;
+}
+
+.contacto-ind2 p{
+    width: 80%;
+    margin: auto;
+    text-align: center;
+}
+
+.foto-de-los-pi{
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.imagen-formulario {
+    width: 50%; /* Cambia el ancho al 50% */
+    margin: 0 auto; /* Agrega margen automático para centrar horizontalmente */
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .imagen-formulario > img {
+    width: 100%;
+    height: 80%;
+    object-fit: cover;
+    display: block;
+  }
+  
+.hover-contactanos{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    transform: scale(0);
+    background: hsla(273,91%,27%, 0.7);
+    transition: transform .5s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.hover-contactanos img{
+    width: 50px;
+}
+
+.hover-contactanos p{
+    color: #fff;
+}
+
+.imagen-formulario:hover .hover-contactanos{
+    transform: scale(1);
+}
+
+.footer {
+    background-color: #333;
+}
+
+.footer a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: #0056b3;
+}
+
+.navbar {
+    background-color: #007bff;
+}
+
+.navbar-brand {
+    color: #ffffff;
+}
+
+.navbar-toggler-icon {
+    background-color: #ffffff;
+}
+
+.navbar-nav .nav-link {
+    color: #ffffff;
+    margin-right: 15px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.dropdown-menu {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item {
+    color: #212529;
+}
+
+.dropdown-item:hover {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.fa-brands, .fab {
+  font-family: "Font Awesome 6 Brands";
+  font-weight: 400;
+  font-size: 30px;
+}
+
+
+.fa-regular, .far{
+  font-weight: 400;
+  font-size: 30px;
+  margin-top: 2px;
+}
+
+img, svg{
+  vertical-align: middle;
+}
+ 
+  
+@media screen and (max-width:900px){
+    .contenedor {
+        width: 90%;
+    }
+
+    header .textos-header {
+        height: 300px;
+    }
+
+    .textos-header h1 {
+        font-size: 40px;
+    }
+
+    .textos-header h2 {
+        font-size: 24px;
+    }
+   
+    header{
+        background-position: center;
+    }
+
+    .contenedor-sobre-nosotros{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .sobre-nosotros .contenido-textos{
+        width: 90%;
+    }
+
+    .imagen-about-us{
+        width: 90%;
+    }
+
+    /* Acerca De */
+
+    .imagen-pdfs-acerca-de{
+        width: 44%;
+    }
+
+    /* Contactanos */
+
+    .contacto-cont{
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .contactanos p {
+        margin-bottom: 50px;
+    }    
+    
+    .contacto-ind{
+        width: 100%;
+        text-align: center;
+    }
+
+    .contacto-ind:nth-child(1), .contacto-ind:nth-child(2){
+        margin-bottom: 60px;
+    }
+
+    .contacto-ind img{
+        width: 90%;
+    }
+
+    .contenedor {
+        text-align: center;
+    }
+}
+/* Estilos específicos para dispositivos móviles con 320px de ancho */
+@media screen and (max-width: 320px) {
+    .logo {
+        width: 25%;
+    }
+
+    nav ul {
+        padding: 5px 0;
+    }
+
+    nav li {
+        margin-right: 2px;
+    }
+
+    nav a {
+        font-size: 10px;
+    }
+
+    /* Ajustes para las letras más a la derecha */
+    nav li:last-child {
+        margin-right: 10px; /* Aumenta el margen del último elemento de la lista */
+    }
+}
+
+/* Estilos específicos para dispositivos móviles con 375px de ancho */
+@media screen and (min-width: 321px) and (max-width: 375px) {
+    .logo {
+        width: 30%;
+    }
+
+    nav ul {
+        padding: 5px 0;
+    }
+
+    nav li {
+        margin-right: 1px;
+    }
+
+    nav a {
+        font-size: 12px;
+    }
+
+    /* Ajustes para las letras más a la derecha */
+    nav li:last-child {
+        margin-right: 8px; /* Aumenta el margen del último elemento de la lista */
+    }
+}
+
+/* Estilos específicos para dispositivos móviles con 425px de ancho */
+@media screen and (min-width: 376px) and (max-width: 425px) {
+    .logo {
+        width: 35%;
+    }
+
+    nav ul {
+        padding: 5px 0;
+    }
+
+    nav li {
+        margin-right: 1px;
+    }
+
+    nav a {
+        font-size: 14px;
+    }
+
+    /* Ajustes para las letras más a la derecha */
+    nav li:last-child {
+        margin-right: 6px; /* Aumenta el margen del último elemento de la lista */
+    }
+}

@@ -1,0 +1,442 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'open sans';
+  font-size: 17px;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.titulo {
+  color: #642a73;
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.container {
+  flex: 1;
+  width: 1300px;
+  margin-left: -15px;
+}
+
+/* Header */
+
+header {
+  width: 100%;
+  height: 600px;
+  background: #bc4e9c;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, hsla(275, 66%, 13%, 0.623), #c31431ab), url(../img/airplane_ready_to_take_off-Aircraft_HD_Wallpaper_medium.webp);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, hsla(275, 66%, 13%, 0.623), #c31431b6), url(../img/airplane_ready_to_take_off-Aircraft_HD_Wallpaper_medium.webp);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-size: cover;
+  background-attachment: fixed;
+  position: relative;
+}
+
+header nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+header nav ul li {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+header nav ul li:last-child {
+  margin-right: 0;
+}
+
+header nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+header nav ul li a:hover {
+  text-decoration: underline;
+}
+
+
+nav{
+  text-align: right;
+  padding: 30px 50px 0 0;
+}
+
+nav > a{
+  color:#fff;
+  font-weight: 300;
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+nav > a:hover{
+  text-decoration: underline;
+}
+
+header .textos-header{
+  display: flex;
+  height: 430px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.textos-header h1{
+  font-size: 50px;
+  color:#fff;
+}
+
+.textos-header h2{
+  font-size: 30px;
+  font-weight: 300;
+  color:#fff;
+}
+
+.wave{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.logo {
+  width: 175px; /* ajusta el tamaño de la imagen */
+  height: auto;
+  position: relative;
+  top: 10px;
+  left: 10px;
+}
+
+/* Nosotros */
+
+/* Sobre Nosotros, "FOTO GRUPAL" */
+
+
+.contenedor-sobre-nosotros{
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.imagen-about-us{
+  width: 48%;
+}
+
+.sobre-nosotros .contenido-textos{
+  width: 48%;
+}
+
+.contenido-textos h3{
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.contenido-textos h3 span{
+  background: #4d0686;
+  color: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  text-align: center;
+  width: 30px;
+  height: 30px;
+  padding: 2px;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, .5);
+  margin-right: 5px;
+}
+
+.contenido-textos p{
+  padding: 0px 0px 30px 15px;
+  font-weight: 300;
+}
+
+.foto-de-los-pi{
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.imagen-foto-de-los-pi {
+  width: 50%; /* Cambia el ancho al 50% */
+  margin: 0 auto; /* Agrega margen automático para centrar horizontalmente */
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, .5);
+}
+
+.imagen-foto-de-los-pi > img {
+  width: 100%;
+  height: 80%;
+  object-fit: cover;
+  display: block;
+}
+
+.hover-nosotros{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  transform: scale(0);
+  background: hsla(273,91%,27%, 0.7);
+  transition: transform .5s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.hover-nosotros img{
+  width: 50px;
+}
+
+.hover-nosotros p{
+  color: #fff;
+}
+
+.imagen-foto-de-los-pi:hover .hover-nosotros{
+  transform: scale(1);
+}
+
+/* Sobre Nosotros, Foto c/u */
+
+.nosotros_main {
+  position: inherit;
+}
+.contenido_nosotros{
+  width: 75%;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 100;
+}
+.nosotros {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+  column-gap: 5rem;
+  row-gap: 2rem;
+  padding: 2rem;
+}
+.alumno {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.desplazado {
+  grid-column: -3/-1;
+  width: 50%;
+  margin: 0 auto;
+}
+.alumno_fotos{
+  width: fit-content;
+  height: fit-content;
+  margin: auto;      
+}
+.alumno_foto{
+  width: 8em;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.alumno p {
+  text-align: center;
+  font-size: 1.75rem;
+}
+.alinear {
+  display: flex;
+  justify-content: center;
+}
+
+.blog-slider__button {
+  display: inline-flex;
+  background-image: linear-gradient(147deg, #fe8a39 0%, #fd3838 74%);
+  padding: 15px 35px;
+  border-radius: 50px;
+  color: #fff;
+  box-shadow: 0px 14px 80px rgba(252, 56, 56, 0.4);
+  text-decoration: none;
+  font-weight: 500;
+  justify-content: center;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.custom-button {
+  display: inline-flex;
+  background-image: linear-gradient(147deg, #fe8a39 0%, #fd3838 74%);
+  padding: 15px 35px;
+  border-radius: 50px;
+  color: #fff;
+  box-shadow: 0px 14px 80px rgba(252, 56, 56, 0.4);
+  text-decoration: none;
+  font-weight: 500;
+  justify-content: center;
+  text-align: center;
+  letter-spacing: 1px;
+}
+.nosotros__imagen {
+  border-radius: 50%;
+}
+
+.contenedor_descripcion {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: whitesmoke;
+  font-weight: lighter;
+  background-color: rgba(0, 0, 0, 0.25);
+  width: 75%;
+  margin: 0 auto 5rem auto;
+  border-radius: 5rem;
+  background-color: #0e325e;
+  margin-top: 100px;
+}
+
+.nosotros_title {
+  color: white;
+  text-align: center;
+  padding: 2rem 0;
+  font-size: 3.5rem;
+}
+
+.nosotros_title_descripcion {
+  font-size: 3.3rem;
+  margin: 3rem 0;
+  font-weight: bold;
+}
+
+/* Estilos del pie de página */
+.footer {
+  background-color: #333;
+  color: #fff;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.footer .nav {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.footer .nav li {
+  margin-left: 15px;
+}
+
+.footer .nav .fab,
+.footer .nav .far {
+  font-size: 30px;
+  color: #fff;
+}
+
+.footer-text {
+  margin-top: 10px;
+}
+
+.nav li i {
+  font-size: 24px;
+}
+
+
+
+@media screen and (max-width: 767px) {
+  body {
+    font-size: 14px; /* Reducir el tamaño de la fuente para dispositivos móviles */
+  }
+
+  .titulo {
+    font-size: 24px; /* Tamaño de fuente reducido para el título en dispositivos móviles */
+    margin-bottom: 30px; /* Reducción del margen inferior para el título */
+  }
+
+  .contenedor {
+    width: 90%;
+}
+
+  header .textos-header {
+    height: 300px;
+}
+
+  .textos-header h1 {
+    font-size: 40px;
+}
+
+  .textos-header h2 {
+    font-size: 24px;
+}
+
+  header{
+    background-position: center;
+}
+
+
+  .contenedor-sobre-nosotros {
+    flex-direction: column; /* Cambiar la dirección del flexbox para dispositivos móviles */
+  }
+
+  .sobre-nosotros .contenido-textos {
+    text-align: center; /* Centrar el texto */
+    margin-bottom: 20px; /* Añadir margen inferior */
+    display: contents;
+  }
+
+  .imagen-about-us {
+    width: 100%; /* Hacer la imagen ocupar el ancho completo */
+    height: auto; /* Ajustar la altura automáticamente */
+    margin-bottom: 20px; /* Añadir margen inferior */
+  }
+
+  .contenido-textos {
+    width: 100%; /* Hacer que el contenido de texto ocupe el ancho completo */
+  }
+
+  .imagen-about-us,
+  .contenido-textos {
+    width: 100%; /* Ancho completo para las imágenes y el contenido de texto */
+    margin-bottom: 20px; /* Margen inferior reducido para las imágenes y el contenido de texto */
+  }
+
+  .blog-slider__button,
+  .custom-button {
+    font-size: 14px; /* Tamaño de fuente reducido para los botones en dispositivos móviles */
+    padding: 10px 25px; /* Padding reducido para los botones */
+  }
+
+  .nosotros {
+    grid-template-columns: 1fr; /* Cambiar a una sola columna para dispositivos móviles */
+  }
+
+  .nosotros_main,
+  .desplazado {
+    grid-column: auto; /* Restaurar la configuración de la cuadrícula para dispositivos móviles */
+    width: 100%; /* Ancho completo para las imágenes en dispositivos móviles */
+    margin-bottom: 20px; /* Margen inferior reducido para las imágenes */
+  }
+
+  .alumno p {
+    font-size: 16px; /* Tamaño de fuente reducido para el texto del alumno en dispositivos móviles */
+  }
+}
+
+/* Estilos específicos para el botón "Mi CV" en dispositivos móviles */
+@media screen and (max-width: 480px) {
+  .custom-button {
+    font-size: 12px; /* Tamaño de fuente aún más reducido para dispositivos móviles más pequeños */
+    padding: 8px 20px; /* Padding adicionalmente reducido para los botones */
+  }
+}
