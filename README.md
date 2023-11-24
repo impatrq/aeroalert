@@ -24,7 +24,7 @@ AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Ed
 
 # Integrantes
 
- * ### <img src="Diseños de marca/Imagenes/altinier.jpg" alt="Altinier" width="6%"/>*Altinier, Mauro*
+ * ### <img src="/Imagenes/altinier.jpg" alt="Altinier" width="6%"/>*Altinier, Mauro*
 
     *    📷 Instagram: [@agustin_altinier](https://www.instagram.com/agustin_altinier/)
     *    📧 Email: [mauro.altinier@gmail.com](mailto:mauro.altinier@gmail.com)         
