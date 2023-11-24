@@ -1,4 +1,4 @@
-import stationrtdc as stationrtdc
+import stationctrt as stationctrt
 from machine import Pin
 from time import sleep
 import time
@@ -8,9 +8,9 @@ hora = time.localtime()
 
 global client_socket, sta_if
 
-client_socket, sta_if = stationrtdc.do_connect()
+client_socket, sta_if = stationctrt.do_connect()
 print(client_socket, sta_if)
-stationrtdc.send_type(client_socket, "soy_rtdc")
+#stationctrt.send_type(client_socket, "soy_ctrt")
 
 
 pin_luz_roja = Pin(21, Pin.OUT)
@@ -71,6 +71,7 @@ historial_de_vuelos = {'12323': {'datos con hora': [
 
 
 def notification(cual, nro_vuelo, data):
+    #Protocolos dentro de la pestaña de la CTRT
     global pin_luz_ambar, pin_luz_roja
     global alert, emergency, solicitud, sae_desactivado
     global historial_de_vuelos
@@ -140,7 +141,7 @@ def manage_AES():
     errores = 0
     while True:
         try:
-            recibido = stationrtdc.receive_data(client_socket)
+            recibido = stationctrt.receive_data(client_socket)
             #recibido = {"msg":"solicito: aterrizaje", "nro_vuelo": 4334, "list": (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0)}
             print("\nrecibido aes: ", recibido)
 
@@ -184,8 +185,8 @@ def manage_AES():
 
 
 
-#Función para inicializar el teclado
 def inicio():
+    #Función para inicializar el teclado
     for fila in range(0,4):
         for col in range(0,4):
             pines_Filas[fila].value(0)
@@ -234,11 +235,11 @@ def teclas():
 
 
 print("Importando microdot...")
-from microdot_asyncio import Microdot, send_file
+from microdot import Microdot, send_file
 print("Done")
 import ujson
 import _thread
-
+#Programación de microdot para subir los datos a la pagina
 def conectar_microdot():
     app = Microdot()
 
@@ -283,6 +284,7 @@ def conectar_microdot():
     #se repite constantemente
     vuelos = {}
     @app.route('/update/flights')
+    #Ruta para la pagina de la CTRT
     def index(request):
         global historial_de_vuelos
         
@@ -335,7 +337,7 @@ def conectar_microdot():
     @app.route('/send/<nrovuelo>/<instruccion>')
     def index(request, nrovuelo, instruccion):
         print("send to ", nrovuelo, " instruccion: ", instruccion, "\n")
-        stationrtdc.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
+        stationctrt.send_message(client_socket, str(instruccion))            #"aterriza", "no_aterrizes"
         return
     
     #done ------------------------    
@@ -344,7 +346,7 @@ def conectar_microdot():
     def index(request, nro_vuelo, indice):
         aeropuerto = {'info aeropuerto': info_aeropuertos['airports'][int(indice)]}
         print("send to: ", nro_vuelo, " airport: ", aeropuerto, "\n")
-        stationrtdc.send_message(client_socket, aeropuerto)
+        stationctrt.send_message(client_socket, aeropuerto)
         return {"enviado":1}, 202, {'Content-Type': 'json'}
     
     app.run(port=80)
