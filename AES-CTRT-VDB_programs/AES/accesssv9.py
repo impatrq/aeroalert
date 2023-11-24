@@ -16,7 +16,7 @@ def definir_pines():
     pin_luz_roja = Pin(4, Pin.OUT)              
     pin_luz_ambar = Pin(17, Pin.OUT)                         
     pin_flag = Pin(26, Pin.OUT)               
-    pin_activacion_manual = Pin(22, Pin.IN) # lele
+    pin_activacion_manual = Pin(22, Pin.IN)
 
 
     pin_test = Pin(18, Pin.IN)                   
@@ -50,10 +50,10 @@ def conectar_wifi():
     return s
 
 def escuchar_tipos():
-    #Confirmación en las conecciones de los programas
+    # Distribucion de conexiones
     time.sleep(1)
     global s, ap, addr
-    print("Escuchando tipos")
+    print("Waiting for modules")
     while True:
         conn, addr = s.accept()
         print('Got a type connection from %s' % str(addr))
@@ -71,7 +71,7 @@ def escuchar_tipos():
 
         elif tipo == "soy_PC":
             _thread.start_new_thread(escuchar_PC, (conn, addr))
-            print("PC/X-PLANE conectado")
+            print("GUI conectada")
 
 
 def escuchar_band(conn_band, addr):
@@ -92,7 +92,7 @@ def escuchar_band(conn_band, addr):
 aterrizar_rtdc = 0
 info_aeropuerto = 0
 def escuchar_rtdc(conn_rtdc,addr):
-    #Confirmación de la conección con el simulador xplane y de las cosas que haga
+    # Recibir informacion CTRT
     global aterrizar_rtdc, intentional_loss, info_aeropuerto
     pin_flag.value(0)
     try:
