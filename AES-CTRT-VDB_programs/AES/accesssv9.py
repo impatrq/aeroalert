@@ -543,8 +543,8 @@ def activar_SAE():
             if not muertos1 and not asleep1 and not asleep2 and pulsera_conectada:
                 ambar_fija = 0
 
-                
-            if codigo[14] or intentional_loss:              #activacion manual o intentional loss
+            #activacion manual o intentional loss
+            if codigo[14] or intentional_loss:              
                 roja_titilando = 1
             else:
                 roja_titilando = 0
@@ -600,7 +600,7 @@ def activar_SAE():
                         prendido_ambar = 0
                         
                 #-----------------------------------------------------------
-
+                #Activaciónes de alarma
                 if alarma_hipoxia and not enviado_alarma_hipoxia:
                     print("alarma_hipoxia=1")
                     enviado_alarma_hipoxia = 1            
@@ -641,13 +641,14 @@ def activar_SAE():
                     print("alarma_aes_activation=0")
                     enviado_aes_activation = 0
 
-                # faltan los 2 de test, pass y fail
                 """
                 print("no_reaccion: ", no_reaccion)
                 print("alarma_aes_activation: ", alarma_aes_activation)
                 print("enviada?: ", enviado_aes_activation)
                 """
-            else:                                       #si estan apagadas las alarmas
+
+            else:
+                #si estan apagadas las alarmas                                     
                 pin_luz_ambar.value(0)
                 pin_luz_roja.value(0)
                 if enviado_alarma_hipoxia:
@@ -666,7 +667,6 @@ def activar_SAE():
                     print("alarma_aes_activation=0")
                     enviado_aes_activation = 0
             
-
         #-----------------------------------------------------
         # sin depender de alarmas off nidel pin on-off
         if ((aterrizar and pin_on_off == 0) or intentional_loss) or aterrizar_rtdc: #and not aterrizaje_enviado
@@ -678,13 +678,14 @@ def activar_SAE():
             print("no_aterriz")
             #aterrizaje_enviado = 0
 
+        #Printeo de la información del aeropuerto
         if info_aeropuerto != 0:
             print("info aeropuerto:", info_aeropuerto)            
             info_aeropuerto = 0
 
         pin_boton_reaccion = 0
 
-
+        
         if pin_test.value() != pin_boton_test:
             pin_boton_test = pin_test.value()
 
