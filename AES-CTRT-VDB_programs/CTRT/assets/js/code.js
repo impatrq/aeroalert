@@ -398,20 +398,20 @@ function getKey() {
                 
                 if (key != ""){
                     if (interfaz == "flights"){
-                        if (key == "C") {       //flecha para arriba
+                        if (key == "2") {       //flecha para arriba
                             if (index_flights > 0){
                                 index_flights = index_flights - 1
                                 cambiarVueloSeleccionado(index_flights)    
                             }
                         }
-                        else if (key == "D"){         //flecha para abajo
+                        else if (key == "8"){         //flecha para abajo       # "D"
                             if (index_flights <  ((nros_vuelo.length)-1)){
                                 index_flights = index_flights+1
                                 cambiarVueloSeleccionado(index_flights)
                             }
                         }  
 
-                        else if (key == "#"){         //enter o derecha 
+                        else if (key == "6"){         //enter o derecha        # "#"
                             cambiarInterfaz("flight", nro_vuelo)
                             interfaz = "flight"
                         }
@@ -419,21 +419,21 @@ function getKey() {
 
                     else if (interfaz == "flight") {
 
-                        if (key == "*"){                 //para atras o izquierda
+                        if (key == "4"){                 //para atras o izquierda     # "*"
                             cambiarInterfaz("flights")
                             interfaz = "flights"
                         }
-                        else if (key == "#"){        //enter o derecha 
+                        else if (key == "6"){        //enter o derecha              # "#"
                             cambiarInterfaz("airports")
                             interfaz = "airports"
                         }
 
-                        else if (key == "A"){
+                        else if (key == "A"){       //                              # "A"
                             sendInstruction(nro_vuelo, "aterriza")
                             cambiarInterfaz("airports")
                             interfaz = "airports"
                         }
-                        else if (key == "B"){
+                        else if (key == "B"){       //                             # "B"
                             sendInstruction(nro_vuelo, "no aterrizes")
                         }
                     }
@@ -448,20 +448,20 @@ function getKey() {
                                 interfaz = "flights"
                             }   
                         }
-                        else if (key == "A"){
+                        else if (key == "A"){               //                #"A"
                             sendInstruction(nro_vuelo, "aterriza")
                         }
-                        else if (key == "B"){
+                        else if (key == "B"){             //                #"B"
                             sendInstruction(nro_vuelo,"no aterrizes")
                         }
 
-                        else if (key== "*"){                   //para cancelar
+                        else if (key== "C"){                   //para cancelar      # "*"
                             cambiarInterfaz("flight", nro_vuelo)
                             interfaz = "flight"            
                         }
                     }
 
-                    if (key == "0"){
+                    if (key == "D"){                    //          # "0"
                         location.reload()               //recargar la pagina
                     }
                 }
