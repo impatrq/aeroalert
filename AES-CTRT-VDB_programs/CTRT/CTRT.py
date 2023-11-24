@@ -10,7 +10,7 @@ global client_socket, sta_if
 
 client_socket, sta_if = stationrtdc.do_connect()
 print(client_socket, sta_if)
-stationrtdc.send_type(client_socket, "soy_rtdc")
+#stationrtdc.send_type(client_socket, "soy_rtdc")
 
 
 pin_luz_roja = Pin(21, Pin.OUT)
@@ -235,7 +235,7 @@ def teclas():
 
 
 print("Importando microdot...")
-from microdot_asyncio import Microdot, send_file
+from microdot import Microdot, send_file
 print("Done")
 import ujson
 import _thread
