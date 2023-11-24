@@ -217,8 +217,24 @@ def escuchar_PC(conn_PC, addr):
                 info_PC.pop("Piloto")
                 estados["Piloto2"] = info_PC
 
+def evaluar_info_piloto1(info):
+    #Evaluar datos piloto 2 de los protocolos
+    global bpm_altos1, spo_bajos1, muerte1
+    if info["Pulso"] == '1':
+        bpm_altos1 = 1
+    else:
+        bpm_altos1 = 0
+    if info["Hipoxia"] == '1':
+        spo_bajos1 = 1
+    else:
+        spo_bajos1 = 0
+    if info["Muerte"] == '1':
+        muerte1 = 1
+    else:
+        muerte1 = 0
+
 def evaluar_info_piloto2(info):
-    #Evaluar datos piloto 2
+    #Evaluar datos piloto 2 de los protocolos
     global bpm_altos2, spo_bajos2, dormido2, muerte2
     if info["Pulso"] == '1':
         bpm_altos2 = 1
@@ -258,23 +274,7 @@ def evaluar_info_piloto2(info):
         elif info["Spo2"] > 90:
             spo_bajos2 = 0
 
-def evaluar_info_piloto1(info):
-    global bpm_altos1, spo_bajos1, muerte1
-    if info["Pulso"] == '1':
-        bpm_altos1 = 1
-    else:
-        bpm_altos1 = 0
-    if info["Hipoxia"] == '1':
-        spo_bajos1 = 1
-    else:
-        spo_bajos1 = 0
-    if info["Muerte"] == '1':
-        muerte1 = 1
-    else:
-        muerte1 = 0
-
-
-
+#Declara las variables de los protoclos
 bpm_bajos1 = bpm_altos1 = spo_bajos1 = dormido1 = temp_baja1 = temp_alta1 = muerte1 = 0 
 bpm_bajos2 = bpm_altos2 = spo_bajos2 = dormido2 = temp_baja2 = temp_alta2 = muerte2 = 0
 manual = no_reaccion = 0
@@ -296,6 +296,7 @@ codigo = [
 
 
 def actualizar_codigo():
+    #Las variables las pone en una función para actualizarla cuando querramos
     global bpm_bajos1, bpm_altos1, spo_bajos1, dormido1, temp_baja1, temp_alta1, muerte1
     global bpm_bajos2, bpm_altos2, spo_bajos2, dormido2, temp_baja2, temp_alta2, muerte2 # se modifican directamente
     global manual, pulsera_conectada
@@ -317,17 +318,17 @@ def actualizar_codigo():
     return codigo
 
 
-#para contador
-
-
+#Para el contador
 t30 = Timer(0)
 t60 = Timer(0)
 
+#Protocolo tras 60seg de la alarma 
 alarmas_off= pasaron_30segs = 0
 def contador60(self):
     global alarmas_off
     alarmas_off = 0
 
+#Protocolo en caso de pasar 30 seg de la alarma
 def contador30(self):
     global pasaron_30segs
     pasaron_30segs = 1
@@ -335,6 +336,7 @@ def contador30(self):
     
 aterrizar = 0
 def activar_SAE():
+    #Activación del AES
     time.sleep(1)
     global pulsera_conectada
     global solicitar, info_aeropuerto
@@ -371,9 +373,9 @@ def activar_SAE():
         print()
         
         if pin_reaccion.value():
-            pin_boton_reaccion = 1      # Pone en 1 la variable que se va a usar para saber si se presiono
+            pin_boton_reaccion = 1      
             no_reaccion = 0      
-        #    print("boton de reaccion")    
+            #print("boton de reaccion")    
 
         codigo = actualizar_codigo()
         #print(codigo)
@@ -419,11 +421,14 @@ def activar_SAE():
 
 
             #determinacion dormidos
-            if codigo[4] and codigo[5]:                             # si ambos estan dormidos
+            # si ambos estan dormidos
+            if codigo[4] and codigo[5]:                             
                 asleep2 = 1
                 asleep1 = 0
             #    print("2Dormidos")
-            elif codigo[4] or codigo[5]:                              # si solo 1 esta dormido
+
+            # si solo 1 esta dormido
+            elif codigo[4] or codigo[5]:                              
                 asleep1 = 1
                 asleep2 = 0
             #    print("1Dormido")
@@ -433,7 +438,7 @@ def activar_SAE():
             #    print("no Dormidos")
 
 
-            if (codigo[0] and codigo[1]) or (codigo[2] and codigo[3]) or (codigo[0] and codigo[3]) or (codigo[1] and codigo[2]):
+            if (codigo[0] and codigo[1]) or (codigo[2] and codigo[3]) or (codigo[1] and codigo[2]) or (codigo[0] and codigo[3]) :
                 bpm2 = 1
                 bpm1 = 0
             #    print("2Bpm")
@@ -483,46 +488,18 @@ def activar_SAE():
                         contador_iniciado_30 = 0                        # Pone en 0 la variable de cont_init_30spo
                         no_reaccion = 1
                         pasaron_30segs = 0
-            #            print("no reacciono")
+                        #print("no reacciono")
 
                 elif alarmas_off == 1:                                  # Sino si estan desactivadas las alarmas spo
-            #        print("alarmas off")
+                    #print("alarmas off")
                     pasaron_30segs = 0
-                    #
                     # enviar UART para apagar alarmas sonoras
-                    #
+
+            #si uno o 2 tienen
             else:
                 no_reaccion = 0                              
         
-
-            #---------------------------------------------------------------------------------------------
-
-            # 1 o 2 spo                 Roja Fija                       alarma sonora hipoxiaa          -
-            #                                                           
-            #   
-            # 2 muertos                 Roja Fija                       alarma_sonora_aes_alert         -
-            # 1 muerto                  Ambar Fija                      alarma_sonora_aes_alert
-            #                                                           
-            #
-            # 1 o 2 bpm                 Ambar Titilar                   alarma_sonora_aes_alert         -
-            #                                                           
-            # 
-            # 1 o 2 dormidos            Ambar Fija                      alarma_sonora_dormidos
-            #
-            #                                                   
-            # pulsera_conectada = 0     Ambar Fija
-            #
-            #                                                           
-            # intentional loss          Roja Titilando                  alarma_sonora_aes_activation 
-            # activacion manual         Roja Titilando                  alarma_sonora_manual_activation
-            # 
-            # 
-            # test fail                                                 alarma_sonora_test_failed
-            # test pass                                                 alarma_sonora_test_passed
-            # 
-            # 
-            #-------------------------------------------------------------------------------
-            if hipoxia1 or hipoxia2:                    #si uno o 2 tienen
+            if hipoxia1 or hipoxia2:                    
                 roja_fija = 1
                 alarma_hipoxia = 1
             else:
@@ -541,7 +518,7 @@ def activar_SAE():
                 roja_fija = 0
 
 
-
+            #Pulsaciones 1 o 2 pilotos
             if bpm1 or bpm2:
                 ambar_titilando = 1
                 alarma_aes = 1
