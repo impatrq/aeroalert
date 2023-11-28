@@ -19,7 +19,7 @@ El sistema cuenta con una pulsera dotada de los sensores necesarios. Si se detec
 AeroAlert es un proyecto realizado por alumnos de 7mo Año de la **Escuela de Educación Secundaria Técnica N°7 "Taller Regional Quilmes"**, especialidad Aviónica.
 
 <p align="center">
-  <img src="/Imagenes/imagengrupal.jpg" alt="Imagen Grupal" width="90%"/>
+  <img src="Diseños de marca/Imagenes/imagengrupal.jpg" alt="Imagen Grupal" width="90%"/>
 </p>
 
 # Integrantes
